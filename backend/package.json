@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc -p .",
-    "start:dev": "tsc-watch --onSuccess 'node dist/index.js'"
+    "dev": "tsc-watch --onSuccess 'node dist/index.js'"
   },
   "dependencies": {
     "@types/uuid": "^8.3.4",
