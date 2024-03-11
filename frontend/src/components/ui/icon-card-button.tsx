@@ -6,7 +6,8 @@ import {
 } from "@/components/ui/hover-card";
 
 export interface IconCardButtonProps {
-  icon: React.ReactNode;
+  icon1: React.ReactNode;
+  icon2: React.ReactNode;
   text: string;
   subtext: string;
   description: string;
@@ -14,21 +15,22 @@ export interface IconCardButtonProps {
 }
 
 const IconCardButton: React.FC<IconCardButtonProps> = (props) => {
-  const { icon, text, subtext, description, onClick } = props;
+  const { icon1, icon2, text, subtext, description, onClick } = props;
   return (
     <HoverCard>
       <HoverCardTrigger>
         {" "}
         <div
           onClick={onClick}
-          className="tetx-center mx-5 my-5 flex h-[250px] w-[250px] cursor-pointer items-center justify-center rounded-md border-2 shadow-md hover:bg-sky-700 sm:my-0"
+          className="text-center mx-5 my-5 px-2 flex h-[250px] w-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-foreground shadow-md hover:bg-hover sm:my-0"
         >
           <div className="text-center">
-            <span className="mx-auto text-primary">{icon}</span>
+            <div className="flex justify-center pb-2">
+              <span className="text-primary pr-4">{icon1}</span>
+              <span className="text-primary">{icon2}</span>
+            </div>
             <p className="font-sans text-lg font-bold text-primary">{text}</p>
-            <p className="text-md font-sans font-bold text-primary-foreground">
-              {subtext}
-            </p>
+            <p className="text-md font-sans font-bold">{subtext}</p>
           </div>
         </div>
       </HoverCardTrigger>

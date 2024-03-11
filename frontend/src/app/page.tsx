@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { UserRound, UsersRound } from "lucide-react";
 import IconCardButton from "@/components/ui/icon-card-button";
 import { loadFull } from "tsparticles";
 import { Engine } from "@tsparticles/engine";
@@ -32,7 +31,8 @@ export default function Home() {
               text={f.title}
               subtext={f.subtitle}
               description={f.description}
-              icon={<UsersRound style={{ display: "unset" }} fontSize={100} />}
+              icon1={<f.icon1 />}
+              icon2={<f.icon2 />}
             />
           ))}
         </div>
