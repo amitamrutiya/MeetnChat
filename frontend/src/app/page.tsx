@@ -19,11 +19,18 @@ export default function Home() {
     });
   }, []);
   return (
-    <main className="min-h-screen justify-center  p-5">
+    <main className="min-h-screen justify-center p-5">
       <ParticlesComponent id="tsparticles" done={init} />
       <ModeToggle />
-      <div className="absolute w-[95vw]">
-        <div className="flex min-h-[80vh] flex-wrap items-center justify-center sm:flex-row">
+      <div className="flex flex-col items-center absolute w-[95vw]">
+        <div
+          className={`text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer ${
+            init ? "animate-fadeIn" : ""
+          }`}
+        >
+          All in one Website for Meet
+        </div>{" "}
+        <div className="mt-[10%] flex min-h-[80vh] flex-wrap justify-center sm:flex-row">
           {functions.map((f, i) => (
             <IconCardButton
               key={i}
