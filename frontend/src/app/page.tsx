@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import IconCardButton from "@/components/ui/icon-card-button";
@@ -8,8 +9,11 @@ import { Engine } from "@tsparticles/engine";
 import { initParticlesEngine } from "@tsparticles/react";
 import ParticlesComponent from "../components/ui/particles";
 import functions from "./data/functions";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const { user } = useUser();
   const [init, setInit] = useState(false);
   useEffect(() => {
     initParticlesEngine(async (engine: Engine) => {
@@ -19,7 +23,7 @@ export default function Home() {
     });
   }, []);
   return (
-    <main className="min-h-screen justify-center p-5">
+    <main className="min-h-screen h-full overflow-auto justify-center p-5">
       <ParticlesComponent id="tsparticles" done={init} />
       <ModeToggle />
       <div className="flex flex-col items-center absolute w-[95vw]">
@@ -30,11 +34,13 @@ export default function Home() {
         >
           All in one Website for Meet
         </div>{" "}
-        <div className="mt-[10%] flex min-h-[80vh] flex-wrap justify-center sm:flex-row">
+        <div className="mt-[10%] flex flex-wrap justify-center sm:flex-row">
           {functions.map((f, i) => (
             <IconCardButton
               key={i}
-              onClick={() => {}}
+              onClick={() => {
+                user ? router.push("/lobby") : router.push("/api/auth/login");
+              }}
               text={f.title}
               subtext={f.subtitle}
               description={f.description}

@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <UserProvider> */}
+      <UserProvider>
         <body className={inter.className}>
           <ThemeProvider
             attribute="class"
@@ -29,7 +29,7 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </body>
-      {/* </UserProvider> */}
+      </UserProvider>
     </html>
   );
 }

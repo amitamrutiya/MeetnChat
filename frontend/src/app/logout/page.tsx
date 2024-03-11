@@ -10,5 +10,5 @@ export default function Login() {
     router.push("/api/auth/logout");
   };
 
-  return <Button onClick={navigate}>Login</Button>;
+  return <Button onClick={navigate}>Logout</Button>;
 }
