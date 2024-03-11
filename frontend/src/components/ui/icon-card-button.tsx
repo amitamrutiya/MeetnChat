@@ -4,6 +4,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export interface IconCardButtonProps {
   icon1: React.ReactNode;
@@ -15,6 +16,7 @@ export interface IconCardButtonProps {
 }
 
 const IconCardButton: React.FC<IconCardButtonProps> = (props) => {
+  const { isLoading } = useUser();
   const { icon1, icon2, text, subtext, description, onClick } = props;
   return (
     <HoverCard>

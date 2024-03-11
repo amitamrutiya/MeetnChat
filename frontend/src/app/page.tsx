@@ -10,6 +10,7 @@ import { initParticlesEngine } from "@tsparticles/react";
 import ParticlesComponent from "../components/ui/particles";
 import functions from "./data/functions";
 import { useRouter } from "next/navigation";
+import { v4 } from "uuid";
 
 export default function Home() {
   const router = useRouter();
@@ -39,7 +40,10 @@ export default function Home() {
             <IconCardButton
               key={i}
               onClick={() => {
-                user ? router.push("/lobby") : router.push("/api/auth/login");
+                const roomId = v4();
+                user
+                  ? router.push(`/room/${roomId}`)
+                  : router.push("/api/auth/login");
               }}
               text={f.title}
               subtext={f.subtitle}

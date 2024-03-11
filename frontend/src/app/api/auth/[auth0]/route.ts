@@ -1,8 +1,10 @@
 import { handleAuth, handleLogin } from "@auth0/nextjs-auth0";
+import { v4 } from "uuid";
 
+const roomId = v4();
 export const GET = handleAuth({
   login: handleLogin({
-    returnTo: "/lobby",
+    returnTo: `/room/${roomId}`,
   }),
 });
 
