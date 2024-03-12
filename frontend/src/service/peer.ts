@@ -23,35 +23,48 @@ class WebRTCSerice {
 }
 
 class PeerService {
-  private _webRtc: WebRTCSerice | undefined
+  private _webRtc: WebRTCSerice | undefined;
 
-  public myDataChanel: RTCDataChannel | undefined
-  public remoteDataChanel: RTCDataChannel | undefined
+  public myDataChanel: RTCDataChannel | undefined;
+  public remoteDataChanel: RTCDataChannel | undefined;
 
-  public remoteSocketId: string | undefined
+  public remoteSocketId: string | undefined;
 
   public init() {
     if (!this._webRtc) {
-      this._webRtc = new WebRTCSerice()
+      this._webRtc = new WebRTCSerice();
       this.myDataChanel = this.peer?.createDataChannel(
         `file-transfer-${Date.now()}`
-      )
-      return this
+      );
+      return this;
     }
   }
 
   public async getOffer() {
     if (this._webRtc) {
-      const offer = await this._webRtc._peer.createOffer()
+      const offer = await this._webRtc._peer.createOffer();
       await this._webRtc._peer.setLocalDescription(
         new RTCSessionDescription(offer)
-      )
-      return offer
+      );
+      return offer;
+    }
+  }
+
+  public async getAnswer(offer: RTCSessionDescriptionInit) {
+    if (this._webRtc) {
+      await this._webRtc._peer.setRemoteDescription(
+        new RTCSessionDescription(offer)
+      );
+      const answer = await this._webRtc._peer.createAnswer();
+      await this._webRtc._peer.setLocalDescription(
+        new RTCSessionDescription(answer)
+      );
+      return answer;
     }
   }
 
   public get peer() {
-    return this._webRtc?._peer
+    return this._webRtc?._peer;
   }
 }
 

@@ -1,6 +1,6 @@
 import http from "http";
 import express from "express";
-import { Server as SocketServer } from "socket.io";
+import { Socket, Server as SocketServer } from "socket.io";
 import { v4 as uuidV4 } from "uuid";
 import cors from "cors";
 
@@ -18,7 +18,7 @@ const users: Map<string, User> = new Map<string, User>();
 const roomUsers: Map<string, RoomUser> = new Map();
 
 // When a new client connects to the server
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket) => {
   // Log the new connection
   console.log(`New Socket Connection: ${socket.id}`);
 
@@ -46,9 +46,10 @@ io.on("connection", (socket) => {
 
   // When a client initiates a peer call
   socket.on("peer:call", (data) => {
-    const { to, offer } = data;
+    const { to, offer, roomId } = data;
     // Emit an event to the recipient about the incoming call
     socket.to(to).emit("peer:incomming-call", {
+      roomId,
       from: socket.id,
       user: users.get(socket.id),
       offer,

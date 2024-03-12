@@ -11,6 +11,7 @@ export interface User {
   isConnected: boolean;
 }
 export interface IncomingCall {
+  roomId: string;
   from: string;
   user: User;
   offer: RTCSessionDescriptionInit;
