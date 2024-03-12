@@ -59,6 +59,12 @@ export default function Room() {
     });
 
     if (stream) setStream(stream);
+
+    for (const track of stream.getTracks()) {
+      if (peerService.peer) {
+        peerService.peer?.addTrack(track, stream);
+      }
+    }
   }, []);
 
   const handleClickUser = useCallback(async (user: User) => {
@@ -73,13 +79,13 @@ export default function Room() {
     setCalledToUserId(user.socketId);
   }, []);
 
-  const handleIncommingCall = React.useCallback(async (data: IncomingCall) => {
+  const handleIncommingCall = useCallback(async (data: IncomingCall) => {
     if (data) {
       setIncommingCallData(data);
     }
   }, []);
 
-  const handleAcceptIncommingCall = React.useCallback(async () => {
+  const handleAcceptIncommingCall = useCallback(async () => {
     if (!incommingCallData) return;
     const { from, user, offer, roomId } = incommingCallData;
     if (offer) {
@@ -103,12 +109,12 @@ export default function Room() {
     }
   }, [incommingCallData]);
 
-  const handleRejectIncommingCall = React.useCallback(
+  const handleRejectIncommingCall = useCallback(
     () => setIncommingCallData(undefined),
     []
   );
 
-  const handleCallAccepted = React.useCallback(async (data: any) => {
+  const handleCallAccepted = useCallback(async (data: any) => {
     const { offer, from, user, roomId } = data;
 
     await peerService.setRemoteDesc(offer);
@@ -127,6 +133,39 @@ export default function Room() {
     setRemoteSocketId(from);
   }, []);
 
+  const handleNegosiation = useCallback(
+    async (ev: Event) => {
+      const offer = await peerService.getOffer();
+      socket.emit("peer:negotiate", {
+        to: peerService.remoteSocketId,
+        offer,
+      });
+    },
+    [remoteSocketId]
+  );
+
+  const handleRequiredPeerNegotiate = useCallback(async (data: any) => {
+    const { from, offer } = data;
+    if (offer) {
+      const answer = await peerService.getAnswer(offer);
+      socket.emit("peer:negosiate:result", { to: from, offer: answer });
+    }
+  }, []);
+
+  const handleRequiredPeerNegotiateFinalResult = useCallback(
+    async (data: any) => {
+      const { from, offer } = data;
+      if (offer) {
+        await peerService.setRemoteDesc(offer);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    peerService.remoteSocketId = remoteSocketId;
+  }, [remoteSocketId]);
+
   useEffect(() => {
     joinRoom();
   }, [currentUser]);
@@ -134,6 +173,8 @@ export default function Room() {
   useEffect(() => {
     handleRefreshUserList();
     peerService.init();
+    peerService?.peer?.addEventListener("negotiationneeded", handleNegosiation);
+
     return () => {};
   }, []);
 
@@ -141,11 +182,18 @@ export default function Room() {
     socket.on("refresh:user-list", handleRefreshUserList);
     socket.on("peer:incomming-call", handleIncommingCall);
     socket.on("peer:call:accepted", handleCallAccepted);
+    socket.on("peer:negotiate", handleRequiredPeerNegotiate);
+    socket.on("peer:negosiate:result", handleRequiredPeerNegotiateFinalResult);
 
     return () => {
       socket.off("refresh:user-list", handleRefreshUserList);
       socket.off("peer:incomming-call", handleIncommingCall);
       socket.off("peer:call:accepted", handleCallAccepted);
+      socket.off("peer:negotiate", handleRequiredPeerNegotiate);
+      socket.off(
+        "peer:negosiate:result",
+        handleRequiredPeerNegotiateFinalResult
+      );
     };
   }, []);
   return (
