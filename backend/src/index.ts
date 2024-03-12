@@ -58,7 +58,7 @@ io.on("connection", (socket: Socket) => {
 
   // When a call is accepted
   socket.on("peer:call:accepted", (data) => {
-    const { to, offer } = data;
+    const { to, offer, roomId } = data;
     // Set the isConnected status to true for both users
     if (users.has(to)) {
       //@ts-ignore
@@ -71,6 +71,7 @@ io.on("connection", (socket: Socket) => {
 
     // Emit an event to the recipient that the call was accepted
     socket.to(to).emit("peer:call:accepted", {
+      roomId,
       from: socket.id,
       user: users.get(socket.id),
       offer,

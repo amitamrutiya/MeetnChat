@@ -63,6 +63,15 @@ class PeerService {
     }
   }
 
+  public async setRemoteDesc(offer: RTCSessionDescriptionInit) {
+    if (this._webRtc) {
+      console.log("Setting remote desc");
+      return await this._webRtc._peer.setRemoteDescription(
+        new RTCSessionDescription(offer)
+      );
+    }
+  }
+  
   public get peer() {
     return this._webRtc?._peer;
   }

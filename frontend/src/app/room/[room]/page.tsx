@@ -81,11 +81,11 @@ export default function Room() {
 
   const handleAcceptIncommingCall = React.useCallback(async () => {
     if (!incommingCallData) return;
-    const { from, user, offer,roomId} = incommingCallData;
+    const { from, user, offer, roomId } = incommingCallData;
     if (offer) {
       const answer = await peerService.getAnswer(offer);
       if (answer) {
-        socket.emit("peer:call:accepted", { to: from, offer: answer });
+        socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteUser({
           roomId,
           sid: user.sid,
@@ -103,6 +103,30 @@ export default function Room() {
     }
   }, [incommingCallData]);
 
+  const handleRejectIncommingCall = React.useCallback(
+    () => setIncommingCallData(undefined),
+    []
+  );
+
+  const handleCallAccepted = React.useCallback(async (data: any) => {
+    const { offer, from, user, roomId } = data;
+
+    await peerService.setRemoteDesc(offer);
+    setRemoteUser({
+      roomId,
+      sid: user.sid,
+      picture: user.picture,
+      nickname: user.nickname,
+      name: user.name,
+      email_verified: user.email_verified,
+      email: user.email,
+      isConnected: true,
+      joinedAt: new Date(),
+      socketId: from,
+    });
+    setRemoteSocketId(from);
+  }, []);
+
   useEffect(() => {
     joinRoom();
   }, [currentUser]);
@@ -116,10 +140,12 @@ export default function Room() {
   useEffect(() => {
     socket.on("refresh:user-list", handleRefreshUserList);
     socket.on("peer:incomming-call", handleIncommingCall);
+    socket.on("peer:call:accepted", handleCallAccepted);
 
     return () => {
       socket.off("refresh:user-list", handleRefreshUserList);
       socket.off("peer:incomming-call", handleIncommingCall);
+      socket.off("peer:call:accepted", handleCallAccepted);
     };
   }, []);
   return (
@@ -143,6 +169,20 @@ export default function Room() {
         </div>
       ) : (
         <div>No users</div>
+      )}
+
+      {incommingCallData && (
+        <div>
+          <h1>Incomming call from {incommingCallData.user.name}</h1>
+          <button onClick={handleAcceptIncommingCall}>Accept</button>
+          <button onClick={handleRejectIncommingCall}>Reject</button>
+        </div>
+      )}
+
+      {remoteUser && (
+        <div>
+          <h1>Connected to {remoteUser.name}</h1>
+        </div>
       )}
     </>
   );
