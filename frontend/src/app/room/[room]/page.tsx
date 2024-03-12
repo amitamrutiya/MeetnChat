@@ -6,13 +6,14 @@ import { useParams } from "next/navigation";
 import { SocketContext } from "@/app/context/SocketContext";
 import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
 import { serverInstance } from "@/app/api/serverInstance";
-import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
+import { IncomingCall, User } from "@/type";
 import ReactPlayer from "react-player";
+import peerService from "@/service/peer";
 
 export default function Room() {
-  const [users, setUsers] = React.useState<UserProfile[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [stream, setStream] = useState<MediaStream>();
-
+  const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const currentUser = useUser().user;
   const socket = React.useContext(SocketContext) as Socket;
   const params = useParams();
@@ -51,15 +52,39 @@ export default function Room() {
     if (stream) setStream(stream);
   }, []);
 
+  const handleClickUser = useCallback(async (user: User) => {
+    const offer = await peerService.getOffer();
+    if (offer) {
+      socket.emit("peer:call", {
+        to: user.socketId,
+        offer,
+      });
+    }
+    setCalledToUserId(user.socketId);
+  }, []);
+
+  const handlePeerIncommingCall = useCallback(async (data: IncomingCall) => {
+    
+  },
+  []);
+
   useEffect(() => {
     joinRoom();
   }, [currentUser]);
 
   useEffect(() => {
+    handleRefreshUserList();
+    peerService.init();
+    return () => {};
+  }, []);
+
+  useEffect(() => {
     socket.on("refresh:user-list", handleRefreshUserList);
+    socket.on("peer:incomming-call", handlePeerIncommingCall);
 
     return () => {
       socket.off("refresh:user-list", handleRefreshUserList);
+      socket.off("peer:incomming-call", handlePeerIncommingCall);
     };
   }, []);
   return (
@@ -67,11 +92,11 @@ export default function Room() {
       {users.length > 0 ? (
         <div>
           <h1>Users in the room</h1>
-          <ul>
-            {users.map((user) => (
-              <li key={user.updated_at}>{user.name ?? "No name"}</li>
-            ))}
-          </ul>
+          {users.map((user) => (
+            <button key={user.sid} onClick={() => handleClickUser(user)}>
+              {user.name ?? "No name"}
+            </button>
+          ))}
           <ReactPlayer
             width="300px"
             height="300px"

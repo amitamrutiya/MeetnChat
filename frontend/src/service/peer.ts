@@ -40,28 +40,6 @@ class PeerService {
     }
   }
 
-  public async setRemoteDesc(offer: RTCSessionDescriptionInit) {
-    if (this._webRtc) {
-      console.log('Setting remote desc')
-      return await this._webRtc._peer.setRemoteDescription(
-        new RTCSessionDescription(offer)
-      )
-    }
-  }
-
-  public async getAnswer(offer: RTCSessionDescriptionInit) {
-    if (this._webRtc) {
-      await this._webRtc._peer.setRemoteDescription(
-        new RTCSessionDescription(offer)
-      )
-      const answer = await this._webRtc._peer.createAnswer()
-      await this._webRtc._peer.setLocalDescription(
-        new RTCSessionDescription(answer)
-      )
-      return answer
-    }
-  }
-
   public async getOffer() {
     if (this._webRtc) {
       const offer = await this._webRtc._peer.createOffer()
