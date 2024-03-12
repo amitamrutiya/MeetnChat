@@ -21,17 +21,28 @@ const roomUsers: Map<string, RoomUser> = new Map();
 io.on("connection", (socket) => {
   // Log the new connection
   console.log(`New Socket Connection: ${socket.id}`);
+  socket.eventNames().forEach((event) => {
+    socket.on(event as string, (data) => {
+      console.log(`Event: ${event as string}`, data);
+    });
+  });
 
   // When a client joins a room
   socket.on("room:join", (data) => {
     // Destructure the data received from the client
-    const { username, displayPicture, platform } = data;
+    const { roomId, email, email_verified, name, nickname, picture, sid } =
+      data;
+    console.log(data);
     // Set the user data in the users Map
     users.set(socket.id, {
       socketId: socket.id,
-      username,
-      displayPicture,
-      platform,
+      roomId,
+      email,
+      email_verified,
+      name,
+      nickname,
+      picture,
+      sid,
       joinedAt: new Date(),
       isConnected: false,
     });
@@ -62,7 +73,7 @@ io.on("connection", (socket) => {
       //@ts-ignore
       users.get(socket.id)?.isConnected = true;
     }
-    
+
     // Emit an event to the recipient that the call was accepted
     socket.to(to).emit("peer:call:accepted", {
       from: socket.id,
