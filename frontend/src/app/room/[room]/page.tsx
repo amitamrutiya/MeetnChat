@@ -79,6 +79,21 @@ export default function Room() {
     }
   }, [currentUser]);
 
+  const handleStartAudioVideoStream = React.useCallback(async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+
+    if (stream && setUserMediaStream) setUserMediaStream(stream);
+
+    for (const track of stream.getTracks()) {
+      if (peerService.peer) {
+        peerService.peer?.addTrack(track, stream);
+      }
+    }
+  }, []);
+
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -229,11 +244,7 @@ export default function Room() {
     }
   }, []);
 
-  const handleSubmitMessage = React.useCallback(() => {
-    socket.emit("chat:message", { to: remoteSocketId, message: "Hello" });
-  }, [remoteSocketId]);
-
-  const handleChatMessage = React.useCallback((data: any) => {
+  const handleChatMessage = React.useCallback((data: any): void => {
     console.log("Chat message", data);
     setChat(data.message);
     setfrom(data.user.name);
@@ -296,31 +307,47 @@ export default function Room() {
   return (
     <div className="min-h-screen justify-center bg-[#18181b] p-5">
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
-      {userStream && <button onClick={sendStreams}>Send Stream</button>}
-      {userStream && (
-        <>
-          <h1>My Stream</h1>
-          <ReactPlayer
-            playing
-            muted
-            height="100px"
-            width="200px"
-            url={userStream}
-          />
-        </>
+      {remoteSocketId && (
+        <Dashboard
+          startAudioVideoStreams={handleStartAudioVideoStream}
+          startScreenShareStreams={handleStartScreenShareStream}
+          stopScreenShareStreams={handleStopScreenShareStream}
+          remoteSocketId={remoteSocketId}
+          whiteboardID={whiteboardID}
+        />
       )}
-      {remoteStreams && (
-        <>
-          <h1>Remote Stream</h1>
-          <ReactPlayer
-            playing
-            muted
-            height="100px"
-            width="200px"
-            url={remoteStreams[0]}
-          />
-        </>
-      )}
+
+      {
+        // userStream && <button onClick={sendStreams}>Send Stream</button>
+      }
+      {
+        // userStream && (
+        //   <>
+        //     <h1>My Stream</h1>
+        //     <ReactPlayer
+        //       playing
+        //       muted
+        //       height="100px"
+        //       width="200px"
+        //       url={userStream}
+        //     />
+        //   </>
+        // )
+      }
+      {
+        // remoteStreams && (
+        //   <>
+        //     <h1>Remote Stream</h1>
+        //     <ReactPlayer
+        //       playing
+        //       muted
+        //       height="100px"
+        //       width="200px"
+        //       url={remoteStreams[0]}
+        //     />
+        //   </>
+        // )
+      }
       {!remoteSocketId && (
         <div className="flex min-h-[80vh] w-full items-center justify-center text-white">
           {users &&
@@ -386,45 +413,49 @@ export default function Room() {
         </div>
       )}
 
-      <button onClick={handleStartScreenShareStream}>Share Screen</button>
-      {userScreenStream && (
-        <button onClick={handleStopScreenShareStream}>Stop Share Screen</button>
-      )}
+      {/* <button onClick={handleStartScreenShareStream}>Share Screen</button> */}
+      {
+        // userScreenStream && (
+        //   <button onClick={handleStopScreenShareStream}>Stop Share Screen</button>
+        // )
+      }
       {/* share screen */}
 
-      {whiteboardID && (
-        <div className="flex justify-evenly">
-          <iframe
-            src={`https://witeboard.com/${whiteboardID}`}
-            height="500px"
-            width="500px"
-          />
-          <div className="flex justify-center items-center flex-col">
-            <h1>Chat box</h1>
-            <div className="border-2 border-gray-300 p-6 rounded-md shadow-md max-w-md w-full">
-              <div className="overflow-auto h-64 mb-4 border-b-2 border-gray-300">
-                {/* Messages will go here */}
-                <p className="text-gray-600">
-                  {chat} - {from}
-                </p>
-                <p className="text-gray-600">User2: Hi, how are you?</p>
-              </div>
-              <div className="mt-4">
-                <textarea
-                  className="w-full p-2 border-2 border-gray-300 rounded-md"
-                  placeholder="Type your message here..."
-                ></textarea>
-                <button
-                  className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2"
-                  onClick={handleSubmitMessage}
-                >
-                  Send
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {
+        // whiteboardID && (
+        //   <div className="flex justify-evenly">
+        //     <iframe
+        //       src={`https://witeboard.com/${whiteboardID}`}
+        //       height="500px"
+        //       width="500px"
+        //     />
+        //     <div className="flex justify-center items-center flex-col">
+        //       <h1>Chat box</h1>
+        //       <div className="border-2 border-gray-300 p-6 rounded-md shadow-md max-w-md w-full">
+        //         <div className="overflow-auto h-64 mb-4 border-b-2 border-gray-300">
+        //           {/* Messages will go here */}
+        //           <p className="text-gray-600">
+        //             {chat} - {from}
+        //           </p>
+        //           <p className="text-gray-600">User2: Hi, how are you?</p>
+        //         </div>
+        //         <div className="mt-4">
+        //           <textarea
+        //             className="w-full p-2 border-2 border-gray-300 rounded-md"
+        //             placeholder="Type your message here..."
+        //           ></textarea>
+        //           <button
+        //             className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2"
+        //             onClick={handleSubmitMessage}
+        //           >
+        //             Send
+        //           </button>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // )
+      }
     </div>
   );
 }
