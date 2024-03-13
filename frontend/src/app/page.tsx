@@ -6,11 +6,11 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import { loadFull } from "tsparticles";
 import { Engine } from "@tsparticles/engine";
 import { initParticlesEngine } from "@tsparticles/react";
-import ParticlesComponent from "../components/particles";
+import ParticlesComponent from "../components/Particles";
 import functions from "./data/functions";
 import { useRouter } from "next/navigation";
 import { v4 } from "uuid";
-import IconCardButton from "@/components/icon-card-button";
+import IconCardButton from "@/components/Icon-card-button";
 
 export default function Home() {
   const router = useRouter();

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/app/context/ThemeProvider";
 import { SocketProvider } from "@/app/context/SocketContext";
 import { MediaStreamProvider } from "@/app/context/MediaStream";
 import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";

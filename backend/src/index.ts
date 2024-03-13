@@ -126,7 +126,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   // When a client disconnects
-  socket.on("disconnect", () => {
+  socket.on("user-disconnect", () => {
     // Remove the user from the users Map
     users.delete(socket.id);
     // Emit an event that the user has disconnected

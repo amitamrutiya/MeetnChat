@@ -15,7 +15,8 @@ import { serverInstance } from "@/app/api/serverInstance";
 import { IncomingCall, User } from "@/type";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import peerService from "@/service/peer";
-import Dashboard from "@/components/dashboard";
+import Dashboard from "@/components/Dashboard";
+import Navbar from "@/components/Navbar";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
@@ -294,7 +295,7 @@ export default function Room() {
 
   return (
     <div className="min-h-screen justify-center bg-[#18181b] p-5">
-      <h1>Room Page</h1>
+      <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
       {userStream && <button onClick={sendStreams}>Send Stream</button>}
       {userStream && (
         <>
