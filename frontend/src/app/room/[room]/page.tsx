@@ -6,6 +6,10 @@ import { Socket } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { SocketContext } from "@/app/context/SocketContext";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
+import {
+  MediaScreenStreamContext,
+  ProviderScreenProps,
+} from "@/app/context/ScreenStream";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { serverInstance } from "@/app/api/serverInstance";
 import { IncomingCall, User } from "@/type";
@@ -21,6 +25,14 @@ export default function Room() {
     remoteStreams,
     userStream,
   } = React.useContext(MediaStreamContext) as ProviderProps;
+
+  const {
+    setUserMediaScreenStream,
+    userScreenStream,
+    remoteScreenStream,
+    setScreenRemoteMediaStream,
+  } = React.useContext(MediaScreenStreamContext) as ProviderScreenProps;
+
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = React.useState<
     IncomingCall | undefined
@@ -184,6 +196,28 @@ export default function Room() {
     []
   );
 
+  const handleStartScreenShareStream = React.useCallback(async () => {
+    const stream = await navigator.mediaDevices.getDisplayMedia({});
+
+    if (stream && setUserMediaScreenStream) setUserMediaScreenStream(stream);
+
+    const track = stream.getTracks()[0];
+    if (peerService.peer) {
+      peerService.peer?.addTrack(track, stream);
+    }
+  }, []);
+
+  const handleStopScreenShareStream = React.useCallback(async () => {
+    if (userScreenStream) {
+      const tracks = userScreenStream.getTracks();
+      tracks.forEach((track) => track.stop());
+
+      if (setUserMediaScreenStream) {
+        setUserMediaScreenStream(null);
+      }
+    }
+  }, [userScreenStream, setUserMediaScreenStream]);
+
   useEffect(() => {
     peerService.remoteSocketId = remoteSocketId;
   }, [remoteSocketId]);
@@ -326,6 +360,26 @@ export default function Room() {
           </h6>
         </div>
       )}
+
+      {/* share screen */}
+      <div>
+        <button onClick={handleStartScreenShareStream}>Share Screen</button>
+        {userScreenStream && (
+          <>
+            <h1>Screen Sharing is on</h1>
+            <ReactPlayer
+              playing
+              muted
+              height="100px"
+              width="200px"
+              url={userScreenStream}
+            />
+            <button onClick={handleStopScreenShareStream}>
+              Stop Share Screen
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
