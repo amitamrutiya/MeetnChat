@@ -1,10 +1,10 @@
 import React from "react";
-import { AudioLines, ArrowLeftRightIcon } from "lucide-react"
+import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import { User } from "@/type";
 import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
 import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
-import { handleLogout } from "@auth0/nextjs-auth0";
+import { useRouter } from "next/navigation";
 
 export interface NavbarProps {
   remoteUser?: User | undefined | null;
@@ -12,6 +12,7 @@ export interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = (props) => {
+  const router = useRouter();
   const { remoteUser, remoteSocketId } = props;
   const { user } = useUser();
   const currentUser = user as UserProfile | undefined;
@@ -55,7 +56,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               width={40}
             />
 
-            <Button onClick={() => handleLogout()}>LogOut</Button>
+            <Button onClick={() => router.push("/api/auth/logout")}>
+              LogOut
+            </Button>
           </div>
         </>
       )}
