@@ -3,14 +3,14 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import IconCardButton from "@/components/ui/icon-card-button";
 import { loadFull } from "tsparticles";
 import { Engine } from "@tsparticles/engine";
 import { initParticlesEngine } from "@tsparticles/react";
-import ParticlesComponent from "../components/ui/particles";
+import ParticlesComponent from "../components/particles";
 import functions from "./data/functions";
 import { useRouter } from "next/navigation";
 import { v4 } from "uuid";
+import IconCardButton from "@/components/icon-card-button";
 
 export default function Home() {
   const router = useRouter();

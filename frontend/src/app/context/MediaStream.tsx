@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 export interface ProviderProps {
@@ -11,7 +13,9 @@ export const MediaStreamContext = React.createContext<ProviderProps | null>(
   null
 );
 
-export const MediaStreamProvider: React.FC<React.PropsWithChildren> = (props) => {
+export const MediaStreamProvider: React.FC<React.PropsWithChildren> = (
+  props
+) => {
   const [remoteMediastreams, setRemoteMediaStream] = React.useState<
     MediaStream[]
   >([]);

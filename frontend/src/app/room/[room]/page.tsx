@@ -1,18 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import ReactPlayer from "react-player";
 import { Socket } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { SocketContext } from "@/app/context/SocketContext";
-import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
+import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { serverInstance } from "@/app/api/serverInstance";
 import { IncomingCall, User } from "@/type";
-import ReactPlayer from "react-player";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import peerService from "@/service/peer";
+import Dashboard from "@/components/dashboard";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
-  const [stream, setStream] = useState<MediaStream>();
+  const {
+    setUserMediaStream,
+    setRemoteMediaStream,
+    remoteStreams,
+    userStream,
+  } = React.useContext(MediaStreamContext) as ProviderProps;
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = React.useState<
     IncomingCall | undefined
@@ -29,6 +37,7 @@ export default function Room() {
   const roomId = params.room;
 
   const handleRefreshUserList = useCallback(async () => {
+    console.log("Refreshing user list");
     const { data } = await serverInstance.get("/users");
     if (data.users) {
       console.log(data.users);
@@ -37,6 +46,7 @@ export default function Room() {
   }, []);
 
   const joinRoom = useCallback(async () => {
+    console.log("Joining room");
     try {
       socket.emit("room:join", {
         roomId,
@@ -52,22 +62,36 @@ export default function Room() {
     }
   }, [currentUser]);
 
-  const handleStartAudioVideoStream = React.useCallback(async () => {
+  // const handleStartAudioVideoStream = React.useCallback(async () => {
+  //   try {
+  //     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  //       console.error("Browser does not support mediaDevices API");
+  //       return;
+  //     }
+
+  //     const stream = await navigator.mediaDevices.getUserMedia({
+  //       audio: true,
+  //       video: true,
+  //     });
+
+  //     if (stream && setUserMediaStream) setUserMediaStream(stream);
+
+  //     for (const track of stream.getTracks()) {
+  //       if (peerService.peer) {
+  //         peerService.peer?.addTrack(track, stream);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error starting audio video stream", error);
+  //   }
+  // }, []);
+
+  const handleClickUser = useCallback(async (user: User) => {
+    console.log("Calling user", user);
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: true,
     });
-
-    if (stream) setStream(stream);
-
-    for (const track of stream.getTracks()) {
-      if (peerService.peer) {
-        peerService.peer?.addTrack(track, stream);
-      }
-    }
-  }, []);
-
-  const handleClickUser = useCallback(async (user: User) => {
     const offer = await peerService.getOffer();
     if (offer) {
       socket.emit("peer:call", {
@@ -76,21 +100,29 @@ export default function Room() {
         roomId,
       });
     }
+    if (stream && setUserMediaStream) setUserMediaStream(stream);
     setCalledToUserId(user.socketId);
   }, []);
 
   const handleIncommingCall = useCallback(async (data: IncomingCall) => {
+    console.log("Incomming call", data);
     if (data) {
       setIncommingCallData(data);
     }
   }, []);
 
   const handleAcceptIncommingCall = useCallback(async () => {
+    console.log("Accepting incomming call" + incommingCallData);
     if (!incommingCallData) return;
     const { from, user, offer, roomId } = incommingCallData;
     if (offer) {
       const answer = await peerService.getAnswer(offer);
       if (answer) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+        if (stream && setUserMediaStream) setUserMediaStream(stream);
         socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteUser({
           roomId,
@@ -115,6 +147,7 @@ export default function Room() {
   );
 
   const handleCallAccepted = useCallback(async (data: any) => {
+    console.log("Call accepted", data);
     const { offer, from, user, roomId } = data;
 
     await peerService.setRemoteDesc(offer);
@@ -131,10 +164,18 @@ export default function Room() {
       socketId: from,
     });
     setRemoteSocketId(from);
+    sendStreams();
   }, []);
+
+  const sendStreams = useCallback(() => {
+    for (const track of userStream!.getTracks()) {
+      peerService.peer?.addTrack(track, userStream!);
+    }
+  }, [userStream]);
 
   const handleNegosiation = useCallback(
     async (ev: Event) => {
+      console.log("Handle negosiation");
       const offer = await peerService.getOffer();
       socket.emit("peer:negotiate", {
         to: peerService.remoteSocketId,
@@ -145,6 +186,7 @@ export default function Room() {
   );
 
   const handleRequiredPeerNegotiate = useCallback(async (data: any) => {
+    console.log("Required peer negosiate", data);
     const { from, offer } = data;
     if (offer) {
       const answer = await peerService.getAnswer(offer);
@@ -154,6 +196,7 @@ export default function Room() {
 
   const handleRequiredPeerNegotiateFinalResult = useCallback(
     async (data: any) => {
+      console.log("Required peer negosiate final result", data);
       const { from, offer } = data;
       if (offer) {
         await peerService.setRemoteDesc(offer);
@@ -175,8 +218,23 @@ export default function Room() {
     peerService.init();
     peerService?.peer?.addEventListener("negotiationneeded", handleNegosiation);
 
-    return () => {};
-  }, []);
+    if (peerService.peer) {
+      peerService.peer.addEventListener("track", async (ev) => {
+        const remoteStream = ev.streams;
+        if (remoteStream && setRemoteMediaStream) {
+          setRemoteMediaStream([...remoteStreams, remoteStream[0]]);
+        }
+      });
+      peerService.peer.addEventListener("ended", async (ev) => {});
+    }
+
+    return () => {
+      peerService?.peer?.removeEventListener(
+        "negotiationneeded",
+        handleNegosiation
+      );
+    };
+  }, [remoteStreams]);
 
   useEffect(() => {
     socket.on("refresh:user-list", handleRefreshUserList);
@@ -196,42 +254,121 @@ export default function Room() {
       );
     };
   }, []);
-  return (
-    <>
-      {users.length > 0 ? (
-        <div>
-          <h1>Users in the room</h1>
-          {users.map((user) => (
-            <button key={user.sid} onClick={() => handleClickUser(user)}>
-              {user.name ?? "No name"}
-            </button>
-          ))}
-          <ReactPlayer
-            width="300px"
-            height="300px"
-            url={stream ?? ""}
-            playing
-            controls={false}
-            pip
-          />
-        </div>
-      ) : (
-        <div>No users</div>
-      )}
 
+  return (
+    <div className="min-h-screen justify-center bg-[#18181b] p-5">
+      <h1>Room Page</h1>
+      {users.length > 0 &&
+        users.map((user, index) => (
+          <div
+            key={`${user.name}-${index}`}
+            onClick={() => handleClickUser(user)}
+          >
+            <Avatar>
+              <AvatarImage src={user.picture ?? ""} />
+              <AvatarFallback>{user.name}</AvatarFallback>
+            </Avatar>
+          </div>
+        ))}
+      {/* {userStream && <button onClick={sendStreams}>Send Stream</button>} */}
+      {/* {remoteSocketId && (
+        <button onClick={() => handleClickUser(users[1])}>CALL</button>
+      )} */}
       {incommingCallData && (
         <div>
-          <h1>Incomming call from {incommingCallData.user.name}</h1>
+          <h1>Incomming Call</h1>
           <button onClick={handleAcceptIncommingCall}>Accept</button>
           <button onClick={handleRejectIncommingCall}>Reject</button>
         </div>
       )}
+      {userStream && (
+        <>
+          <h1>My Stream</h1>
+          <ReactPlayer
+            playing
+            muted
+            height="100px"
+            width="200px"
+            url={userStream}
+          />
+        </>
+      )}
+      {remoteStreams && (
+        <>
+          <h1>Remote Stream</h1>
+          <ReactPlayer
+            playing
+            muted
+            height="100px"
+            width="200px"
+            url={remoteStreams[0]}
+          />
+        </>
+      )}
+      {/* {!remoteSocketId && (
+        <div className="flex min-h-[80vh] w-full items-center justify-center text-white">
+          {users &&
+            users
+              .filter(
+                (e) => e.name !== `${currentUser?.name} - ${currentUser?.email}`
+              )
+              .map((user, index) => (
+                <div
+                  key={`${user.name}-${index}`}
+                  onClick={() => handleClickUser(user)}
+                  className={
+                    calledToUserId && calledToUserId === user.socketId
+                      ? `border-collapse rounded-3xl border-0 border-dashed border-sky-400 motion-safe:animate-bounce`
+                      : ""
+                  }
+                >
+                  <Avatar>
+                    <AvatarImage src={user.picture ?? ""} />
+                    <AvatarFallback>{user.name}</AvatarFallback>
+                  </Avatar>
+                </div>
+              ))}
+          {(!users ||
+            users.filter(
+              (e) => e.name !== `${currentUser?.name} - ${currentUser?.email}`
+            ).length <= 0) && (
+            <h2 className="font-sans text-slate-400 opacity-70 motion-safe:animate-bounce">
+              Join by opening this on other tab
+            </h2>
+          )}
+        </div>
+      )} */}
 
-      {remoteUser && (
-        <div>
-          <h1>Connected to {remoteUser.name}</h1>
+      {/* {incommingCallData && (
+        <div className="fixed bottom-0 right-0 p-5">
+          <div className="flex items-center justify-center">
+            <h6 className="font-sans text-slate-400">
+              {incommingCallData.user.name} is calling you
+            </h6>
+          </div>
+          <div className="flex items-center justify-center">
+            <button
+              onClick={handleAcceptIncommingCall}
+              className="bg-green-500 p-2 rounded-md m-2"
+            >
+              Accept
+            </button>
+            <button
+              onClick={handleRejectIncommingCall}
+              className="bg-red-500 p-2 rounded-md m-2"
+            >
+              Reject
+            </button>
+          </div>
         </div>
       )}
-    </>
+      {!remoteSocketId && (
+        <div className="flex items-center justify-center">
+          <h6 className="font-sans text-slate-400">
+            Tip: Click on user to make call
+          </h6>
+        </div>
+      )} */}
+    </div>
   );
 }
