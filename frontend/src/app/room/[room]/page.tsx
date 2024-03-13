@@ -62,30 +62,6 @@ export default function Room() {
     }
   }, [currentUser]);
 
-  // const handleStartAudioVideoStream = React.useCallback(async () => {
-  //   try {
-  //     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-  //       console.error("Browser does not support mediaDevices API");
-  //       return;
-  //     }
-
-  //     const stream = await navigator.mediaDevices.getUserMedia({
-  //       audio: true,
-  //       video: true,
-  //     });
-
-  //     if (stream && setUserMediaStream) setUserMediaStream(stream);
-
-  //     for (const track of stream.getTracks()) {
-  //       if (peerService.peer) {
-  //         peerService.peer?.addTrack(track, stream);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error starting audio video stream", error);
-  //   }
-  // }, []);
-
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -118,11 +94,15 @@ export default function Room() {
     if (offer) {
       const answer = await peerService.getAnswer(offer);
       if (answer) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-        if (stream && setUserMediaStream) setUserMediaStream(stream);
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true,
+          });
+          if (stream && setUserMediaStream) setUserMediaStream(stream);
+        } catch (error) {
+          console.error("Error getting user media", error);
+        }
         socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteUser({
           roomId,
@@ -164,7 +144,6 @@ export default function Room() {
       socketId: from,
     });
     setRemoteSocketId(from);
-    sendStreams();
   }, []);
 
   const sendStreams = useCallback(() => {
@@ -270,7 +249,7 @@ export default function Room() {
             </Avatar>
           </div>
         ))}
-      {/* {userStream && <button onClick={sendStreams}>Send Stream</button>} */}
+      {userStream && <button onClick={sendStreams}>Send Stream</button>}
       {/* {remoteSocketId && (
         <button onClick={() => handleClickUser(users[1])}>CALL</button>
       )} */}
