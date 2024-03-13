@@ -20,6 +20,8 @@ import Dashboard from "@/components/dashboard";
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
   const [whiteboardID, setWhiteboardID] = React.useState<string | null>(null);
+  const [chat, setChat] = useState("");
+  const [from, setfrom] = useState("");
 
   const {
     setUserMediaStream,
@@ -226,6 +228,16 @@ export default function Room() {
     }
   }, []);
 
+  const handleSubmitMessage = React.useCallback(() => {
+    socket.emit("chat:message", { to: remoteSocketId, message: "Hello" });
+  }, [remoteSocketId]);
+
+  const handleChatMessage = React.useCallback((data: any) => {
+    console.log("Chat message", data);
+    setChat(data.message);
+    setfrom(data.user.name);
+  }, []);
+
   useEffect(() => {
     peerService.remoteSocketId = remoteSocketId;
   }, [remoteSocketId]);
@@ -264,6 +276,7 @@ export default function Room() {
     socket.on("peer:negotiate", handleRequiredPeerNegotiate);
     socket.on("peer:negosiate:result", handleRequiredPeerNegotiateFinalResult);
     socket.on("whiteboard:id", handleSetWhiteboardID);
+    socket.on("chat:message", handleChatMessage);
 
     return () => {
       socket.off("refresh:user-list", handleRefreshUserList);
@@ -275,6 +288,7 @@ export default function Room() {
         handleRequiredPeerNegotiateFinalResult
       );
       socket.off("whiteboard:id", handleSetWhiteboardID);
+      socket.off("chat:message", handleChatMessage);
     };
   }, []);
 
@@ -378,14 +392,36 @@ export default function Room() {
       {/* share screen */}
 
       {whiteboardID && (
-        <div>
-
+        <div className="flex justify-evenly">
           <iframe
             src={`https://witeboard.com/${whiteboardID}`}
             height="500px"
             width="500px"
           />
-
+          <div className="flex justify-center items-center flex-col">
+            <h1>Chat box</h1>
+            <div className="border-2 border-gray-300 p-6 rounded-md shadow-md max-w-md w-full">
+              <div className="overflow-auto h-64 mb-4 border-b-2 border-gray-300">
+                {/* Messages will go here */}
+                <p className="text-gray-600">
+                  {chat} - {from}
+                </p>
+                <p className="text-gray-600">User2: Hi, how are you?</p>
+              </div>
+              <div className="mt-4">
+                <textarea
+                  className="w-full p-2 border-2 border-gray-300 rounded-md"
+                  placeholder="Type your message here..."
+                ></textarea>
+                <button
+                  className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2"
+                  onClick={handleSubmitMessage}
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
