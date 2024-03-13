@@ -237,29 +237,7 @@ export default function Room() {
   return (
     <div className="min-h-screen justify-center bg-[#18181b] p-5">
       <h1>Room Page</h1>
-      {users.length > 0 &&
-        users.map((user, index) => (
-          <div
-            key={`${user.name}-${index}`}
-            onClick={() => handleClickUser(user)}
-          >
-            <Avatar>
-              <AvatarImage src={user.picture ?? ""} />
-              <AvatarFallback>{user.name}</AvatarFallback>
-            </Avatar>
-          </div>
-        ))}
       {userStream && <button onClick={sendStreams}>Send Stream</button>}
-      {/* {remoteSocketId && (
-        <button onClick={() => handleClickUser(users[1])}>CALL</button>
-      )} */}
-      {incommingCallData && (
-        <div>
-          <h1>Incomming Call</h1>
-          <button onClick={handleAcceptIncommingCall}>Accept</button>
-          <button onClick={handleRejectIncommingCall}>Reject</button>
-        </div>
-      )}
       {userStream && (
         <>
           <h1>My Stream</h1>
@@ -284,7 +262,7 @@ export default function Room() {
           />
         </>
       )}
-      {/* {!remoteSocketId && (
+      {!remoteSocketId && (
         <div className="flex min-h-[80vh] w-full items-center justify-center text-white">
           {users &&
             users
@@ -316,9 +294,9 @@ export default function Room() {
             </h2>
           )}
         </div>
-      )} */}
+      )}
 
-      {/* {incommingCallData && (
+      {incommingCallData && (
         <div className="fixed bottom-0 right-0 p-5">
           <div className="flex items-center justify-center">
             <h6 className="font-sans text-slate-400">
@@ -347,7 +325,7 @@ export default function Room() {
             Tip: Click on user to make call
           </h6>
         </div>
-      )} */}
+      )}
     </div>
   );
 }
