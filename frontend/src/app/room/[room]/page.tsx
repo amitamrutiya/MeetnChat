@@ -19,6 +19,8 @@ import Dashboard from "@/components/dashboard";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
+  const [whiteboardID, setWhiteboardID] = React.useState<string | null>(null);
+
   const {
     setUserMediaStream,
     setRemoteMediaStream,
@@ -218,6 +220,12 @@ export default function Room() {
     }
   }, [userScreenStream, setUserMediaScreenStream]);
 
+  const handleSetWhiteboardID = React.useCallback((payload: any) => {
+    if (payload.whiteboardID) {
+      setWhiteboardID(payload.whiteboardID);
+    }
+  }, []);
+
   useEffect(() => {
     peerService.remoteSocketId = remoteSocketId;
   }, [remoteSocketId]);
@@ -255,6 +263,7 @@ export default function Room() {
     socket.on("peer:call:accepted", handleCallAccepted);
     socket.on("peer:negotiate", handleRequiredPeerNegotiate);
     socket.on("peer:negosiate:result", handleRequiredPeerNegotiateFinalResult);
+    socket.on("whiteboard:id", handleSetWhiteboardID);
 
     return () => {
       socket.off("refresh:user-list", handleRefreshUserList);
@@ -265,6 +274,7 @@ export default function Room() {
         "peer:negosiate:result",
         handleRequiredPeerNegotiateFinalResult
       );
+      socket.off("whiteboard:id", handleSetWhiteboardID);
     };
   }, []);
 
@@ -361,25 +371,23 @@ export default function Room() {
         </div>
       )}
 
+      <button onClick={handleStartScreenShareStream}>Share Screen</button>
+      {userScreenStream && (
+        <button onClick={handleStopScreenShareStream}>Stop Share Screen</button>
+      )}
       {/* share screen */}
-      <div>
-        <button onClick={handleStartScreenShareStream}>Share Screen</button>
-        {userScreenStream && (
-          <>
-            <h1>Screen Sharing is on</h1>
-            <ReactPlayer
-              playing
-              muted
-              height="100px"
-              width="200px"
-              url={userScreenStream}
-            />
-            <button onClick={handleStopScreenShareStream}>
-              Stop Share Screen
-            </button>
-          </>
-        )}
-      </div>
+
+      {whiteboardID && (
+        <div>
+
+          <iframe
+            src={`https://witeboard.com/${whiteboardID}`}
+            height="500px"
+            width="500px"
+          />
+
+        </div>
+      )}
     </div>
   );
 }
