@@ -4,6 +4,7 @@ import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SocketProvider } from "@/app/context/SocketContext";
 import { MediaStreamProvider } from "@/app/context/MediaStream";
+import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -23,16 +24,18 @@ export default function RootLayout({
       <SocketProvider>
         <UserProvider>
           <MediaStreamProvider>
-            <body className={inter.className}>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-              </ThemeProvider>
-            </body>
+            <MediaScreenStreamProvider>
+              <body className={inter.className}>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  {children}
+                </ThemeProvider>
+              </body>
+            </MediaScreenStreamProvider>
           </MediaStreamProvider>
         </UserProvider>
       </SocketProvider>
