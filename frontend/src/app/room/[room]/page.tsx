@@ -96,10 +96,6 @@ export default function Room() {
 
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
     const offer = await peerService.getOffer();
     if (offer) {
       socket.emit("peer:call", {
@@ -108,7 +104,6 @@ export default function Room() {
         roomId,
       });
     }
-    if (stream && setUserMediaStream) setUserMediaStream(stream);
     setCalledToUserId(user.socketId);
   }, []);
 
@@ -126,15 +121,6 @@ export default function Room() {
     if (offer) {
       const answer = await peerService.getAnswer(offer);
       if (answer) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: true,
-          });
-          if (stream && setUserMediaStream) setUserMediaStream(stream);
-        } catch (error) {
-          console.error("Error getting user media", error);
-        }
         socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteUser({
           roomId,
@@ -177,12 +163,6 @@ export default function Room() {
     });
     setRemoteSocketId(from);
   }, []);
-
-  const sendStreams = useCallback(() => {
-    for (const track of userStream!.getTracks()) {
-      peerService.peer?.addTrack(track, userStream!);
-    }
-  }, [userStream]);
 
   const handleNegosiation = useCallback(
     async (ev: Event) => {
@@ -412,50 +392,6 @@ export default function Room() {
           </h6>
         </div>
       )}
-
-      {/* <button onClick={handleStartScreenShareStream}>Share Screen</button> */}
-      {
-        // userScreenStream && (
-        //   <button onClick={handleStopScreenShareStream}>Stop Share Screen</button>
-        // )
-      }
-      {/* share screen */}
-
-      {
-        // whiteboardID && (
-        //   <div className="flex justify-evenly">
-        //     <iframe
-        //       src={`https://witeboard.com/${whiteboardID}`}
-        //       height="500px"
-        //       width="500px"
-        //     />
-        //     <div className="flex justify-center items-center flex-col">
-        //       <h1>Chat box</h1>
-        //       <div className="border-2 border-gray-300 p-6 rounded-md shadow-md max-w-md w-full">
-        //         <div className="overflow-auto h-64 mb-4 border-b-2 border-gray-300">
-        //           {/* Messages will go here */}
-        //           <p className="text-gray-600">
-        //             {chat} - {from}
-        //           </p>
-        //           <p className="text-gray-600">User2: Hi, how are you?</p>
-        //         </div>
-        //         <div className="mt-4">
-        //           <textarea
-        //             className="w-full p-2 border-2 border-gray-300 rounded-md"
-        //             placeholder="Type your message here..."
-        //           ></textarea>
-        //           <button
-        //             className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2"
-        //             onClick={handleSubmitMessage}
-        //           >
-        //             Send
-        //           </button>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   </div>
-        // )
-      }
     </div>
   );
 }
