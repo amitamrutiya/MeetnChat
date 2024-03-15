@@ -15,7 +15,7 @@ const IconCardButton = () => {
   const { isLoading, user } = useUser();
   return functions.map((f, i) => (
     <Link key={i} href={user ? `/room/${v4()}` : "/api/auth/login"} passHref>
-      <HoverCard>
+       <HoverCard>
         <HoverCardTrigger>
           {" "}
           <div className="text-center mx-5 my-5 px-2 flex h-[250px] w-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-foreground shadow-md hover:bg-hover sm:my-0">

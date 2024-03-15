@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 const roomId = v4();
 export const GET = handleAuth({
   login: handleLogin({
-    returnTo: `/room/${roomId}`,
+    returnTo: `/`,
   }),
 });
 
