@@ -1,5 +1,17 @@
 import { IncomingCall } from "@/type";
-import React from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import React, { useState } from "react";
 
 function IncomingCallDialog(props: {
   incommingCallData: IncomingCall;
@@ -11,28 +23,42 @@ function IncomingCallDialog(props: {
     handleAcceptIncommingCall,
     handleRejectIncommingCall,
   } = props;
+  const [open, setOpen] = useState(true);
   return (
-    <div className="fixed bottom-0 right-0 p-5">
-      <div className="flex items-center justify-center">
-        <h6 className="font-sans text-slate-400">
-          {incommingCallData.user.name} is calling you
-        </h6>
-      </div>
-      <div className="flex items-center justify-center">
-        <button
-          onClick={handleAcceptIncommingCall}
-          className="bg-green-500 p-2 rounded-md m-2"
-        >
-          Accept
-        </button>
-        <button
-          onClick={handleRejectIncommingCall}
-          className="bg-red-500 p-2 rounded-md m-2"
-        >
-          Reject
-        </button>
-      </div>
-    </div>
+    <>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger></AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {incommingCallData.user.name} is calling you
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              If you accept, you will be connected to a video call with them.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                handleAcceptIncommingCall();
+                setOpen(false);
+              }}
+            >
+              Accept
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive"
+              onClick={() => {
+                handleRejectIncommingCall();
+                setOpen(false);
+              }}
+            >
+              Reject
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

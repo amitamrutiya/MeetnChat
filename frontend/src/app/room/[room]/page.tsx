@@ -155,6 +155,7 @@ export default function Room() {
         setRemoteSocketId(from);
       }
     }
+    setIncommingCallData(undefined);
   }, [incommingCallData]);
 
   const handleRejectIncommingCall = useCallback(
@@ -180,7 +181,6 @@ export default function Room() {
       socketId: from,
     });
     setRemoteSocketId(from);
-    setIncommingCallData(undefined);
   }, []);
 
   const handleNegosiation = useCallback(
