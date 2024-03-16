@@ -29,7 +29,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
                   url={userStream}
                   muted={false}
                   playing
-                  controls={false}
+                  controls={true}
                   className="opacity-100 group-hover:opacity-50"
                 />
                 {pinVideoObj && pinVideoObj.id == userStream.id ? (

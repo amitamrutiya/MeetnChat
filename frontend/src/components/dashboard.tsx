@@ -1,8 +1,9 @@
+"use client";
+
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiFillPushpin } from "react-icons/ai";
-import WhiteBoard from "./Whiteboard";
 import AudioVideoBar from "./AudioVideoBar";
 // import Chat from "./Chat";
 import ScreenShare from "./ScreenShare";
@@ -81,7 +82,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
                 height="100%"
                 url={pinVideo}
                 playing
-                controls={false}
+                controls={true}
                 pip
                 muted={pinVideo.id === userStream?.id}
               />

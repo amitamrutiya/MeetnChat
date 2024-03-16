@@ -17,9 +17,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function JoinRoomForm() {
   const { user } = useUser();
+  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -28,12 +30,10 @@ function JoinRoomForm() {
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    router.push(`/room/${values.roomId}`);
   }
+
   return (
     <div className="mx-10 my-[70%]">
       {user ? (

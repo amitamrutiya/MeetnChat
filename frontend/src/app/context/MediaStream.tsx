@@ -5,7 +5,7 @@ import React from "react";
 export interface ProviderProps {
   remoteStreams: MediaStream[];
   userStream: MediaStream | null;
-  setUserMediaStream?: (stream: MediaStream) => void;
+  setUserMediaStream?: (stream: MediaStream | null) => void;
   setRemoteMediaStream?: (stream: MediaStream[]) => void;
 }
 

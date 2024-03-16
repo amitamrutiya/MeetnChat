@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import ReactPlayer from "react-player";
 import { Socket } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { SocketContext } from "@/app/context/SocketContext";
@@ -17,12 +16,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import peerService from "@/service/peer";
 import Dashboard from "@/components/Dashboard";
 import Navbar from "@/components/Navbar";
+import IncomingCallDialog from "@/components/IncomingCallDialog";
+import UsersList from "@/components/UsersList";
+import { Button } from "@/components/ui/button";
+import ReactPlayer from "react-player";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
   const [whiteboardID, setWhiteboardID] = React.useState<string | null>(null);
-  const [chat, setChat] = useState("");
-  const [from, setfrom] = useState("");
+  const [audio, setaudio] = useState(false);
+  const [video, setvideo] = useState(false);
 
   const {
     setUserMediaStream,
@@ -31,12 +34,9 @@ export default function Room() {
     userStream,
   } = React.useContext(MediaStreamContext) as ProviderProps;
 
-  const {
-    setUserMediaScreenStream,
-    userScreenStream,
-    remoteScreenStream,
-    setScreenRemoteMediaStream,
-  } = React.useContext(MediaScreenStreamContext) as ProviderScreenProps;
+  const { setUserMediaScreenStream, userScreenStream } = React.useContext(
+    MediaScreenStreamContext
+  ) as ProviderScreenProps;
 
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = React.useState<
@@ -86,13 +86,24 @@ export default function Room() {
     });
 
     if (stream && setUserMediaStream) setUserMediaStream(stream);
-
+    console.log("User media stream", userStream?.getTracks());
     for (const track of stream.getTracks()) {
       if (peerService.peer) {
         peerService.peer?.addTrack(track, stream);
       }
     }
   }, []);
+
+  const handleStopAudioVideoStream = React.useCallback(async () => {
+    if (userStream) {
+      const tracks = userStream.getTracks();
+      tracks.forEach((track) => track.stop());
+
+      if (setUserMediaStream) {
+        setUserMediaStream(null);
+      }
+    }
+  }, [userStream, setUserMediaStream]);
 
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
@@ -162,6 +173,7 @@ export default function Room() {
       socketId: from,
     });
     setRemoteSocketId(from);
+    setIncommingCallData(undefined);
   }, []);
 
   const handleNegosiation = useCallback(
@@ -224,12 +236,6 @@ export default function Room() {
     }
   }, []);
 
-  const handleChatMessage = React.useCallback((data: any): void => {
-    console.log("Chat message", data);
-    setChat(data.message);
-    setfrom(data.user.name);
-  }, []);
-
   useEffect(() => {
     peerService.remoteSocketId = remoteSocketId;
   }, [remoteSocketId]);
@@ -268,7 +274,6 @@ export default function Room() {
     socket.on("peer:negotiate", handleRequiredPeerNegotiate);
     socket.on("peer:negosiate:result", handleRequiredPeerNegotiateFinalResult);
     socket.on("whiteboard:id", handleSetWhiteboardID);
-    socket.on("chat:message", handleChatMessage);
 
     return () => {
       socket.off("refresh:user-list", handleRefreshUserList);
@@ -280,7 +285,6 @@ export default function Room() {
         handleRequiredPeerNegotiateFinalResult
       );
       socket.off("whiteboard:id", handleSetWhiteboardID);
-      socket.off("chat:message", handleChatMessage);
     };
   }, []);
 
@@ -289,7 +293,7 @@ export default function Room() {
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
       {remoteSocketId && (
         <Dashboard
-          startAudioVideoStreams={handleStartAudioVideoStream}
+          startAudioVideoStreams={() => handleStartAudioVideoStream}
           startScreenShareStreams={handleStartScreenShareStream}
           stopScreenShareStreams={handleStopScreenShareStream}
           remoteSocketId={remoteSocketId}
@@ -297,96 +301,28 @@ export default function Room() {
         />
       )}
 
-      {
-        // userStream && <button onClick={sendStreams}>Send Stream</button>
-      }
-      {
-        // userStream && (
-        //   <>
-        //     <h1>My Stream</h1>
-        //     <ReactPlayer
-        //       playing
-        //       muted
-        //       height="100px"
-        //       width="200px"
-        //       url={userStream}
-        //     />
-        //   </>
-        // )
-      }
-      {
-        // remoteStreams && (
-        //   <>
-        //     <h1>Remote Stream</h1>
-        //     <ReactPlayer
-        //       playing
-        //       muted
-        //       height="100px"
-        //       width="200px"
-        //       url={remoteStreams[0]}
-        //     />
-        //   </>
-        // )
-      }
       {!remoteSocketId && (
-        <div className="flex min-h-[80vh] w-full items-center justify-center text-white">
-          {users &&
-            users
-              .filter(
-                (e) => e.name !== `${currentUser?.name} - ${currentUser?.email}`
-              )
-              .map((user, index) => (
-                <div
-                  key={`${user.name}-${index}`}
-                  onClick={() => handleClickUser(user)}
-                  className={
-                    calledToUserId && calledToUserId === user.socketId
-                      ? `border-collapse rounded-3xl border-0 border-dashed border-sky-400 motion-safe:animate-bounce`
-                      : ""
-                  }
-                >
-                  <Avatar>
-                    <AvatarImage src={user.picture ?? ""} />
-                    <AvatarFallback>{user.name}</AvatarFallback>
-                  </Avatar>
-                </div>
-              ))}
-          {(!users ||
-            users.filter(
-              (e) => e.name !== `${currentUser?.name} - ${currentUser?.email}`
-            ).length <= 0) && (
-            <h2 className="font-sans text-slate-400 opacity-70 motion-safe:animate-bounce">
-              Join by opening this on other tab
-            </h2>
-          )}
-        </div>
+        <UsersList
+          users={users}
+          roomId={roomId}
+          currentUser={currentUser}
+          calledToUserId={calledToUserId}
+          handleClickUser={handleClickUser}
+        />
       )}
 
       {incommingCallData && (
-        <div className="fixed bottom-0 right-0 p-5">
-          <div className="flex items-center justify-center">
-            <h6 className="font-sans text-slate-400">
-              {incommingCallData.user.name} is calling you
-            </h6>
-          </div>
-          <div className="flex items-center justify-center">
-            <button
-              onClick={handleAcceptIncommingCall}
-              className="bg-green-500 p-2 rounded-md m-2"
-            >
-              Accept
-            </button>
-            <button
-              onClick={handleRejectIncommingCall}
-              className="bg-red-500 p-2 rounded-md m-2"
-            >
-              Reject
-            </button>
-          </div>
-        </div>
+        <IncomingCallDialog
+          incommingCallData={incommingCallData}
+          handleAcceptIncommingCall={handleAcceptIncommingCall}
+          handleRejectIncommingCall={handleRejectIncommingCall}
+        />
       )}
+
+      {}
+
       {!remoteSocketId && (
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <h6 className="font-sans text-slate-400">
             Tip: Click on user to make call
           </h6>
