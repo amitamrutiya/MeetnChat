@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/app/context/ThemeProvider";
 import { SocketProvider } from "@/app/context/SocketContext";
 import { MediaStreamProvider } from "@/app/context/MediaStream";
 import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";
+import { Toaster } from "@/components/ui/toaster";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -33,6 +35,7 @@ export default function RootLayout({
                   disableTransitionOnChange
                 >
                   {children}
+                  <Toaster />
                 </ThemeProvider>
               </body>
             </MediaScreenStreamProvider>

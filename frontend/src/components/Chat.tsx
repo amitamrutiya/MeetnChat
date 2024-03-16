@@ -121,7 +121,6 @@ const Chat: React.FC<ChatProps> = (props) => {
       if (e.key === "Enter") {
         if (inputChatMessage && inputChatMessage.trim() !== "") {
           const message: Message = { message: inputChatMessage };
-          console.log("Emit to", remoteSocketId, message);
           socket.emit("chat:message", { to: remoteSocketId, message });
           setInputChatMessage("");
         }

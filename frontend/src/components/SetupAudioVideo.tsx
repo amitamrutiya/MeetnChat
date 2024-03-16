@@ -16,7 +16,10 @@ import {
 
 function SetupAudioVideo(props: {
   userStream: any;
-  handleStartAudioVideoStream: () => void;
+  handleStartAudioVideoStream: (
+    audioDeviceId?: string,
+    videoDeviceId?: string
+  ) => void;
   handleStopAudioVideoStream: () => void;
 }) {
   const {
@@ -38,19 +41,56 @@ function SetupAudioVideo(props: {
     });
   }, []);
 
-  const audioDevices = useMemo(
-    () => devices.filter((device) => device.kind === "audioinput"),
-    [devices]
-  );
-  const videoDevices = useMemo(
-    () => devices.filter((device) => device.kind === "videoinput"),
-    [devices]
-  );
+  const audioDevices = useMemo(() => {
+    const uniqueAudioDevices = [];
+    const groupIdSet = new Set();
+
+    for (const device of devices) {
+      if (device.kind === "audioinput" && !groupIdSet.has(device.groupId)) {
+        uniqueAudioDevices.push(device);
+        groupIdSet.add(device.groupId);
+      }
+    }
+
+    return uniqueAudioDevices;
+  }, [devices]);
+
+  const videoDevices = useMemo(() => {
+    const uniqueVideoDevices = [];
+    const groupIdSet = new Set();
+
+    for (const device of devices) {
+      if (device.kind === "videoinput" && !groupIdSet.has(device.groupId)) {
+        uniqueVideoDevices.push(device);
+        groupIdSet.add(device.groupId);
+      }
+    }
+
+    return uniqueVideoDevices;
+  }, [devices]);
 
   useEffect(() => {
-    setSelectedAudioDevice(audioDevices[0]?.label);
-    setSelectedVideoDevice(videoDevices[0]?.label);
+    if (userStream) {
+      const audioTrack = userStream.getAudioTracks()[0];
+      const videoTrack = userStream.getVideoTracks()[0];
+      setSelectedAudioDevice(audioTrack.getSettings().deviceId);
+      setSelectedVideoDevice(videoTrack.getSettings().deviceId);
+    } else {
+      setSelectedAudioDevice(audioDevices[0]?.deviceId);
+      setSelectedVideoDevice(videoDevices[0]?.deviceId);
+    }
   }, [audioDevices, videoDevices]);
+
+  useEffect(() => {
+    if (userStream) {
+      handleStopAudioVideoStream();
+      handleStartAudioVideoStream(selectedAudioDevice, selectedVideoDevice);
+    }
+  }, [selectedAudioDevice, selectedVideoDevice]);
+
+  useEffect(() => {
+    if (!audio && !video) handleStopAudioVideoStream();
+  }, [audio, video]);
 
   return (
     <div className="flex flex-col w-full items-center justify-center">
@@ -70,25 +110,23 @@ function SetupAudioVideo(props: {
       <div className="my-5" />
 
       <div>
-        {video && (
-          <Button
-            className={audio ? "bg-primary" : "bg-foreground"}
-            onClick={() => {
-              setAudio(!audio);
-              if (!userStream) {
-                handleStartAudioVideoStream();
-                return;
-              }
-              const audioTrack = userStream?.getTracks()[0];
-              if (audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-              }
-              console.log("Audio track", audioTrack);
-            }}
-          >
-            {audio ? <MicIcon /> : <MicOffIcon />}
-          </Button>
-        )}
+        <Button
+          className={audio ? "bg-primary" : "bg-foreground"}
+          onClick={() => {
+            setAudio(!audio);
+            if (!userStream) {
+              handleStartAudioVideoStream();
+              return;
+            }
+            const audioTrack = userStream?.getTracks()[0];
+            if (audioTrack) {
+              audioTrack.enabled = !audioTrack.enabled;
+            }
+          }}
+        >
+          {audio ? <MicIcon /> : <MicOffIcon />}
+        </Button>
+
         <Button
           className={video ? "bg-primary ml-5" : "bg-foreground ml-5"}
           onClick={() => {
@@ -100,16 +138,9 @@ function SetupAudioVideo(props: {
             }
             setVideo(!video);
             const videoTrack = userStream?.getTracks()[1];
-            const audioTrack = userStream?.getTracks()[0];
-            if (videoTrack.enabled) {
-              videoTrack.enabled = false;
-              audioTrack.enabled = false;
-              setAudio(false);
-              handleStopAudioVideoStream();
-            } else {
-              videoTrack.enabled = true;
+            if (videoTrack) {
+              videoTrack.enabled = !videoTrack.enabled;
             }
-            console.log("Video track", videoTrack);
           }}
         >
           {video ? <VideoIcon /> : <VideoOffIcon />}
@@ -130,7 +161,7 @@ function SetupAudioVideo(props: {
               {audioDevices.map((device) => (
                 <DropdownMenuRadioItem
                   key={device.deviceId}
-                  value={device.label}
+                  value={device.deviceId}
                 >
                   {device.label}
                 </DropdownMenuRadioItem>
@@ -153,7 +184,7 @@ function SetupAudioVideo(props: {
               {videoDevices.map((device) => (
                 <DropdownMenuRadioItem
                   key={device.deviceId}
-                  value={device.label}
+                  value={device.deviceId}
                 >
                   {device.label}
                 </DropdownMenuRadioItem>

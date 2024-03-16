@@ -13,7 +13,6 @@ function UsersList(props: any) {
               e.name !== `${currentUser?.name} - ${currentUser?.email}`
           )
           .filter((e: User) => {
-            console.log(e.roomId, roomId);
             return e.roomId === roomId;
           })
           .map((user: User, index: number) => (

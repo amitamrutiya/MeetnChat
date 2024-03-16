@@ -12,40 +12,37 @@ import {
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { serverInstance } from "@/app/api/serverInstance";
 import { IncomingCall, User } from "@/type";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import peerService from "@/service/peer";
 import Dashboard from "@/components/Dashboard";
 import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import { Button } from "@/components/ui/button";
-import ReactPlayer from "react-player";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
+import { toast, useToast } from "@/components/ui/use-toast";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
-  const [whiteboardID, setWhiteboardID] = React.useState<string | null>(null);
+  const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
 
   const {
     setUserMediaStream,
     setRemoteMediaStream,
     remoteStreams,
     userStream,
-  } = React.useContext(MediaStreamContext) as ProviderProps;
+  } = useContext(MediaStreamContext) as ProviderProps;
 
-  const { setUserMediaScreenStream, userScreenStream } = React.useContext(
+  const { setUserMediaScreenStream, userScreenStream } = useContext(
     MediaScreenStreamContext
   ) as ProviderScreenProps;
 
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
-  const [incommingCallData, setIncommingCallData] = React.useState<
+  const [incommingCallData, setIncommingCallData] = useState<
     IncomingCall | undefined
   >();
-  const [remoteSocketId, setRemoteSocketId] = React.useState<
-    string | undefined
-  >();
+  const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
 
-  const [remoteUser, setRemoteUser] = React.useState<undefined | null | User>();
+  const [remoteUser, setRemoteUser] = useState<undefined | null | User>();
 
   const currentUser = useUser().user;
   const socket = useContext(SocketContext) as Socket;
@@ -78,21 +75,33 @@ export default function Room() {
     }
   }, [currentUser]);
 
-  const handleStartAudioVideoStream = React.useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
+  const handleStartAudioVideoStream = useCallback(
+    async (
+      audioDeviceId?: string,
+      videoDeviceId?: string,
+      audio?: boolean,
+      video?: boolean
+    ) => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          deviceId: audioDeviceId ? { exact: audioDeviceId } : undefined,
+        },
+        video: {
+          deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined,
+        },
+      });
 
-    if (stream && setUserMediaStream) setUserMediaStream(stream);
-    for (const track of stream.getTracks()) {
-      if (peerService.peer) {
-        peerService.peer?.addTrack(track, stream);
+      if (stream && setUserMediaStream) setUserMediaStream(stream);
+      for (const track of stream.getTracks()) {
+        if (peerService.peer) {
+          peerService.peer?.addTrack(track, stream);
+        }
       }
-    }
-  }, []);
+    },
+    []
+  );
 
-  const handleStopAudioVideoStream = React.useCallback(async () => {
+  const handleStopAudioVideoStream = useCallback(async () => {
     if (userStream) {
       const tracks = userStream.getTracks();
       tracks.forEach((track) => track.stop());
@@ -206,7 +215,7 @@ export default function Room() {
     []
   );
 
-  const handleStartScreenShareStream = React.useCallback(async () => {
+  const handleStartScreenShareStream = useCallback(async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({});
 
     if (stream && setUserMediaScreenStream) setUserMediaScreenStream(stream);
@@ -217,7 +226,7 @@ export default function Room() {
     }
   }, []);
 
-  const handleStopScreenShareStream = React.useCallback(async () => {
+  const handleStopScreenShareStream = useCallback(async () => {
     if (userScreenStream) {
       const tracks = userScreenStream.getTracks();
       tracks.forEach((track) => track.stop());
@@ -228,7 +237,7 @@ export default function Room() {
     }
   }, [userScreenStream, setUserMediaScreenStream]);
 
-  const handleSetWhiteboardID = React.useCallback((payload: any) => {
+  const handleSetWhiteboardID = useCallback((payload: any) => {
     if (payload.whiteboardID) {
       setWhiteboardID(payload.whiteboardID);
     }
@@ -313,7 +322,22 @@ export default function Room() {
             handleStartAudioVideoStream={handleStartAudioVideoStream}
             handleStopAudioVideoStream={handleStopAudioVideoStream}
           />
-          <div className="flex justify-center mt-5">
+          {/* // copy button/ */}
+
+          <div className="flex flex-col items-center justify-center mt-5 space-y-5">
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                  toast({
+                    title: "Room link copied",
+                    variant: "default",
+                    description: "Share with your friend to join ",
+                  });
+                });
+              }}
+            >
+              Copy room link
+            </Button>
             <h6 className="font-sans text-slate-400">
               Tip: Click on user to make call
             </h6>
