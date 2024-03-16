@@ -1,4 +1,10 @@
-import { UserRound, UsersRound, Video, MessageCircleMore, MonitorPlay } from "lucide-react";
+import {
+  UserRound,
+  UsersRound,
+  Video,
+  MessageCircleMore,
+  MonitorPlay,
+} from "lucide-react";
 
 const functions = [
   {
@@ -48,6 +54,14 @@ const functions = [
       "Participate in group chats with multiple users for collaborative discussions or coordination. Enjoy real-time messaging with the added benefit of engaging with a larger community simultaneously.",
     icon1: UsersRound,
     icon2: MessageCircleMore,
+  },
+  {
+    title: "Random Video Call",
+    subtitle: "Connect with Random Users",
+    description:
+      "Connect with random users for spontaneous video calls. Experience the excitement of meeting new people while engaging in real-time video conversations.",
+    icon1: UserRound,
+    icon2: Video,
   },
 ];
 

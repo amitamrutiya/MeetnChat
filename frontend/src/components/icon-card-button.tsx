@@ -18,7 +18,7 @@ const IconCardButton = () => {
       <HoverCard>
         <HoverCardTrigger>
           {" "}
-          <div className="text-center mx-5 my-5 px-2 flex h-[250px] w-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-foreground shadow-md hover:bg-hover sm:my-0">
+          <div className="text-center mx-5 my-5 px-2 py-2 flex h-[250px] w-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-foreground shadow-md hover:bg-hover sm:my-0">
             <div className="text-center">
               <div className="flex justify-center pb-2">
                 <span className="text-primary pr-4">

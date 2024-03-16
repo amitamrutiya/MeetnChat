@@ -35,10 +35,13 @@ function JoinRoomForm() {
   }
 
   return (
-    <div className="mx-10 my-[70%]">
+    <div className="sm:mx-10 sm:my-[70%] w-full flex items-center justify-center mt-10">
       {user ? (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="sm:w-48 space-y-7 w-full pr-5"
+          >
             <FormField
               control={form.control}
               name="roomId"
