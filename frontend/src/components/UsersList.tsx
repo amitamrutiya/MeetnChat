@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 function UsersList(props: any) {
   const { users, roomId, currentUser, calledToUserId, handleClickUser } = props;
   return (
-    <div className="flex min-h-[80vh] w-full items-center justify-center text-white">
+    <div className="flex w-full items-center justify-center text-white">
       {users &&
         users
           .filter(

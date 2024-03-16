@@ -20,12 +20,11 @@ import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import { Button } from "@/components/ui/button";
 import ReactPlayer from "react-player";
+import SetupAudioVideo from "@/components/SetupAudioVideo";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
   const [whiteboardID, setWhiteboardID] = React.useState<string | null>(null);
-  const [audio, setaudio] = useState(false);
-  const [video, setvideo] = useState(false);
 
   const {
     setUserMediaStream,
@@ -86,7 +85,6 @@ export default function Room() {
     });
 
     if (stream && setUserMediaStream) setUserMediaStream(stream);
-    console.log("User media stream", userStream?.getTracks());
     for (const track of stream.getTracks()) {
       if (peerService.peer) {
         peerService.peer?.addTrack(track, stream);
@@ -289,7 +287,7 @@ export default function Room() {
   }, []);
 
   return (
-    <div className="min-h-screen justify-center bg-[#18181b] p-5">
+    <div className="flex h-dvh flex-col justify-between  p-5">
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
       {remoteSocketId && (
         <Dashboard
@@ -302,13 +300,25 @@ export default function Room() {
       )}
 
       {!remoteSocketId && (
-        <UsersList
-          users={users}
-          roomId={roomId}
-          currentUser={currentUser}
-          calledToUserId={calledToUserId}
-          handleClickUser={handleClickUser}
-        />
+        <>
+          <UsersList
+            users={users}
+            roomId={roomId}
+            currentUser={currentUser}
+            calledToUserId={calledToUserId}
+            handleClickUser={handleClickUser}
+          />
+          <SetupAudioVideo
+            userStream={userStream}
+            handleStartAudioVideoStream={handleStartAudioVideoStream}
+            handleStopAudioVideoStream={handleStopAudioVideoStream}
+          />
+          <div className="flex justify-center mt-5">
+            <h6 className="font-sans text-slate-400">
+              Tip: Click on user to make call
+            </h6>
+          </div>
+        </>
       )}
 
       {incommingCallData && (
@@ -317,16 +327,6 @@ export default function Room() {
           handleAcceptIncommingCall={handleAcceptIncommingCall}
           handleRejectIncommingCall={handleRejectIncommingCall}
         />
-      )}
-
-      {}
-
-      {!remoteSocketId && (
-        <div className="flex flex-col items-center justify-center">
-          <h6 className="font-sans text-slate-400">
-            Tip: Click on user to make call
-          </h6>
-        </div>
       )}
     </div>
   );

@@ -19,9 +19,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 
   return (
     <nav className="flex items-center justify-between">
-      <header className="flex items-center text-xl align-middle font-sans font-bold text-white antialiased">
+      <header className="flex items-center text-xl align-middle font-sans font-bold antialiased">
         <AudioLines className="mr-2 inline" />
-        ConnectMe<span className="text-sky-400/100">P2P</span>
+        Connect <span className="text-sky-400/100"> Friends</span>
       </header>
       {currentUser && remoteSocketId && (
         <div>
@@ -56,7 +56,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               width={40}
             />
 
-            <Button onClick={() => router.push("/api/auth/logout")}>
+            <Button
+              className="ml-5"
+              onClick={() => router.push("/api/auth/logout")}
+            >
               LogOut
             </Button>
           </div>
