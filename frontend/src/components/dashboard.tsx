@@ -5,25 +5,23 @@ import ReactPlayer from "react-player";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiFillPushpin } from "react-icons/ai";
 import AudioVideoBar from "./AudioVideoBar";
-// import Chat from "./Chat";
-import ScreenShare from "./MeetControllerBar";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import {
   MediaScreenStreamContext,
   ProviderScreenProps,
 } from "@/app/context/ScreenStream";
 import Chat from "./Chat";
+import MeetControllerBar from "./MeetControllerBar";
+import { User } from "@/type";
 
 interface DashboardProps {
   remoteSocketId?: string;
   whiteboardID?: string | null;
+  remoteUser?: User;
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
-  const {
-    remoteSocketId,
-    whiteboardID,
-  } = props;
+  const { remoteSocketId, whiteboardID, remoteUser } = props;
 
   const { userStream, remoteStreams } = React.useContext(
     MediaStreamContext
@@ -105,9 +103,10 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
               pinVideoObj={pinVideo}
               pinVideo={handlePinVideo}
               unPinVideo={handleUnPinVideo}
+              remoteUser={remoteUser}
             />
           </div>
-          <ScreenShare/>
+          <MeetControllerBar />
         </div>
       </div>
       <div className="absolute bottom-5 right-5">

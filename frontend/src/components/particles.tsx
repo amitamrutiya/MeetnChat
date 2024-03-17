@@ -15,8 +15,8 @@ export default function ParticlesComponent(props: {
         id={props.id}
         url={
           theme == "light"
-            ? "http://localhost:3000/particlesjs-config-light.json"
-            : "http://localhost:3000/particlesjs-config-dark.json"
+            ? "/particlesjs-config-light.json"
+            : "/particlesjs-config-dark.json"
         }
       />
     )

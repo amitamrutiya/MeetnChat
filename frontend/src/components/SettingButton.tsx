@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { SettingsIcon } from "lucide-react";
 import {
@@ -11,29 +11,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   AudioVideoDevicesContext,
   AudioVideoDevicesProps,
 } from "@/app/context/AudioVideoDevices";
 import AudioVideoDeviceDropDown from "./AudioVideoDeviceDropDown";
+import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
+import { useStartUserStream } from "@/app/hooks/useStartStream";
+import { useStopUserStream } from "@/app/hooks/useStopStream";
 
 function SettingButton() {
   const {
-    audioDevices,
-    videoDevices,
     selectedAudioDevice,
     selectedVideoDevice,
-    setSelectedAudioDevice,
-    setSelectedVideoDevice,
   } = useContext(AudioVideoDevicesContext) as AudioVideoDevicesProps;
+
+  const { userStream } = useContext(MediaStreamContext) as ProviderProps;
+  const { handleStartAudioVideoStream } = useStartUserStream();
+  const { handleStopAudioVideoStream } = useStopUserStream();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -43,9 +38,9 @@ function SettingButton() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Choose Your Device</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you are done.
+            Select the device you want to use for audio and video.
           </DialogDescription>
         </DialogHeader>
         <AudioVideoDeviceDropDown />

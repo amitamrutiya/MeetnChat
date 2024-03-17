@@ -17,7 +17,7 @@ import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
-import Dashboard from "@/components/dashboard";
+import Dashboard from "@/components/Dashboard";
 import { ShareButton } from "@/components/ShareButton";
 
 export default function Room() {
@@ -41,7 +41,7 @@ export default function Room() {
   >();
   const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
 
-  const [remoteUser, setRemoteUser] = useState<undefined | null | User>();
+  const [remoteUser, setRemoteUser] = useState<undefined | User>();
 
   const currentUser = useUser().user;
   const socket = useContext(SocketContext) as Socket;
@@ -73,7 +73,6 @@ export default function Room() {
       console.error("Error joining room", error);
     }
   }, [currentUser]);
-
 
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
@@ -239,7 +238,8 @@ export default function Room() {
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
-      {remoteSocketId && (
+      <Dashboard remoteSocketId={"fsadfsadfsdf"} whiteboardID={"fasdf"} remoteUser={remoteUser} />
+      {/* {remoteSocketId && (
         <Dashboard
           remoteSocketId={remoteSocketId}
           whiteboardID={whiteboardID}
@@ -272,7 +272,7 @@ export default function Room() {
           handleAcceptIncommingCall={handleAcceptIncommingCall}
           handleRejectIncommingCall={handleRejectIncommingCall}
         />
-      )}
+      )} */}
     </div>
   );
 }

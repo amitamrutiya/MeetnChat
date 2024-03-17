@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   LucideScreenShare,
   LucideScreenShareOff,
@@ -31,7 +31,7 @@ import SettingButton from "./SettingButton";
 import { useStartUserStream } from "@/app/hooks/useStartStream";
 import { useStopUserStream } from "@/app/hooks/useStopStream";
 
-const ScreenShare = () => {
+const MeetControllerBar = () => {
   const { audio, video, setAudio, setVideo } = React.useContext(
     AudioVideoStreamContext
   ) as AudioVideoStreamProps;
@@ -45,8 +45,16 @@ const ScreenShare = () => {
 
   const { handleStartAudioVideoStream, handleStartScreenShareStream } =
     useStartUserStream();
-  const { handleStopScreenShareStream } =
+  const { handleStopScreenShareStream, handleStopAudioVideoStream } =
     useStopUserStream();
+
+  useEffect(() => {
+    if (!audio && !video) {
+      handleStopAudioVideoStream();
+    }
+
+    return () => {};
+  }, [audio, handleStopAudioVideoStream, video]);
 
   return (
     <div>
@@ -120,7 +128,9 @@ const ScreenShare = () => {
                     userScreenStream ? "bg-primary ml-5" : "bg-foreground ml-5"
                   }
                   onClick={
-                    userScreenStream ? handleStopScreenShareStream : handleStartScreenShareStream
+                    userScreenStream
+                      ? handleStopScreenShareStream
+                      : handleStartScreenShareStream
                   }
                 >
                   {userScreenStream ? (
@@ -184,4 +194,4 @@ const ScreenShare = () => {
   );
 };
 
-export default ScreenShare;
+export default MeetControllerBar;

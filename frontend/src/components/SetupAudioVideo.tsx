@@ -94,19 +94,37 @@ function SetupAudioVideo() {
     if (!audio && !video) handleStopAudioVideoStream();
   }, [audio, video]);
 
+  <style jsx>{`
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  `}</style>;
+
   return (
     <div className="flex flex-col w-full items-center justify-center">
       <div className="flex justify-center items-center border-8 border-hover p-0 m-0 rounded-xl h-[380px] w-[500px] relative">
         {userStream ? (
           <ReactPlayer url={userStream} playing pip />
+        ) : user ? (
+            <Image
+              className="rounded-[8px]"
+              layout="fill"
+              objectFit="cover"
+              src={user.picture as string}
+              alt="Picture of the User"
+            />
         ) : (
-          <Image
-            src={user?.picture || "/user.png"}
-            alt="Picture of the User"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-[8px]"
-          />
+          <div className="bg-foreground h-[100%] w-[100%] flex justify-center items-center">
+            <Image
+              className="rounded-[8px]"
+              height={350}
+              width={350}
+              src={"/user.png"}
+              alt="Picture of the User"
+            />
+          </div>
         )}
       </div>
       <div className="my-5" />

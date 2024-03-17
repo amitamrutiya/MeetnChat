@@ -1,5 +1,6 @@
-import { CopyIcon } from "@radix-ui/react-icons";
+"use client";
 
+import { CopyIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
