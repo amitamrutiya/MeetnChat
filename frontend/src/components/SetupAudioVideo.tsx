@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "./ui/button";
 import { MicOffIcon, MicIcon, VideoIcon, VideoOffIcon } from "lucide-react";
@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AudioVideoStreamContext, AudioVideoStreamProps } from "@/app/context/AudioVideoStream";
 
 function SetupAudioVideo(props: {
   userStream: any;
@@ -28,8 +29,10 @@ function SetupAudioVideo(props: {
     handleStopAudioVideoStream,
   } = props;
 
-  const [audio, setAudio] = useState(false);
-  const [video, setVideo] = useState(false);
+  const { audio, video, setAudio, setVideo } = React.useContext(
+    AudioVideoStreamContext
+  ) as AudioVideoStreamProps;
+
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedAudioDevice, setSelectedAudioDevice] = useState("");
   const [selectedVideoDevice, setSelectedVideoDevice] = useState("");

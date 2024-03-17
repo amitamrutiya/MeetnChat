@@ -13,13 +13,13 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { serverInstance } from "@/app/api/serverInstance";
 import { IncomingCall, User } from "@/type";
 import peerService from "@/service/peer";
-import Dashboard from "@/components/Dashboard";
 import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import { Button } from "@/components/ui/button";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
 import { toast, useToast } from "@/components/ui/use-toast";
+import Dashboard from "@/components/dashboard";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
@@ -300,9 +300,10 @@ export default function Room() {
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
       {remoteSocketId && (
         <Dashboard
-          startAudioVideoStreams={() => handleStartAudioVideoStream}
+          startAudioVideoStreams={handleStartAudioVideoStream}
           startScreenShareStreams={handleStartScreenShareStream}
           stopScreenShareStreams={handleStopScreenShareStream}
+          stopAudioVideoStreams={handleStopAudioVideoStream}
           remoteSocketId={remoteSocketId}
           whiteboardID={whiteboardID}
         />
@@ -322,8 +323,6 @@ export default function Room() {
             handleStartAudioVideoStream={handleStartAudioVideoStream}
             handleStopAudioVideoStream={handleStopAudioVideoStream}
           />
-          {/* // copy button/ */}
-
           <div className="flex flex-col items-center justify-center mt-5 space-y-5">
             <Button
               onClick={() => {

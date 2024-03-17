@@ -15,9 +15,13 @@ import {
 import Chat from "./Chat";
 
 interface DashboardProps {
-  startAudioVideoStreams?: () => void;
+  startAudioVideoStreams: (
+    audioDeviceId?: string,
+    videoDeviceId?: string
+  ) => void;
   startScreenShareStreams?: () => void;
   stopScreenShareStreams?: () => void;
+  stopAudioVideoStreams: () => void;
   remoteSocketId?: string;
   whiteboardID?: string | null;
 }
@@ -27,6 +31,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     startAudioVideoStreams,
     startScreenShareStreams,
     stopScreenShareStreams,
+    stopAudioVideoStreams,
     remoteSocketId,
     whiteboardID,
   } = props;
@@ -87,7 +92,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
                 muted={pinVideo.id === userStream?.id}
               />
               <button
-                className="absolute top-[50%] left-0 right-0 hidden group-hover:block"
+                className="absolute top-[50%] left-0 right-0 hid  den group-hover:block"
                 onClick={handleUnPinVideo}
               >
                 <AiFillPushpin
@@ -117,6 +122,8 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
           <ScreenShare
             onStartScreenShare={startScreenShareStreams}
             onStopScreenShare={stopScreenShareStreams}
+            onStartAudioVideoStream={startAudioVideoStreams}
+            onStopAudioVideoStream={stopAudioVideoStreams}
           />
         </div>
       </div>

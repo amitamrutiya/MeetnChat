@@ -17,7 +17,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
   ) as ProviderProps;
 
   return (
-    <div className="h-full w-full rounded-md bg-transparent">
+    <div className="h-auto w-full rounded-md bg-transparent">
       <div className="video-player-container w-full rounded-md">
         {userStream ? (
           <>
@@ -47,23 +47,14 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
                     <Button className="m-auto" title="Pin video" />
                   </button>
                 )}
+                <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">
+                  {"You"}
+                </span>
               </div>
             )}
           </>
         ) : (
-          <div
-            onClick={onStartAudioVideo}
-            className="flex h-48 w-full cursor-pointer items-center justify-center rounded-md bg-slate-500"
-          >
-            <div className="text-center text-lg">
-              <Button className="mx-auto" />
-              <div className="my-5" />
-              <div>
-                <h3>Your video is turned off.</h3>
-                <caption about="caption">Click to turn on</caption>
-              </div>
-            </div>
-          </div>
+          <div></div>
         )}
       </div>
 

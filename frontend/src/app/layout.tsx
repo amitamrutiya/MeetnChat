@@ -8,6 +8,7 @@ import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
+import { AudioVideoStreamProvider } from "./context/AudioVideoStream";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,21 +26,23 @@ export default function RootLayout({
     <html lang="en">
       <SocketProvider>
         <UserProvider>
-          <MediaStreamProvider>
-            <MediaScreenStreamProvider>
-              <body className={inter.className}>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  {children}
-                  <Toaster />
-                </ThemeProvider>
-              </body>
-            </MediaScreenStreamProvider>
-          </MediaStreamProvider>
+          <AudioVideoStreamProvider>
+            <MediaStreamProvider>
+              <MediaScreenStreamProvider>
+                <body className={inter.className}>
+                  <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                  >
+                    {children}
+                    <Toaster />
+                  </ThemeProvider>
+                </body>
+              </MediaScreenStreamProvider>
+            </MediaStreamProvider>
+          </AudioVideoStreamProvider>
         </UserProvider>
       </SocketProvider>
     </html>
