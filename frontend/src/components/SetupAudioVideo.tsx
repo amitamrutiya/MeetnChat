@@ -1,41 +1,42 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "./ui/button";
 import { MicOffIcon, MicIcon, VideoIcon, VideoOffIcon } from "lucide-react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { AudioVideoStreamContext, AudioVideoStreamProps } from "@/app/context/AudioVideoStream";
+  AudioVideoStreamContext,
+  AudioVideoStreamProps,
+} from "@/app/context/AudioVideoStream";
+import {
+  AudioVideoDevicesContext,
+  AudioVideoDevicesProps,
+} from "@/app/context/AudioVideoDevices";
+import AudioVideoDeviceDropDown from "./AudioVideoDeviceDropDown";
+import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
+import { useStartUserStream } from "@/app/hooks/useStartStream";
+import { useStopUserStream } from "@/app/hooks/useStopStream";
 
-function SetupAudioVideo(props: {
-  userStream: any;
-  handleStartAudioVideoStream: (
-    audioDeviceId?: string,
-    videoDeviceId?: string
-  ) => void;
-  handleStopAudioVideoStream: () => void;
-}) {
-  const {
-    userStream,
-    handleStartAudioVideoStream,
-    handleStopAudioVideoStream,
-  } = props;
-
-  const { audio, video, setAudio, setVideo } = React.useContext(
+function SetupAudioVideo() {
+  const { handleStartAudioVideoStream } = useStartUserStream();
+  const { handleStopAudioVideoStream } = useStopUserStream();
+  const { userStream } = useContext(MediaStreamContext) as ProviderProps;
+  const { audio, video, setAudio, setVideo } = useContext(
     AudioVideoStreamContext
   ) as AudioVideoStreamProps;
 
+  const {
+    audioDevices,
+    videoDevices,
+    setAudioDevices,
+    setVideoDevices,
+    selectedAudioDevice,
+    selectedVideoDevice,
+    setSelectedAudioDevice,
+    setSelectedVideoDevice,
+  } = useContext(AudioVideoDevicesContext) as AudioVideoDevicesProps;
+
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [selectedAudioDevice, setSelectedAudioDevice] = useState("");
-  const [selectedVideoDevice, setSelectedVideoDevice] = useState("");
   const { user } = useUser();
 
   useEffect(() => {
@@ -44,7 +45,7 @@ function SetupAudioVideo(props: {
     });
   }, []);
 
-  const audioDevices = useMemo(() => {
+  useEffect(() => {
     const uniqueAudioDevices = [];
     const groupIdSet = new Set();
 
@@ -54,11 +55,10 @@ function SetupAudioVideo(props: {
         groupIdSet.add(device.groupId);
       }
     }
+    setAudioDevices(uniqueAudioDevices);
+  }, [devices, setAudioDevices]);
 
-    return uniqueAudioDevices;
-  }, [devices]);
-
-  const videoDevices = useMemo(() => {
+  useEffect(() => {
     const uniqueVideoDevices = [];
     const groupIdSet = new Set();
 
@@ -68,16 +68,15 @@ function SetupAudioVideo(props: {
         groupIdSet.add(device.groupId);
       }
     }
-
-    return uniqueVideoDevices;
-  }, [devices]);
+    setVideoDevices(uniqueVideoDevices);
+  }, [devices, setVideoDevices]);
 
   useEffect(() => {
     if (userStream) {
       const audioTrack = userStream.getAudioTracks()[0];
       const videoTrack = userStream.getVideoTracks()[0];
-      setSelectedAudioDevice(audioTrack.getSettings().deviceId);
-      setSelectedVideoDevice(videoTrack.getSettings().deviceId);
+      setSelectedAudioDevice(audioTrack.getSettings().deviceId!);
+      setSelectedVideoDevice(videoTrack.getSettings().deviceId!);
     } else {
       setSelectedAudioDevice(audioDevices[0]?.deviceId);
       setSelectedVideoDevice(videoDevices[0]?.deviceId);
@@ -149,53 +148,7 @@ function SetupAudioVideo(props: {
           {video ? <VideoIcon /> : <VideoOffIcon />}
         </Button>
       </div>
-      <div className="flex justify-center items-center my-5">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="bg-foreground">Select Audio Devices</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Select Audio Devices</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup
-              value={selectedAudioDevice}
-              onValueChange={setSelectedAudioDevice}
-            >
-              {audioDevices.map((device) => (
-                <DropdownMenuRadioItem
-                  key={device.deviceId}
-                  value={device.deviceId}
-                >
-                  {device.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="bg-foreground ml-5">Select Video Devices</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Select Video Devices</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup
-              value={selectedVideoDevice}
-              onValueChange={setSelectedVideoDevice}
-            >
-              {videoDevices.map((device) => (
-                <DropdownMenuRadioItem
-                  key={device.deviceId}
-                  value={device.deviceId}
-                >
-                  {device.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <AudioVideoDeviceDropDown />
     </div>
   );
 }

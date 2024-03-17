@@ -74,42 +74,6 @@ export default function Room() {
     }
   }, [currentUser]);
 
-  const handleStartAudioVideoStream = useCallback(
-    async (
-      audioDeviceId?: string,
-      videoDeviceId?: string,
-      audio?: boolean,
-      video?: boolean
-    ) => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          deviceId: audioDeviceId ? { exact: audioDeviceId } : undefined,
-        },
-        video: {
-          deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined,
-        },
-      });
-
-      if (stream && setUserMediaStream) setUserMediaStream(stream);
-      for (const track of stream.getTracks()) {
-        if (peerService.peer) {
-          peerService.peer?.addTrack(track, stream);
-        }
-      }
-    },
-    []
-  );
-
-  const handleStopAudioVideoStream = useCallback(async () => {
-    if (userStream) {
-      const tracks = userStream.getTracks();
-      tracks.forEach((track) => track.stop());
-
-      if (setUserMediaStream) {
-        setUserMediaStream(null);
-      }
-    }
-  }, [userStream, setUserMediaStream]);
 
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
@@ -214,28 +178,6 @@ export default function Room() {
     []
   );
 
-  const handleStartScreenShareStream = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getDisplayMedia({});
-
-    if (stream && setUserMediaScreenStream) setUserMediaScreenStream(stream);
-
-    const track = stream.getTracks()[0];
-    if (peerService.peer) {
-      peerService.peer?.addTrack(track, stream);
-    }
-  }, []);
-
-  const handleStopScreenShareStream = useCallback(async () => {
-    if (userScreenStream) {
-      const tracks = userScreenStream.getTracks();
-      tracks.forEach((track) => track.stop());
-
-      if (setUserMediaScreenStream) {
-        setUserMediaScreenStream(null);
-      }
-    }
-  }, [userScreenStream, setUserMediaScreenStream]);
-
   const handleSetWhiteboardID = useCallback((payload: any) => {
     if (payload.whiteboardID) {
       setWhiteboardID(payload.whiteboardID);
@@ -299,10 +241,6 @@ export default function Room() {
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
       {remoteSocketId && (
         <Dashboard
-          startAudioVideoStreams={handleStartAudioVideoStream}
-          startScreenShareStreams={handleStartScreenShareStream}
-          stopScreenShareStreams={handleStopScreenShareStream}
-          stopAudioVideoStreams={handleStopAudioVideoStream}
           remoteSocketId={remoteSocketId}
           whiteboardID={whiteboardID}
         />
@@ -318,9 +256,6 @@ export default function Room() {
             handleClickUser={handleClickUser}
           />
           <SetupAudioVideo
-            userStream={userStream}
-            handleStartAudioVideoStream={handleStartAudioVideoStream}
-            handleStopAudioVideoStream={handleStopAudioVideoStream}
           />
           <div className="flex flex-col items-center justify-center mt-5 space-y-5">
             <ShareButton />

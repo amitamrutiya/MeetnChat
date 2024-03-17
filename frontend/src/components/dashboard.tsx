@@ -15,23 +15,12 @@ import {
 import Chat from "./Chat";
 
 interface DashboardProps {
-  startAudioVideoStreams: (
-    audioDeviceId?: string,
-    videoDeviceId?: string
-  ) => void;
-  startScreenShareStreams?: () => void;
-  stopScreenShareStreams?: () => void;
-  stopAudioVideoStreams: () => void;
   remoteSocketId?: string;
   whiteboardID?: string | null;
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
   const {
-    startAudioVideoStreams,
-    startScreenShareStreams,
-    stopScreenShareStreams,
-    stopAudioVideoStreams,
     remoteSocketId,
     whiteboardID,
   } = props;
@@ -114,17 +103,11 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
           <div className="mb-2 h-[74vh] overflow-auto">
             <AudioVideoBar
               pinVideoObj={pinVideo}
-              onStartAudioVideo={startAudioVideoStreams}
               pinVideo={handlePinVideo}
               unPinVideo={handleUnPinVideo}
             />
           </div>
-          <ScreenShare
-            onStartScreenShare={startScreenShareStreams}
-            onStopScreenShare={stopScreenShareStreams}
-            onStartAudioVideoStream={startAudioVideoStreams}
-            onStopAudioVideoStream={stopAudioVideoStreams}
-          />
+          <ScreenShare/>
         </div>
       </div>
       <div className="absolute bottom-5 right-5">

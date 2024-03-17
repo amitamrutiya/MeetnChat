@@ -5,13 +5,12 @@ import { Button } from "./ui/button";
 
 interface AudioVideoBarProps {
   pinVideoObj: MediaStream | null;
-  onStartAudioVideo?: () => void;
   pinVideo: (id: string) => void;
   unPinVideo: () => void;
 }
 
 const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
-  const { pinVideoObj, onStartAudioVideo, pinVideo, unPinVideo } = props;
+  const { pinVideoObj, pinVideo, unPinVideo } = props;
   const { userStream, remoteStreams } = React.useContext(
     MediaStreamContext
   ) as ProviderProps;

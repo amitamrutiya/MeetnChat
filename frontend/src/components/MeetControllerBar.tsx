@@ -8,7 +8,6 @@ import {
   VideoOffIcon,
   CircleIcon,
   PresentationIcon,
-  SettingsIcon,
 } from "lucide-react";
 import {
   MediaScreenStreamContext,
@@ -20,6 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import { Button } from "./ui/button";
 import {
@@ -27,25 +27,11 @@ import {
   AudioVideoStreamProps,
 } from "@/app/context/AudioVideoStream";
 import EndMeetButton from "./EndMeetButton";
+import SettingButton from "./SettingButton";
+import { useStartUserStream } from "@/app/hooks/useStartStream";
+import { useStopUserStream } from "@/app/hooks/useStopStream";
 
-export interface ScreenShareProps {
-  onStartScreenShare?: () => void;
-  onStopScreenShare?: () => void;
-  onStartAudioVideoStream: (
-    audioDeviceId?: string,
-    videoDeviceId?: string
-  ) => void;
-  onStopAudioVideoStream: () => void;
-}
-
-const ScreenShare: React.FC<ScreenShareProps> = (props) => {
-  const {
-    onStartScreenShare,
-    onStopScreenShare,
-    onStartAudioVideoStream,
-    onStopAudioVideoStream,
-  } = props;
-
+const ScreenShare = () => {
   const { audio, video, setAudio, setVideo } = React.useContext(
     AudioVideoStreamContext
   ) as AudioVideoStreamProps;
@@ -56,6 +42,11 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
   ) as ProviderScreenProps;
 
   const [whiteboard, setWhiteboard] = useState<boolean>(true);
+
+  const { handleStartAudioVideoStream, handleStartScreenShareStream } =
+    useStartUserStream();
+  const { handleStopScreenShareStream } =
+    useStopUserStream();
 
   return (
     <div>
@@ -73,7 +64,7 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
                   onClick={() => {
                     setAudio(!audio);
                     if (!userStream) {
-                      onStartAudioVideoStream();
+                      handleStartAudioVideoStream();
                       return;
                     }
                     const audioTrack = userStream?.getTracks()[0];
@@ -101,7 +92,7 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
                     if (!userStream) {
                       setVideo(true);
                       setAudio(true);
-                      onStartAudioVideoStream();
+                      handleStartAudioVideoStream();
                       return;
                     }
                     setVideo(!video);
@@ -129,7 +120,7 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
                     userScreenStream ? "bg-primary ml-5" : "bg-foreground ml-5"
                   }
                   onClick={
-                    userScreenStream ? onStopScreenShare : onStartScreenShare
+                    userScreenStream ? handleStopScreenShareStream : handleStartScreenShareStream
                   }
                 >
                   {userScreenStream ? (
@@ -183,21 +174,10 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
           </TooltipProvider>
 
           {/* Setting Button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button className="bg-foreground ml-5">
-                  <SettingsIcon />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Change Setting</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <SettingButton />
 
           {/* End Call Button */}
-          <EndMeetButton onStopAudioVideoStream={onStopAudioVideoStream} />
+          <EndMeetButton />
         </div>
       </div>
     </div>

@@ -30,31 +30,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useStopUserStream } from "@/app/hooks/useStopStream";
 
-type EndMeetButtonProps = {
-  onStopAudioVideoStream: () => void;
-};
-
-function EndMeetButton(props: EndMeetButtonProps) {
-  const {
-    onStopAudioVideoStream,
-  } = props;
-
-  const { audio, video, setAudio, setVideo } = React.useContext(
-    AudioVideoStreamContext
-  ) as AudioVideoStreamProps;
-  const {
-    setUserMediaStream,
-    userStream,
-    setRemoteMediaStream,
-    remoteStreams,
-  } = useContext(MediaStreamContext) as ProviderProps;
-
-  const { userScreenStream, remoteScreenStream } = React.useContext(
+function EndMeetButton() {
+  const { handleStopAudioVideoStream, handleStopScreenShareStream } =
+    useStopUserStream();
+  const { userStream } = useContext(MediaStreamContext) as ProviderProps;
+  const { userScreenStream } = React.useContext(
     MediaScreenStreamContext
   ) as ProviderScreenProps;
   const socket = React.useContext(SocketContext) as Socket;
   const router = useRouter();
+  
   return (
     <div>
       {" "}
@@ -84,19 +71,10 @@ function EndMeetButton(props: EndMeetButtonProps) {
                     className="bg-destructive text-destructive-foreground"
                     onClick={() => {
                       if (userStream) {
-                        onStopAudioVideoStream();
+                        handleStopAudioVideoStream();
                       }
-                      if (setUserMediaStream) setUserMediaStream(null);
-                      if (setRemoteMediaStream) setRemoteMediaStream([]);
                       if (userScreenStream) {
-                        userScreenStream.getTracks().forEach((track) => {
-                          track.stop();
-                        });
-                      }
-                      if (remoteScreenStream) {
-                        remoteScreenStream.getTracks().forEach((track) => {
-                          track.stop();
-                        });
+                        handleStopScreenShareStream();
                       }
                       socket.emit("user-disconnect");
                       router.push("/");
