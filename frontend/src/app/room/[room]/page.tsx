@@ -16,10 +16,9 @@ import peerService from "@/service/peer";
 import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
-import { Button } from "@/components/ui/button";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
-import { toast, useToast } from "@/components/ui/use-toast";
 import Dashboard from "@/components/dashboard";
+import { ShareButton } from "@/components/ShareButton";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
@@ -324,19 +323,7 @@ export default function Room() {
             handleStopAudioVideoStream={handleStopAudioVideoStream}
           />
           <div className="flex flex-col items-center justify-center mt-5 space-y-5">
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href).then(() => {
-                  toast({
-                    title: "Room link copied",
-                    variant: "default",
-                    description: "Share with your friend to join ",
-                  });
-                });
-              }}
-            >
-              Copy room link
-            </Button>
+            <ShareButton />
             <h6 className="font-sans text-slate-400">
               Tip: Click on user to make call
             </h6>

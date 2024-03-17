@@ -47,7 +47,7 @@ function IncomingCallDialog(props: {
               Accept
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive"
+              className="bg-destructive text-destructive-foreground"
               onClick={() => {
                 handleRejectIncommingCall();
                 setOpen(false);

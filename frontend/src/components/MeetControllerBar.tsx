@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   LucideScreenShare,
   LucideScreenShareOff,
@@ -7,8 +7,8 @@ import {
   VideoIcon,
   VideoOffIcon,
   CircleIcon,
-  Disc2Icon,
-  PhoneOffIcon,
+  PresentationIcon,
+  SettingsIcon,
 } from "lucide-react";
 import {
   MediaScreenStreamContext,
@@ -26,6 +26,7 @@ import {
   AudioVideoStreamContext,
   AudioVideoStreamProps,
 } from "@/app/context/AudioVideoStream";
+import EndMeetButton from "./EndMeetButton";
 
 export interface ScreenShareProps {
   onStartScreenShare?: () => void;
@@ -48,13 +49,13 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
   const { audio, video, setAudio, setVideo } = React.useContext(
     AudioVideoStreamContext
   ) as AudioVideoStreamProps;
-  const { setUserMediaStream, userStream } = useContext(
-    MediaStreamContext
-  ) as ProviderProps;
+  const { userStream } = useContext(MediaStreamContext) as ProviderProps;
 
-  const { userScreenStream, remoteScreenStream } = React.useContext(
+  const { userScreenStream } = React.useContext(
     MediaScreenStreamContext
   ) as ProviderScreenProps;
+
+  const [whiteboard, setWhiteboard] = useState<boolean>(true);
 
   return (
     <div>
@@ -162,27 +163,41 @@ const ScreenShare: React.FC<ScreenShareProps> = (props) => {
             </Tooltip>
           </TooltipProvider>
 
-                   
-          {/* End Call Button */}
+          {/* whiteboard button */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <Button
-                  variant={"destructive"}
-                  className="ml-5"
-                  onClick={() => {
-                    onStopAudioVideoStream();
-                  }}
+                  className={
+                    whiteboard ? "bg-primary ml-5" : "bg-foreground ml-5"
+                  }
+                  onClick={() => setWhiteboard(!whiteboard)}
                 >
-                  <PhoneOffIcon />
+                  <PresentationIcon />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent className="bg-destructive text-foreground">
-                <p>End Call</p>
+              <TooltipContent>
+                <p>Whiteboard</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
+          {/* Setting Button */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button className="bg-foreground ml-5">
+                  <SettingsIcon />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Change Setting</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* End Call Button */}
+          <EndMeetButton onStopAudioVideoStream={onStopAudioVideoStream} />
         </div>
       </div>
     </div>

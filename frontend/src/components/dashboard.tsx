@@ -6,7 +6,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AiFillPushpin } from "react-icons/ai";
 import AudioVideoBar from "./AudioVideoBar";
 // import Chat from "./Chat";
-import ScreenShare from "./ScreenShare";
+import ScreenShare from "./MeetControllerBar";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import {
   MediaScreenStreamContext,
