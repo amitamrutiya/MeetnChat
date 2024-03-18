@@ -1,10 +1,6 @@
-import { handleAuth, handleLogin } from "@auth0/nextjs-auth0";
-import { v4 } from "uuid";
+import { handleAuth } from "@auth0/nextjs-auth0";
 
-const roomId = v4();
-export const GET = handleAuth({
-  login: handleLogin(),
-});
+export const GET = handleAuth();
 
 // /api/auth/login: The route used to perform login with Auth0.
 // /api/auth/logout: The route used to log the user out.
