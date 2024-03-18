@@ -6,21 +6,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Socket } from "socket.io-client";
 import { SocketContext } from "@/app/context/SocketContext";
 import { Badge } from "./ui/badge";
+import { Message } from "@/type";
 
-interface Message {
-  from?: string;
-  displayPicture?: string;
-  message: string;
-  timestamp?: Date | number;
-  isSelf?: boolean;
-}
-interface MessageProps extends Message {}
 
 interface ChatProps {
   remoteSocketId?: string;
 }
 
-const Message: React.FC<MessageProps> = (props) => {
+const MessageDiv: React.FC<Message> = (props) => {
   const { from, message, isSelf, displayPicture, timestamp } = props;
 
   const convertedTime = React.useMemo(
@@ -154,7 +147,7 @@ const Chat: React.FC<ChatProps> = (props) => {
                         messages.length > 0 &&
                         messages.map((e) => (
                           <li key={e.from}>
-                            <Message {...e} />
+                            <MessageDiv {...e} />
                           </li>
                         ))}
                     </ul>

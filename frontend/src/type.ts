@@ -1,4 +1,4 @@
-export interface User {
+export type User = {
   socketId: string;
   roomId: string;
   email?: string | null;
@@ -10,9 +10,17 @@ export interface User {
   joinedAt: Date;
   isConnected: boolean;
 }
-export interface IncomingCall {
+export type IncomingCall = {
   roomId: string;
   from: string;
   user: User;
   offer: RTCSessionDescriptionInit;
+}
+
+export type Message = {
+  from?: string;
+  displayPicture?: string;
+  message?: string;
+  isSelf?: boolean;
+  timestamp?: number;
 }

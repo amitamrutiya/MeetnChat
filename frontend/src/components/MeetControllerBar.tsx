@@ -153,7 +153,7 @@ const MeetControllerBar = () => {
           </TooltipProvider>
 
           {/* Chat Button */}
-          <ChatButton />
+          <ChatButton remoteSocketId="asfdafe" />
 
           {/* recording button */}
           <TooltipProvider>
