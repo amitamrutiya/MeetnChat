@@ -24,3 +24,12 @@ export type Message = {
   isSelf?: boolean;
   timestamp?: number;
 }
+
+export type AvailableFiles = {
+  name: string;
+  size: number;
+  blob?: Blob;
+  recievedSize?: number;
+  checksum?: string | null;
+  checksumMatched?: boolean;
+};

@@ -9,6 +9,7 @@ import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";
 import "./globals.css";
 import { AudioVideoStreamProvider } from "./context/AudioVideoStream";
 import { AudioVideoDevicesProvider } from "./context/AudioVideoDevices";
+import { FileTransferProvider } from "./context/FileTransfer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -18,6 +19,22 @@ export const metadata: Metadata = {
     "Unlock the power of human connection with MeetnChillChat, where every interaction is an opportunity to broaden your horizons and enrich your life.",
 };
 
+const providers = [
+  SocketProvider,
+  AudioVideoStreamProvider,
+  AudioVideoDevicesProvider,
+  MediaStreamProvider,
+  MediaScreenStreamProvider,
+  FileTransferProvider,
+];
+
+const AppProviders = ({ children }: { children: React.ReactNode }) => {
+  return providers.reduceRight(
+    (children, Provider) => <Provider>{children}</Provider>,
+    children
+  );
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,28 +42,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <SocketProvider>
-        <UserProvider>
-          <AudioVideoStreamProvider>
-            <AudioVideoDevicesProvider>
-              <MediaStreamProvider>
-                <MediaScreenStreamProvider>
-                  <body className={inter.className}>
-                    <ThemeProvider
-                      attribute="class"
-                      defaultTheme="system"
-                      enableSystem
-                      disableTransitionOnChange
-                    >
-                      {children}
-                    </ThemeProvider>
-                  </body>
-                </MediaScreenStreamProvider>
-              </MediaStreamProvider>
-            </AudioVideoDevicesProvider>
-          </AudioVideoStreamProvider>
-        </UserProvider>
-      </SocketProvider>
+      <UserProvider>
+        <AppProviders>
+          <body className={inter.className}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </body>
+        </AppProviders>
+      </UserProvider>
     </html>
   );
 }

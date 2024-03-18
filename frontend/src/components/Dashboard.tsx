@@ -10,18 +10,19 @@ import {
   MediaScreenStreamContext,
   ProviderScreenProps,
 } from "@/app/context/ScreenStream";
-import Chat from "./Chat";
 import MeetControllerBar from "./MeetControllerBar";
-import { User } from "@/type";
+import { AvailableFiles, User } from "@/type";
 
 interface DashboardProps {
+  availableFiles? : AvailableFiles[]
+  onFileTransfer?: (file: File) => Promise<void>;
   remoteSocketId?: string;
   whiteboardID?: string | null;
   remoteUser?: User;
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
-  const { remoteSocketId, whiteboardID, remoteUser } = props;
+  const { remoteSocketId, whiteboardID, remoteUser,availableFiles,onFileTransfer } = props;
 
   const { userStream, remoteStreams } = React.useContext(
     MediaStreamContext
@@ -109,9 +110,6 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
           <MeetControllerBar />
         </div>
       </div>
-      {/* <div className="absolute bottom-5 right-5">
-        {remoteSocketId && <Chat remoteSocketId={remoteSocketId} />}
-      </div> */}
     </div>
   );
 };

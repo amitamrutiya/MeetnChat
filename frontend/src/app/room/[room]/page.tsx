@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { SocketContext } from "@/app/context/SocketContext";
+import { createHmac } from "crypto";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import {
   MediaScreenStreamContext,
@@ -11,7 +12,7 @@ import {
 } from "@/app/context/ScreenStream";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { serverInstance } from "@/app/api/serverInstance";
-import { IncomingCall, User } from "@/type";
+import { AvailableFiles, IncomingCall, User } from "@/type";
 import peerService from "@/service/peer";
 import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
@@ -19,6 +20,7 @@ import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
 import { ShareButton } from "@/components/ShareButton";
 import Dashboard from "@/components/Dashboard";
+import { FileTransferContext, FileTransferProps } from "@/app/context/FileTransfer";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
@@ -35,6 +37,10 @@ export default function Room() {
     MediaScreenStreamContext
   ) as ProviderScreenProps;
 
+  const { availableFiles, setAvailableFiles } = useContext(
+    FileTransferContext
+  ) as FileTransferProps;
+
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = useState<
     IncomingCall | undefined
@@ -47,6 +53,8 @@ export default function Room() {
   const socket = useContext(SocketContext) as Socket;
   const params = useParams();
   const roomId = params.room;
+
+  const secret = React.useMemo(() => "$3#Ia", []);
 
   const handleRefreshUserList = useCallback(async () => {
     console.log("Refreshing user list");
@@ -183,6 +191,19 @@ export default function Room() {
     }
   }, []);
 
+  const handleUserDisconnect = useCallback(
+    (payload: any) => {
+      const { socketId = null } = payload;
+
+      if (socketId) {
+        if (remoteSocketId == socketId) {
+          setRemoteUser(undefined);
+        }
+      }
+    },
+    [remoteSocketId]
+  );
+
   useEffect(() => {
     peerService.remoteSocketId = remoteSocketId;
   }, [remoteSocketId]);
@@ -194,7 +215,17 @@ export default function Room() {
   useEffect(() => {
     handleRefreshUserList();
     peerService.init();
+
     peerService?.peer?.addEventListener("negotiationneeded", handleNegosiation);
+
+    let temp = {
+      filename: "",
+      size: 0,
+      checksum: null,
+    };
+
+    let receivedSize = 0;
+    let receiveBuffer: Buffer[] = [];
 
     if (peerService.peer) {
       peerService.peer.addEventListener("track", async (ev) => {
@@ -206,6 +237,105 @@ export default function Room() {
       peerService.peer.addEventListener("ended", async (ev) => {});
     }
 
+    if (peerService.peer)
+      //@ts-ignore
+      peerService.peer.ondatachannel = (e) => {
+        peerService.remoteDataChanel = e.channel;
+        peerService.remoteDataChanel.onmessage = (e) => {
+          const { data } = e;
+
+          if (typeof data === "string") {
+            const { name, size, checksum } = JSON.parse(data);
+            temp.filename = name;
+            temp.size = size;
+            temp.checksum = checksum;
+
+            setAvailableFiles((e) => [
+              {
+                name: temp.filename,
+                size: temp.size,
+                recievedSize: 0,
+                checksum: temp.checksum,
+                checksumMatched: false,
+              },
+              ...e,
+            ]);
+          } else {
+            try {
+              if (data && receivedSize < temp.size) {
+                receiveBuffer.push(data);
+                receivedSize += data.byteLength;
+                setAvailableFiles((e) =>
+                  e.map((e) =>
+                    e.name === temp.filename
+                      ? {
+                          name: temp.filename,
+                          size: temp.size,
+                          recievedSize: receivedSize,
+                          checksum: temp.checksum,
+                          checksumMatched: false,
+                        }
+                      : e
+                  )
+                );
+              }
+              if (data && receivedSize === temp.size) {
+                const blob = new Blob(receiveBuffer);
+
+                (async () => {
+                  const arraybuffer = await blob.arrayBuffer();
+                  const bufferString = JSON.stringify(arraybuffer);
+                  const hash = createHmac("md5", secret)
+                    .update(bufferString)
+                    .digest("hex");
+
+                  if (temp.checksum !== hash) {
+                    setAvailableFiles((e) =>
+                      e.map((e) =>
+                        e.name === temp.filename
+                          ? {
+                              name: temp.filename,
+                              size: temp.size,
+                              recievedSize: receivedSize,
+                              blob,
+                              checksumMatched: false,
+                              checksum: temp.checksum,
+                            }
+                          : e
+                      )
+                    );
+                  } else {
+                    setAvailableFiles((e) =>
+                      e.map((e) =>
+                        e.name === temp.filename
+                          ? {
+                              name: temp.filename,
+                              size: temp.size,
+                              recievedSize: receivedSize,
+                              blob,
+                              checksum: temp.checksum,
+                              checksumMatched: true,
+                            }
+                          : e
+                      )
+                    );
+                    temp = {
+                      filename: "",
+                      size: 0,
+                      checksum: null,
+                    };
+                    receivedSize = 0;
+                    receiveBuffer = [];
+                  }
+                })();
+              }
+            } catch (error) {}
+          }
+        };
+        peerService.remoteDataChanel.onopen = (e) =>
+          console.log("Data Chanel Created!");
+      };
+
     return () => {
       peerService?.peer?.removeEventListener(
         "negotiationneeded",
@@ -213,6 +343,18 @@ export default function Room() {
       );
     };
   }, [remoteStreams]);
+
+  React.useEffect(() => {
+    if (remoteSocketId) {
+      socket.off("refresh:user-list", handleRefreshUserList);
+      socket.on("user-disconnected", handleUserDisconnect);
+    }
+
+    return () => {
+      socket.on("refresh:user-list", handleRefreshUserList);
+      socket.off("user-disconnected", handleUserDisconnect);
+    };
+  }, [remoteSocketId]);
 
   useEffect(() => {
     socket.on("refresh:user-list", handleRefreshUserList);
@@ -238,7 +380,11 @@ export default function Room() {
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
-      <Dashboard remoteSocketId={"fsadfsadfsdf"} whiteboardID={"fasdf"} remoteUser={remoteUser} />
+      <Dashboard
+        remoteSocketId={"fsadfsadfsdf"}
+        whiteboardID={"fasdf"}
+        remoteUser={remoteUser}
+      />
       {/* {remoteSocketId && (
         <Dashboard
           remoteSocketId={remoteSocketId}

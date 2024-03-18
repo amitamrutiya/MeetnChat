@@ -25,6 +25,7 @@ import { useState, useContext, useRef, useEffect, useCallback } from "react";
 import { Socket } from "socket.io-client";
 import { Message } from "@/type";
 import MessageDiv from "./MessageDiv";
+import FileTransfer from "./FileTransfer";
 
 function ChatButton(props: { remoteSocketId: string }) {
   const { remoteSocketId } = props;
@@ -149,9 +150,7 @@ function ChatButton(props: { remoteSocketId: string }) {
                       Send message
                       <SendHorizonalIcon />
                     </Button>
-                    <Button size={"icon"}>
-                      <PaperclipIcon />
-                    </Button>
+                    <FileTransfer />
                   </div>
                 </div>
               </SheetFooter>

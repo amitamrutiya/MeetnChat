@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { FC, PropsWithChildren, createContext, useState } from "react";
 
 export interface ProviderScreenProps {
   remoteScreenStream: MediaStream | null;
@@ -10,15 +10,15 @@ export interface ProviderScreenProps {
 }
 
 export const MediaScreenStreamContext =
-  React.createContext<ProviderScreenProps | null>(null);
+  createContext<ProviderScreenProps | null>(null);
 
-export const MediaScreenStreamProvider: React.FC<React.PropsWithChildren> = (
+export const MediaScreenStreamProvider: FC<PropsWithChildren> = (
   props
 ) => {
   const [ScreenRemoteMediastream, setScreenRemoteMediaStream] =
-    React.useState<MediaStream | null>(null);
+    useState<MediaStream | null>(null);
   const [userMediaScreenStream, setUserMediaScreenStream] =
-    React.useState<MediaStream | null>(null);
+    useState<MediaStream | null>(null);
 
   return (
     <MediaScreenStreamContext.Provider

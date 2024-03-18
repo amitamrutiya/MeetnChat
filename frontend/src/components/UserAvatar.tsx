@@ -1,5 +1,5 @@
 import React from "react";
-import { getRandomColorCode } from "@/app/utils/color";
+import { getRandomColorCode } from "@/utils/color";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   HoverCard,
