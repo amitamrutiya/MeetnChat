@@ -1,4 +1,4 @@
-name: React CI
+name: Frontend CI
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         node-version: '20.x'
 
     - name: Install Dependencies
-      run: npm install
+      run: yarn install
 
     - name: Run ESLint
       run: npm run lint

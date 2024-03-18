@@ -49,7 +49,7 @@ cd backend
 
 4. Install dependencies using npm.
 ```
-npm install
+yarn install
 ```
 
 5. Run Backend Server
@@ -66,7 +66,7 @@ cd frontend
 
 7. Install dependencies using npm.
 ```
-npm install
+yarn install
 ```
 
 8. Copy the sample environment variables file and rename it to `.env.local`
