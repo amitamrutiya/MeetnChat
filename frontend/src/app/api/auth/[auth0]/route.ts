@@ -3,9 +3,7 @@ import { v4 } from "uuid";
 
 const roomId = v4();
 export const GET = handleAuth({
-  login: handleLogin({
-    returnTo: `/`,
-  }),
+  login: handleLogin(),
 });
 
 // /api/auth/login: The route used to perform login with Auth0.
