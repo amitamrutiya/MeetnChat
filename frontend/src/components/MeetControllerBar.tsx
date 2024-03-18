@@ -30,6 +30,7 @@ import EndMeetButton from "./EndMeetButton";
 import SettingButton from "./SettingButton";
 import { useStartUserStream } from "@/app/hooks/useStartStream";
 import { useStopUserStream } from "@/app/hooks/useStopStream";
+import ChatButton from "./ChatButton";
 
 const MeetControllerBar = () => {
   const { audio, video, setAudio, setVideo } = React.useContext(
@@ -57,10 +58,10 @@ const MeetControllerBar = () => {
   }, [audio, handleStopAudioVideoStream, video]);
 
   return (
-    <div>
-      <div className="h-[5vh] w-full  rounded-lg bg-slate-600">
+    <div className="flex flex-row ">
+      <div className="sm:w-auto rounded-lg bg-slate-600 px-3 mx-auto py-2">
         <div
-          className="flex h-full w-full items-center justify-center"
+          className="flex flex-row h-full w-full items-center justify-center gap-4"
           id="tools-container"
         >
           {/* Audio Button */}
@@ -68,6 +69,7 @@ const MeetControllerBar = () => {
             <Tooltip>
               <TooltipTrigger>
                 <Button
+                  size={"icon"}
                   className={audio ? "bg-primary" : "bg-foreground"}
                   onClick={() => {
                     setAudio(!audio);
@@ -95,7 +97,8 @@ const MeetControllerBar = () => {
             <Tooltip>
               <TooltipTrigger>
                 <Button
-                  className={video ? "bg-primary ml-5" : "bg-foreground ml-5"}
+                  size={"icon"}
+                  className={video ? "bg-primary" : "bg-foreground"}
                   onClick={() => {
                     if (!userStream) {
                       setVideo(true);
@@ -124,9 +127,8 @@ const MeetControllerBar = () => {
             <Tooltip>
               <TooltipTrigger>
                 <Button
-                  className={
-                    userScreenStream ? "bg-primary ml-5" : "bg-foreground ml-5"
-                  }
+                  size={"icon"}
+                  className={userScreenStream ? "bg-primary" : "bg-foreground"}
                   onClick={
                     userScreenStream
                       ? handleStopScreenShareStream
@@ -150,11 +152,14 @@ const MeetControllerBar = () => {
             </Tooltip>
           </TooltipProvider>
 
+          {/* Chat Button */}
+          <ChatButton />
+
           {/* recording button */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Button className="bg-foreground ml-5">
+                <Button size={"icon"} className="bg-foreground">
                   <CircleIcon />
                 </Button>
               </TooltipTrigger>
@@ -169,9 +174,8 @@ const MeetControllerBar = () => {
             <Tooltip>
               <TooltipTrigger>
                 <Button
-                  className={
-                    whiteboard ? "bg-primary ml-5" : "bg-foreground ml-5"
-                  }
+                  size={"icon"}
+                  className={whiteboard ? "bg-primary" : "bg-foreground"}
                   onClick={() => setWhiteboard(!whiteboard)}
                 >
                   <PresentationIcon />

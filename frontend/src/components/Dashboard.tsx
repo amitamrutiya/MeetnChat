@@ -109,9 +109,9 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
           <MeetControllerBar />
         </div>
       </div>
-      <div className="absolute bottom-5 right-5">
+      {/* <div className="absolute bottom-5 right-5">
         {remoteSocketId && <Chat remoteSocketId={remoteSocketId} />}
-      </div>
+      </div> */}
     </div>
   );
 };

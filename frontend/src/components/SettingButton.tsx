@@ -32,7 +32,7 @@ function SettingButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-foreground ml-5">
+        <Button size={"icon"} className="bg-foreground">
           <SettingsIcon />
         </Button>
       </DialogTrigger>

@@ -41,7 +41,7 @@ function EndMeetButton() {
   ) as ProviderScreenProps;
   const socket = React.useContext(SocketContext) as Socket;
   const router = useRouter();
-  
+
   return (
     <div>
       {" "}
@@ -50,7 +50,7 @@ function EndMeetButton() {
           <TooltipTrigger>
             <AlertDialog>
               <AlertDialogTrigger>
-                <Button variant={"destructive"} className="ml-5">
+                <Button size={"icon"} variant={"destructive"}>
                   <PhoneOffIcon />
                 </Button>
               </AlertDialogTrigger>

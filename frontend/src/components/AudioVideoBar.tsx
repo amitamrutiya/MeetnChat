@@ -56,19 +56,17 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
             )}
           </>
         ) : (
-          <div className="">
-            <Avatar className="h-36 w-36">
-              <AvatarImage
-                src={user?.picture?.toString() ?? "/user.png"}
-                alt="User"
-              />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
+          <Avatar className="h-36 w-36">
+            <AvatarImage
+              src={user?.picture?.toString() ?? "/user.png"}
+              alt="User"
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         )}
       </div>
-      <div className="my-5" />
-      <div className="w-full rounded-md">
+      <div className="my-3" />
+      <div className="bg-foreground h-[45%] w-[69%] flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
         {remoteStreams.length > 0 ? (
           <div>
             {remoteStreams
@@ -108,15 +106,13 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
               ))}
           </div>
         ) : (
-          <div className="bg-foreground h-1/3 w-full flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
-            <Avatar className="h-36 w-36">
-              <AvatarImage
-                src={remoteUser?.picture?.toString() ?? "/user.png"}
-                alt="User"
-              />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
+          <Avatar className="h-36 w-36">
+            <AvatarImage
+              src={remoteUser?.picture?.toString() ?? "/user.png"}
+              alt="User"
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         )}
       </div>
     </div>
