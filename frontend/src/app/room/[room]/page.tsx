@@ -17,8 +17,8 @@ import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
-import Dashboard from "@/components/Dashboard";
 import { ShareButton } from "@/components/ShareButton";
+import Dashboard from "@/components/Dashboard";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
