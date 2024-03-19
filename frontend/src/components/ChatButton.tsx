@@ -24,9 +24,14 @@ import {
 import { SocketContext } from "@/app/context/SocketContext";
 import { useState, useContext, useRef, useEffect, useCallback } from "react";
 import { Socket } from "socket.io-client";
-import { Message } from "@/type";
+import { AvailableFiles, Message } from "@/type";
 import MessageDiv from "./MessageDiv";
 import FileTransfer from "./FileTransfer";
+import FileCard from "./FileCard";
+import {
+  FileTransferContext,
+  FileTransferProps,
+} from "@/app/context/FileTransfer";
 
 function ChatButton(props: { remoteSocketId: string }) {
   const { remoteSocketId } = props;
@@ -38,9 +43,15 @@ function ChatButton(props: { remoteSocketId: string }) {
   >();
 
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const { availableFiles } = useContext(
+    FileTransferContext
+  ) as FileTransferProps;
 
   const socket = useContext(SocketContext) as Socket;
   const chatBoxContainerRef = useRef<HTMLDivElement>(null);
+  const combined = [...availableFiles, ...messages].sort(
+    (a, b) => a.timestamp - b.timestamp
+  );
 
   useEffect(() => {
     if (chatBoxContainerRef.current) {
@@ -49,7 +60,7 @@ function ChatButton(props: { remoteSocketId: string }) {
         chatBoxContainerRef.current.scrollHeight
       );
     }
-  }, [messages,isChatOpen]);
+  }, [messages, isChatOpen, availableFiles]);
 
   const handleOnMessage = useCallback((data: any) => {
     const { from, message, user, self = false } = data;
@@ -108,23 +119,30 @@ function ChatButton(props: { remoteSocketId: string }) {
                 ref={chatBoxContainerRef}
                 className="w-full h-full rounded-md border overflow-y-auto p-2"
               >
-                {messages && messages.length > 0 && (
-                  <div className="flex-grow max-w-[752px]">
-                    <div className="grid grid-cols-1 gap-2">
-                      <div className="col-span-1">
-                        <ul className="list-none">
-                          {messages &&
-                            messages.length > 0 &&
-                            messages.map((e) => (
-                              <li key={e.from}>
-                                <MessageDiv {...e} />
+                <div className="flex-grow max-w-[752px]">
+                  <div className="grid grid-cols-1 gap-2">
+                    <div className="col-span-1">
+                      <ul className="list-none">
+                        {combined.map((item, index) => {
+                          if ("message" in item) {
+                            return (
+                              <li key={item.from}>
+                                <MessageDiv {...item} />
                               </li>
-                            ))}
-                        </ul>
-                      </div>
+                            );
+                          } else {
+                            return (
+                              <FileCard
+                                key={`${item.name}-${index}`}
+                                file={item}
+                              />
+                            );
+                          }
+                        })}
+                      </ul>
                     </div>
                   </div>
-                )}
+                </div>
                 {messages && messages.length <= 0 && (
                   <div className="flex h-full w-full items-center justify-center font-sans">
                     <p>No new messages</p>

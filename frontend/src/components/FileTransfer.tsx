@@ -1,4 +1,3 @@
-import { FileTransferContext, FileTransferProps } from "@/app/context/FileTransfer";
 import useFileTransfer from "@/app/hooks/fileTransferStream";
 import {
   Dialog,
@@ -10,13 +9,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FileIcon, PaperclipIcon } from "lucide-react";
-import React, { createRef, useCallback, useContext, useEffect, useState } from "react";
-import FileCard from "./FileCard";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Button } from "./ui/button";
 
 function FileTransfer() {
 
-  const { availableFiles } = useContext(FileTransferContext) as FileTransferProps;
   const { handleFileTransfer } = useFileTransfer();
   const [file, setFile] = useState<File | undefined>();
   const [fileSnackbarOpen, setFileSnackbarOpen] = useState<boolean>(false);
@@ -123,16 +125,14 @@ function FileTransfer() {
                 <span className="mt-3 font-sans">Drop files here</span>
               </div>
             )}
-            <div>
-              {availableFiles &&
-                availableFiles.map((file, index) => (
-                  <FileCard key={`${file.name}-${index}`} file={file} />
-                ))}
-            </div>
           </div>
         </DialogHeader>
         <DialogFooter>
-          <Button type="submit" disabled={file ? false : true}>
+          <Button
+            type="submit"
+            disabled={file ? false : true}
+            onClick={onFileTransfer}
+          >
             Send File
           </Button>
         </DialogFooter>

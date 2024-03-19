@@ -2,9 +2,9 @@ import React from "react";
 import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import { User } from "@/type";
 import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
-import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import UserAvatar from "./UserAvatar";
 
 export interface NavbarProps {
   remoteUser?: User | undefined | null;

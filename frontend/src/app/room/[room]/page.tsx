@@ -260,6 +260,7 @@ export default function Room() {
                 recievedSize: 0,
                 checksum: temp.checksum,
                 checksumMatched: false,
+                timestamp: Date.now(),
               },
               ...e,
             ]);
@@ -277,6 +278,7 @@ export default function Room() {
                           recievedSize: receivedSize,
                           checksum: temp.checksum,
                           checksumMatched: false,
+                          timestamp: Date.now(),
                         }
                       : e
                   )
@@ -303,6 +305,7 @@ export default function Room() {
                               blob,
                               checksumMatched: false,
                               checksum: temp.checksum,
+                              timestamp: Date.now(),
                             }
                           : e
                       )
@@ -318,6 +321,7 @@ export default function Room() {
                               blob,
                               checksum: temp.checksum,
                               checksumMatched: true,
+                              timestamp: Date.now(),
                             }
                           : e
                       )

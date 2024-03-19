@@ -32,4 +32,5 @@ export type AvailableFiles = {
   recievedSize?: number;
   checksum?: string | null;
   checksumMatched?: boolean;
+  timestamp: number;
 };
