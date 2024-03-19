@@ -14,15 +14,13 @@ import MeetControllerBar from "./MeetControllerBar";
 import { AvailableFiles, User } from "@/type";
 
 interface DashboardProps {
-  availableFiles? : AvailableFiles[]
-  onFileTransfer?: (file: File) => Promise<void>;
-  remoteSocketId?: string;
+  remoteSocketId: string;
   whiteboardID?: string | null;
   remoteUser?: User;
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
-  const { remoteSocketId, whiteboardID, remoteUser,availableFiles,onFileTransfer } = props;
+  const { remoteSocketId, whiteboardID, remoteUser } = props;
 
   const { userStream, remoteStreams } = React.useContext(
     MediaStreamContext
@@ -107,7 +105,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
               remoteUser={remoteUser}
             />
           </div>
-          <MeetControllerBar />
+          <MeetControllerBar remoteSocketId={remoteSocketId} />
         </div>
       </div>
     </div>

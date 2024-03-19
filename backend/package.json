@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx tsc && node dist/index.js",
     "build": "tsc -p .",
-    "dev": "tsc-watch --compiler typescript/bin/tsc"
+    "dev": "npx tsc && node dist/index.js"
   },
   "dependencies": {
     "@types/uuid": "^8.3.4",

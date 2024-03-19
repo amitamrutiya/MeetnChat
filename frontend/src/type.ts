@@ -18,11 +18,11 @@ export type IncomingCall = {
 }
 
 export type Message = {
-  from?: string;
-  displayPicture?: string;
-  message?: string;
-  isSelf?: boolean;
-  timestamp?: number;
+  from: string;
+  displayPicture: string;
+  message: string;
+  isSelf: boolean;
+  timestamp: number;
 }
 
 export type AvailableFiles = {

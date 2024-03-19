@@ -13,6 +13,7 @@ import {
 import { Button } from "./ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -29,7 +30,7 @@ import FileTransfer from "./FileTransfer";
 
 function ChatButton(props: { remoteSocketId: string }) {
   const { remoteSocketId } = props;
-  const [opened, setOpened] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [inputChatMessage, setInputChatMessage] = useState<
@@ -48,44 +49,31 @@ function ChatButton(props: { remoteSocketId: string }) {
         chatBoxContainerRef.current.scrollHeight
       );
     }
-  }, [messages]);
-
-  useEffect(() => {
-    if (opened) {
-      setUnreadMessageCount(0);
-    } else {
-      setUnreadMessageCount((e) => e + 1);
-    }
-  }, [opened, messages]);
-
-  const toggleChatBox = useCallback(() => setOpened((e) => !e), []);
+  }, [messages,isChatOpen]);
 
   const handleOnMessage = useCallback((data: any) => {
     const { from, message, user, self = false } = data;
     setMessages((e: Message[]) => [
       ...e,
       {
-        from: user.username,
-        displayPicture: user.displayPicture,
-        message: message.message,
+        from: user.name,
+        displayPicture: user.picture,
+        message: message,
         isSelf: self,
         timestamp: Date.now(),
       },
     ]);
   }, []);
 
-  const handleChatInboxKeyPress = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter") {
-        if (inputChatMessage && inputChatMessage.trim() !== "") {
-          const message: Message = { message: inputChatMessage };
-          socket.emit("chat:message", { to: remoteSocketId, message });
-          setInputChatMessage("");
-        }
-      }
-    },
-    [socket, inputChatMessage]
-  );
+  const submitMessage = () => {
+    if (inputChatMessage && inputChatMessage.length > 0) {
+      socket.emit("chat:message", {
+        to: remoteSocketId,
+        message: inputChatMessage,
+      });
+      setInputChatMessage("");
+    }
+  };
 
   useEffect(() => {
     socket.on("chat:message", handleOnMessage);
@@ -101,7 +89,13 @@ function ChatButton(props: { remoteSocketId: string }) {
         <TooltipTrigger>
           <Sheet>
             <SheetTrigger>
-              <Button size={"icon"} className="bg-foreground">
+              <Button
+                size={"icon"}
+                className="bg-foreground"
+                onClick={() => {
+                  setIsChatOpen(!isChatOpen);
+                }}
+              >
                 <MessageCircleMoreIcon />
               </Button>
             </SheetTrigger>
@@ -112,7 +106,7 @@ function ChatButton(props: { remoteSocketId: string }) {
               </SheetHeader>
               <div
                 ref={chatBoxContainerRef}
-                className="w-full h-full rounded-md border overflow-y-auto"
+                className="w-full h-full rounded-md border overflow-y-auto p-2"
               >
                 {messages && messages.length > 0 && (
                   <div className="flex-grow max-w-[752px]">
@@ -146,7 +140,7 @@ function ChatButton(props: { remoteSocketId: string }) {
                     typeof="text"
                   />
                   <div className="flex gap-2">
-                    <Button className="w-full">
+                    <Button className="w-full" onClick={submitMessage}>
                       Send message
                       <SendHorizonalIcon />
                     </Button>

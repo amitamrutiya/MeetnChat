@@ -11,13 +11,13 @@ function MessageDiv(props: Message) {
     [timestamp]
   );
   return (
-    <div>
-      <div className="flex items-center pb-0">
+    <div className="mb-2">
+      <div className="flex items-center w-full pb-0">
         {!isSelf && (
           <div className="mr-3">
             <Avatar className="bg-slate-500 shadow-xl">
               <AvatarImage src={displayPicture} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>Other</AvatarFallback>
             </Avatar>
           </div>
         )}
@@ -34,7 +34,7 @@ function MessageDiv(props: Message) {
           <div className="ml-3">
             <Avatar className="bg-slate-500 shadow-xl">
               <AvatarImage src={displayPicture} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>You</AvatarFallback>
             </Avatar>
           </div>
         )}
@@ -43,7 +43,7 @@ function MessageDiv(props: Message) {
       <small
         className={`${
           isSelf ? "pl-[16px]" : "float-right pr-[16px]"
-        } text-slate-400`}
+        } text-slate-400 mb-2`}
       >
         {convertedTime && convertedTime}
       </small>

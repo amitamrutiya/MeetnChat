@@ -20,7 +20,10 @@ import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
 import { ShareButton } from "@/components/ShareButton";
 import Dashboard from "@/components/Dashboard";
-import { FileTransferContext, FileTransferProps } from "@/app/context/FileTransfer";
+import {
+  FileTransferContext,
+  FileTransferProps,
+} from "@/app/context/FileTransfer";
 
 export default function Room() {
   const [users, setUsers] = useState<User[]>([]);
@@ -380,12 +383,12 @@ export default function Room() {
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
-      <Dashboard
+      {/* <Dashboard
         remoteSocketId={"fsadfsadfsdf"}
         whiteboardID={"fasdf"}
         remoteUser={remoteUser}
-      />
-      {/* {remoteSocketId && (
+      /> */}
+      {remoteSocketId && (
         <Dashboard
           remoteSocketId={remoteSocketId}
           whiteboardID={whiteboardID}
@@ -401,8 +404,7 @@ export default function Room() {
             calledToUserId={calledToUserId}
             handleClickUser={handleClickUser}
           />
-          <SetupAudioVideo
-          />
+          <SetupAudioVideo />
           <div className="flex flex-col items-center justify-center mt-5 space-y-5">
             <ShareButton />
             <h6 className="font-sans text-slate-400">
@@ -418,7 +420,7 @@ export default function Room() {
           handleAcceptIncommingCall={handleAcceptIncommingCall}
           handleRejectIncommingCall={handleRejectIncommingCall}
         />
-      )} */}
+      )}
     </div>
   );
 }

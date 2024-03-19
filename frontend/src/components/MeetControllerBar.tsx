@@ -32,7 +32,8 @@ import { useStartUserStream } from "@/app/hooks/useStartStream";
 import { useStopUserStream } from "@/app/hooks/useStopStream";
 import ChatButton from "./ChatButton";
 
-const MeetControllerBar = () => {
+const MeetControllerBar = (props: { remoteSocketId: string }) => {
+  const { remoteSocketId } = props;
   const { audio, video, setAudio, setVideo } = React.useContext(
     AudioVideoStreamContext
   ) as AudioVideoStreamProps;
@@ -153,7 +154,7 @@ const MeetControllerBar = () => {
           </TooltipProvider>
 
           {/* Chat Button */}
-          <ChatButton remoteSocketId="asfdafe" />
+          <ChatButton remoteSocketId={remoteSocketId} />
 
           {/* recording button */}
           <TooltipProvider>
