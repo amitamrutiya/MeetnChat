@@ -1,6 +1,5 @@
 import {
   MessageCircleMoreIcon,
-  PaperclipIcon,
   SendHorizonalIcon,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +12,6 @@ import {
 import { Button } from "./ui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -42,7 +40,6 @@ function ChatButton(props: { remoteSocketId: string }) {
     string | undefined
   >();
 
-  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const { availableFiles } = useContext(
     FileTransferContext
   ) as FileTransferProps;
@@ -60,7 +57,7 @@ function ChatButton(props: { remoteSocketId: string }) {
         chatBoxContainerRef.current.scrollHeight
       );
     }
-  }, [messages, isChatOpen, availableFiles]);
+  }, [messages, isChatOpen]);
 
   const handleOnMessage = useCallback((data: any) => {
     const { from, message, user, self = false } = data;

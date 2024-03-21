@@ -387,11 +387,7 @@ export default function Room() {
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
-      {/* <Dashboard
-        remoteSocketId={"fsadfsadfsdf"}
-        whiteboardID={"fasdf"}
-        remoteUser={remoteUser}
-      /> */}
+
       {remoteSocketId && (
         <Dashboard
           remoteSocketId={remoteSocketId}
