@@ -61,7 +61,8 @@ function FileTransfer() {
         setOpen(false);
         toast({
           title: "File Sent to your friend",
-          description: "The file has been sent successfully it will be available for download in the chat window",
+          description:
+            "The file has been sent successfully it will be available for download in the chat window",
         });
       } catch (error) {
         console.error("Error while sending file", error);
@@ -69,7 +70,6 @@ function FileTransfer() {
           variant: "destructive",
           title: "Error while sending file",
           description: "There was an error while sending the file",
-          status: "error",
         });
       }
     }
