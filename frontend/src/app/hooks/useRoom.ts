@@ -20,21 +20,20 @@ export function useRoom() {
   const { setRemoteMediaStream, remoteStreams } = useContext(
     MediaStreamContext
   ) as ProviderProps;
-
   const { setAvailableFiles } = useContext(
     FileTransferContext
   ) as FileTransferProps;
   const params = useParams();
   const roomId = params.room;
+
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = useState<
     IncomingCall | undefined
   >();
   const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
-
   const [remoteUser, setRemoteUser] = useState<undefined | User>();
-  const [users, setUsers] = useState([]);
-  const [whiteboardID, setWhiteboardID] = useState();
+  const [users, setUsers] = useState<User[]>([]);
+  const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
   const secret = "$3#Ia";
 
   const joinRoom = useCallback(async () => {
@@ -42,12 +41,7 @@ export function useRoom() {
     try {
       socket.emit("room:join", {
         roomId,
-        email: currentUser!.email,
-        email_verified: currentUser!.email_verified,
-        name: currentUser!.name,
-        nickname: currentUser!.nickname,
-        picture: currentUser!.picture,
-        sid: currentUser!.sid,
+        ...currentUser,
       });
     } catch (error) {
       console.error("Error joining room", error);
@@ -88,7 +82,7 @@ export function useRoom() {
   }, []);
 
   const handleAcceptIncommingCall = useCallback(async () => {
-    console.log("Accepting incomming call" + incommingCallData);
+    console.log("Accepting incomming call", incommingCallData);
     if (!incommingCallData) return;
     const { from, user, offer, roomId } = incommingCallData;
     if (offer) {
@@ -96,13 +90,8 @@ export function useRoom() {
       if (answer) {
         socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteUser({
+          ...user,
           roomId,
-          sid: user.sid,
-          picture: user.picture,
-          nickname: user.nickname,
-          name: user.name,
-          email_verified: user.email_verified,
-          email: user.email,
           isConnected: true,
           joinedAt: new Date(),
           socketId: from,
@@ -119,13 +108,8 @@ export function useRoom() {
 
     await peerService.setRemoteDesc(offer);
     setRemoteUser({
+      ...user,
       roomId,
-      sid: user.sid,
-      picture: user.picture,
-      nickname: user.nickname,
-      name: user.name,
-      email_verified: user.email_verified,
-      email: user.email,
       isConnected: true,
       joinedAt: new Date(),
       socketId: from,
@@ -140,18 +124,15 @@ export function useRoom() {
 
   const handleNegotiation = useCallback(
     async (ev: Event) => {
-      console.log("Handle negosiation");
+      console.log("Handle negotiation");
       const offer = await peerService.getOffer();
-      socket.emit("peer:negotiate", {
-        to: peerService.remoteSocketId,
-        offer,
-      });
+      socket.emit("peer:negotiate", { to: peerService.remoteSocketId, offer });
     },
     [remoteSocketId]
   );
 
   const handleRequiredPeerNegotiate = useCallback(async (data: any) => {
-    console.log("Required peer negosiate", data);
+    console.log("Required peer negotiate", data);
     const { from, offer } = data;
     if (offer) {
       const answer = await peerService.getAnswer(offer);
@@ -161,7 +142,7 @@ export function useRoom() {
 
   const handleRequiredPeerNegotiateFinalResult = useCallback(
     async (data: any) => {
-      console.log("Required peer negosiate final result", data);
+      console.log("Required peer negotiate final result", data);
       const { from, offer } = data;
       if (offer) {
         await peerService.setRemoteDesc(offer);
@@ -179,11 +160,8 @@ export function useRoom() {
   const handleUserDisconnect = useCallback(
     (payload: any) => {
       const { socketId = null } = payload;
-
-      if (socketId) {
-        if (remoteSocketId == socketId) {
-          setRemoteUser(undefined);
-        }
+      if (socketId && remoteSocketId === socketId) {
+        setRemoteUser(undefined);
       }
     },
     [remoteSocketId]
@@ -203,12 +181,7 @@ export function useRoom() {
 
     peerService?.peer?.addEventListener("negotiationneeded", handleNegotiation);
 
-    let temp = {
-      filename: "",
-      size: 0,
-      checksum: null,
-    };
-
+    let temp = { filename: "", size: 0, checksum: null };
     let receivedSize = 0;
     let receiveBuffer: Buffer[] = [];
 
@@ -219,11 +192,10 @@ export function useRoom() {
           setRemoteMediaStream([...remoteStreams, remoteStream[0]]);
         }
       });
-      peerService.peer.addEventListener("ended", async (ev) => {});
+      peerService.peer.addEventListener("ended", async () => {});
     }
 
     if (peerService.peer)
-      //@ts-ignore
       peerService.peer.ondatachannel = (e) => {
         peerService.remoteDataChanel = e.channel;
         peerService.remoteDataChanel.onmessage = (e) => {
@@ -346,23 +318,26 @@ export function useRoom() {
   }, [remoteSocketId]);
 
   useEffect(() => {
-    socket.on("refresh:user-list", handleRefreshUserList);
-    socket.on("peer:incomming-call", handleIncommingCall);
-    socket.on("peer:call:accepted", handleCallAccepted);
-    socket.on("peer:negotiate", handleRequiredPeerNegotiate);
-    socket.on("peer:negosiate:result", handleRequiredPeerNegotiateFinalResult);
-    socket.on("whiteboard:id", handleSetWhiteboardID);
+    const socketListeners = [
+      { event: "refresh:user-list", handler: handleRefreshUserList },
+      { event: "peer:incomming-call", handler: handleIncommingCall },
+      { event: "peer:call:accepted", handler: handleCallAccepted },
+      { event: "peer:negotiate", handler: handleRequiredPeerNegotiate },
+      {
+        event: "peer:negosiate:result",
+        handler: handleRequiredPeerNegotiateFinalResult,
+      },
+      { event: "whiteboard:id", handler: handleSetWhiteboardID },
+    ];
+
+    socketListeners.forEach(({ event, handler }) => {
+      socket.on(event, handler);
+    });
 
     return () => {
-      socket.off("refresh:user-list", handleRefreshUserList);
-      socket.off("peer:incomming-call", handleIncommingCall);
-      socket.off("peer:call:accepted", handleCallAccepted);
-      socket.off("peer:negotiate", handleRequiredPeerNegotiate);
-      socket.off(
-        "peer:negosiate:result",
-        handleRequiredPeerNegotiateFinalResult
-      );
-      socket.off("whiteboard:id", handleSetWhiteboardID);
+      socketListeners.forEach(({ event, handler }) => {
+        socket.off(event, handler);
+      });
     };
   }, []);
 
