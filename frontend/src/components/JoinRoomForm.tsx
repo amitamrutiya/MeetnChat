@@ -31,7 +31,7 @@ function JoinRoomForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    router.push(`/room/${values.roomId}`);
+    router.push(`/room/group-meet/${values.roomId}`);
   }
 
   return (

@@ -9,12 +9,15 @@ import {
 } from "@/components/ui/hover-card";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
-import { v4 } from "uuid";
 
 const IconCardButton = () => {
-  const { isLoading, user } = useUser();
+  const { user } = useUser();
   return functions.map((f, i) => (
-    <Link key={i} href={user ? `/room/${v4()}` : "/api/auth/login"} passHref>
+    <Link
+      key={i}
+      href={user ? f.link : "/api/auth/login"}
+      passHref
+    >
       <HoverCard>
         <HoverCardTrigger>
           {" "}

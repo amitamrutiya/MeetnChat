@@ -12,5 +12,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/room/:room*", "/room", "/logout"],
+  matcher: ["/", "/room/group-meet/:room*", "/room", "/logout"],
 };
