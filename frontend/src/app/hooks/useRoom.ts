@@ -1,30 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { SocketContext } from "@/app/context/SocketContext";
-import { createHmac } from "crypto";
-import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { serverInstance } from "@/app/api/serverInstance";
-import { IncomingCall, User } from "@/type";
-import peerService from "@/service/peer";
-import Navbar from "@/components/Navbar";
-import IncomingCallDialog from "@/components/IncomingCallDialog";
-import UsersList from "@/components/UsersList";
-import SetupAudioVideo from "@/components/SetupAudioVideo";
-import { ShareButton } from "@/components/ShareButton";
-import Dashboard from "@/components/Dashboard";
+import { SocketContext } from "@/app/context/SocketContext";
+import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import {
   FileTransferContext,
   FileTransferProps,
 } from "@/app/context/FileTransfer";
+import peerService from "@/service/peer";
+import { serverInstance } from "@/app/api/serverInstance";
+import { Socket } from "socket.io-client";
+import { IncomingCall, User } from "@/type";
+import { createHmac } from "crypto";
 
-export default function Room() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
-
+export function useRoom() {
+  const currentUser = useUser().user;
+  const socket = useContext(SocketContext) as Socket;
   const { setRemoteMediaStream, remoteStreams } = useContext(
     MediaStreamContext
   ) as ProviderProps;
@@ -32,7 +24,8 @@ export default function Room() {
   const { setAvailableFiles } = useContext(
     FileTransferContext
   ) as FileTransferProps;
-
+  const params = useParams();
+  const roomId = params.room;
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = useState<
     IncomingCall | undefined
@@ -40,22 +33,9 @@ export default function Room() {
   const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
 
   const [remoteUser, setRemoteUser] = useState<undefined | User>();
-
-  const currentUser = useUser().user;
-  const socket = useContext(SocketContext) as Socket;
-  const params = useParams();
-  const roomId = params.room;
-
-  const secret = React.useMemo(() => "$3#Ia", []);
-
-  const handleRefreshUserList = useCallback(async () => {
-    console.log("Refreshing user list");
-    const { data } = await serverInstance.get("/users");
-    if (data.users) {
-      console.log(data.users);
-      setUsers(data.users);
-    }
-  }, []);
+  const [users, setUsers] = useState([]);
+  const [whiteboardID, setWhiteboardID] = useState();
+  const secret = "$3#Ia";
 
   const joinRoom = useCallback(async () => {
     console.log("Joining room");
@@ -73,6 +53,19 @@ export default function Room() {
       console.error("Error joining room", error);
     }
   }, [currentUser]);
+
+  const handleRefreshUserList = useCallback(async () => {
+    console.log("Refreshing user list");
+    try {
+      const { data } = await serverInstance.get("/users");
+      if (data.users) {
+        console.log(data.users);
+        setUsers(data.users);
+      }
+    } catch (error) {
+      console.error("Error refreshing user list", error);
+    }
+  }, []);
 
   const handleClickUser = useCallback(async (user: User) => {
     console.log("Calling user", user);
@@ -120,23 +113,6 @@ export default function Room() {
     setIncommingCallData(undefined);
   }, [incommingCallData]);
 
-  const handleRejectIncommingCall = useCallback(
-    () => setIncommingCallData(undefined),
-    []
-    );
-
-    const handleNegotiation = useCallback(
-      async (ev: Event) => {
-        console.log("Handle negosiation");
-        const offer = await peerService.getOffer();
-        socket.emit("peer:negotiate", {
-          to: peerService.remoteSocketId,
-          offer,
-        });
-      },
-      [remoteSocketId]
-    );
-
   const handleCallAccepted = useCallback(async (data: any) => {
     console.log("Call accepted", data);
     const { offer, from, user, roomId } = data;
@@ -157,6 +133,22 @@ export default function Room() {
     setRemoteSocketId(from);
   }, []);
 
+  const handleRejectIncommingCall = useCallback(() => {
+    console.log("Rejecting incoming call");
+    setIncommingCallData(undefined);
+  }, []);
+
+  const handleNegotiation = useCallback(
+    async (ev: Event) => {
+      console.log("Handle negosiation");
+      const offer = await peerService.getOffer();
+      socket.emit("peer:negotiate", {
+        to: peerService.remoteSocketId,
+        offer,
+      });
+    },
+    [remoteSocketId]
+  );
 
   const handleRequiredPeerNegotiate = useCallback(async (data: any) => {
     console.log("Required peer negosiate", data);
@@ -341,7 +333,7 @@ export default function Room() {
     };
   }, [remoteStreams]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (remoteSocketId) {
       socket.off("refresh:user-list", handleRefreshUserList);
       socket.on("user-disconnected", handleUserDisconnect);
@@ -374,43 +366,18 @@ export default function Room() {
     };
   }, []);
 
-  return (
-    <div className="flex h-dvh flex-col justify-between  p-5">
-      <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
-
-      {remoteSocketId && (
-        <Dashboard
-          remoteSocketId={remoteSocketId}
-          whiteboardID={whiteboardID}
-        />
-      )}
-
-      {!remoteSocketId && (
-        <>
-          <UsersList
-            users={users}
-            roomId={roomId}
-            currentUser={currentUser}
-            calledToUserId={calledToUserId}
-            handleClickUser={handleClickUser}
-          />
-          <SetupAudioVideo />
-          <div className="flex flex-col items-center justify-center mt-5 space-y-5">
-            <ShareButton />
-            <h6 className="font-sans text-slate-400">
-              Tip: Click on user to make call
-            </h6>
-          </div>
-        </>
-      )}
-
-      {incommingCallData && (
-        <IncomingCallDialog
-          incommingCallData={incommingCallData}
-          handleAcceptIncommingCall={handleAcceptIncommingCall}
-          handleRejectIncommingCall={handleRejectIncommingCall}
-        />
-      )}
-    </div>
-  );
+  return {
+    users,
+    whiteboardID,
+    remoteUser,
+    remoteSocketId,
+    currentUser,
+    roomId,
+    incommingCallData,
+    calledToUserId,
+    handleRefreshUserList,
+    handleClickUser,
+    handleAcceptIncommingCall,
+    handleRejectIncommingCall,
+  };
 }
