@@ -5,7 +5,7 @@ import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
 import { ShareButton } from "@/components/ShareButton";
-import Dashboard from "@/components/Dashboard";
+import MeetDashboard from "@/components/MeetDashboard";
 import { useRoom } from "@/app/hooks/useRoom";
 
 export default function Room() {
@@ -28,7 +28,7 @@ export default function Room() {
       <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
 
       {remoteSocketId && (
-        <Dashboard
+        <MeetDashboard
           remoteSocketId={remoteSocketId}
           whiteboardID={whiteboardID}
         />

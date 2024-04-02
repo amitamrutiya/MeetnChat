@@ -5,7 +5,7 @@ import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
 import { ShareButton } from "@/components/ShareButton";
-import Dashboard from "@/components/Dashboard";
+import Dashboard from "@/components/MeetDashboard";
 import { useRoom } from "@/app/hooks/useRoom";
 
 export default function Room() {
