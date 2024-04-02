@@ -2,10 +2,6 @@ import React, { useContext, useState, useEffect } from "react";
 import {
   LucideScreenShare,
   LucideScreenShareOff,
-  MicIcon,
-  MicOffIcon,
-  VideoIcon,
-  VideoOffIcon,
   CircleIcon,
   PresentationIcon,
 } from "lucide-react";
@@ -31,6 +27,7 @@ import SettingButton from "./SettingButton";
 import { useStartUserStream } from "@/app/hooks/useStartStream";
 import { useStopUserStream } from "@/app/hooks/useStopStream";
 import ChatButton from "./ChatButton";
+import AudioVideoButton from "./AudioVideoButton";
 
 const MeetControllerBar = (props: { remoteSocketId: string }) => {
   const { remoteSocketId } = props;
@@ -65,63 +62,7 @@ const MeetControllerBar = (props: { remoteSocketId: string }) => {
           className="flex flex-row h-full w-full items-center justify-center gap-4"
           id="tools-container"
         >
-          {/* Audio Button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  size={"icon"}
-                  className={audio ? "bg-primary" : "bg-foreground"}
-                  onClick={() => {
-                    setAudio(!audio);
-                    if (!userStream) {
-                      handleStartAudioVideoStream();
-                      return;
-                    }
-                    const audioTrack = userStream?.getTracks()[0];
-                    if (audioTrack) {
-                      audioTrack.enabled = !audioTrack.enabled;
-                    }
-                  }}
-                >
-                  {audio ? <MicIcon /> : <MicOffIcon />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{audio ? "Stop audio" : "Start audio"}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          {/* Video Button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  size={"icon"}
-                  className={video ? "bg-primary" : "bg-foreground"}
-                  onClick={() => {
-                    if (!userStream) {
-                      setVideo(true);
-                      setAudio(true);
-                      handleStartAudioVideoStream();
-                      return;
-                    }
-                    setVideo(!video);
-                    const videoTrack = userStream?.getTracks()[1];
-                    if (videoTrack) {
-                      videoTrack.enabled = !videoTrack.enabled;
-                    }
-                  }}
-                >
-                  {video ? <VideoIcon /> : <VideoOffIcon />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{video ? "Stop video" : "Start video"}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <AudioVideoButton />
 
           {/* Screen Share Button */}
           <TooltipProvider>

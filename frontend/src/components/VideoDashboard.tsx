@@ -1,20 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import ReactPlayer from "react-player";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { AiFillPushpin } from "react-icons/ai";
-import AudioVideoBar from "./AudioVideoBar";
-import {
-  MediaScreenStreamContext,
-  ProviderScreenProps,
-} from "@/app/context/ScreenStream";
-import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { User } from "@/type";
-import MeetControllerBar from "./MeetControllerBar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
+import AudioVideoButton from "./AudioVideoButton";
+import ChatButton from "./ChatButton";
+import SettingButton from "./SettingButton";
+import EndMeetButton from "./EndMeetButton";
 
 interface DashboardProps {
   remoteSocketId: string;
@@ -103,7 +98,16 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
               </div>
             </div>{" "}
           </div>
-          <MeetControllerBar remoteSocketId={remoteSocketId} />
+          <div className="flex flex-row ">
+            <div className="sm:w-auto rounded-lg bg-slate-600 px-3 mx-auto py-2">
+              <div>
+                <AudioVideoButton />
+                <ChatButton remoteSocketId={remoteSocketId} />
+                <SettingButton />
+                <EndMeetButton />
+              </div>
+            </div>
+          </div>{" "}
         </div>
       </div>
     </div>
