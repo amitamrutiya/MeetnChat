@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   LucideScreenShare,
   LucideScreenShareOff,
@@ -16,12 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import { Button } from "./ui/button";
-import {
-  AudioVideoStreamContext,
-  AudioVideoStreamProps,
-} from "@/app/context/AudioVideoStream";
 import EndMeetButton from "./EndMeetButton";
 import SettingButton from "./SettingButton";
 import { useStartUserStream } from "@/app/hooks/useStartStream";
@@ -31,10 +26,6 @@ import AudioVideoButton from "./AudioVideoButton";
 
 const MeetControllerBar = (props: { remoteSocketId: string }) => {
   const { remoteSocketId } = props;
-  const { audio, video, setAudio, setVideo } = React.useContext(
-    AudioVideoStreamContext
-  ) as AudioVideoStreamProps;
-  const { userStream } = useContext(MediaStreamContext) as ProviderProps;
 
   const { userScreenStream } = React.useContext(
     MediaScreenStreamContext
@@ -42,18 +33,10 @@ const MeetControllerBar = (props: { remoteSocketId: string }) => {
 
   const [whiteboard, setWhiteboard] = useState<boolean>(true);
 
-  const { handleStartAudioVideoStream, handleStartScreenShareStream } =
+  const {  handleStartScreenShareStream } =
     useStartUserStream();
-  const { handleStopScreenShareStream, handleStopAudioVideoStream } =
+  const { handleStopScreenShareStream } =
     useStopUserStream();
-
-  useEffect(() => {
-    if (!audio && !video) {
-      handleStopAudioVideoStream();
-    }
-
-    return () => {};
-  }, [audio, handleStopAudioVideoStream, video]);
 
   return (
     <div className="flex flex-row ">
@@ -62,6 +45,7 @@ const MeetControllerBar = (props: { remoteSocketId: string }) => {
           className="flex flex-row h-full w-full items-center justify-center gap-4"
           id="tools-container"
         >
+          {/* Audio Video Button */}
           <AudioVideoButton />
 
           {/* Screen Share Button */}
