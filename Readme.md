@@ -1,5 +1,7 @@
 # Description [(Website)](https://meetn-chat.vercel.app/)
 
+![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/1da19f87-2ac0-4180-b1b8-85acd9904163)
+
 This project is a real-time communication application offering various communication options including one-to-one and group video calls, meetings, and text chats. Built using Next.js, TypeScript, Socket.io, Auth0 for authentication, MongoDB for database storage, and Tailwind CSS for styling. The application enables seamless communication and collaboration among users.
 
 ## Features
