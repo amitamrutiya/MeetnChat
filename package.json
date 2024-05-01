@@ -4,9 +4,9 @@
   "main": "index.js",
   "author": "Amit Amrutiya <amitamrutiya2210@gmail.com>",
   "scripts": {
-    "start": "npx tsc && node dist/index.js",
+    "start": "npx tsc && node backend/dist/index.js",
     "build": "tsc -p .",
-    "dev": "npx tsc && node dist/index.js"
+    "dev": "npx tsc && node backend/dist/index.js"
   },
   "dependencies": {
     "@types/uuid": "^8.3.4",
