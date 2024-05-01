@@ -37,6 +37,10 @@ export function useRoom() {
   const secret = "$3#Ia";
 
   const joinRoom = useCallback(async () => {
+    if (!currentUser || !roomId) return;
+    if (process.env.ENVIRONMENT !== "development") {
+      if (users.map((e) => e.email).includes(currentUser.email)) return;
+    }
     console.log("Joining room");
     try {
       socket.emit("room:join", {
