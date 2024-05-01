@@ -1,4 +1,4 @@
-interface User {
+export interface User {
   socketId: string;
   roomId: string;
   email?: string | null;
@@ -11,7 +11,7 @@ interface User {
   isConnected: boolean;
 }
 
-interface RoomUser {
+export interface RoomUser {
   id: string;
   fullname: string;
   email: string;

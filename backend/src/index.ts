@@ -3,6 +3,7 @@ import express from "express";
 import { Socket, Server as SocketServer } from "socket.io";
 import { v4 as uuidV4 } from "uuid";
 import cors from "cors";
+import { User, RoomUser } from "./types";
 
 const PORT: number = Number(process.env.PORT) || 8000;
 const app: express.Application = express();
