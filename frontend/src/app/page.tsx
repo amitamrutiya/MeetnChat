@@ -1,10 +1,12 @@
 import IconCardButton from "@/components/Icon-card-button";
 import JoinRoomForm from "@/components/JoinRoomForm";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import ParticlesComponent from "@/components/particles";
 
 export default function Home() {
   return (
     <main className="h-dvh overflow-auto p-5">
+      <ParticlesComponent id="particles" />
       <ModeToggle />
       <div className="flex flex-col items-center text-center absolute sm:w-[90vw] sm:mx-5">
         <div

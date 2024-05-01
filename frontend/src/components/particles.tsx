@@ -1,16 +1,24 @@
 "use client";
 import { useTheme } from "next-themes";
 
-import Particles from "@tsparticles/react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
 // import configs from "@tsparticles/configs";
+import { loadSlim } from "@tsparticles/slim";
+import { useEffect, useState } from "react";
 
-export default function ParticlesComponent(props: {
-  id: string;
-  done: boolean;
-}) {
+export default function ParticlesComponent(props: { id: string }) {
+  const [init, setInit] = useState(false);
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
   const { theme } = useTheme();
   return (
-    props.done && (
+    init && (
       <Particles
         id={props.id}
         url={

@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
 import { AudioVideoDevicesProvider } from "./context/AudioVideoDevices";
 import { AudioVideoStreamProvider } from "./context/AudioVideoStream";
 import { FileTransferProvider } from "./context/FileTransfer";
@@ -41,7 +40,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <UserProvider>
