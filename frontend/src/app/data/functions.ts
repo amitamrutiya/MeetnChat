@@ -69,7 +69,7 @@ const functions = [
       "Connect with random users for spontaneous video calls. Experience the excitement of meeting new people while engaging in real-time video conversations.",
     icon1: UserRound,
     icon2: Video,
-    link: `/room/random-video/${v4()}`,
+    link: `/room/random-video`,
   },
 ];
 
