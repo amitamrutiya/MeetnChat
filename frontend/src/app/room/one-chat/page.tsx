@@ -1,7 +1,12 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Mail, UsersRound, MessageCircleMore } from "lucide-react";
+import {
+  Mail,
+  UsersRound,
+  MessageCircleMore,
+  SettingsIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,8 +20,8 @@ export default function Room() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row gap-4 p-4 overflow-auto">
-      <section className="flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:w-1/3 md:block hidden">
+    <div className="min-h-screen flex flex-col md:flex-row gap-4 p-4">
+      <section className="flex-grow  bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:w-1/3 md:block hidden box-border">
         <div className="Search p-5 mb-8">
           <div className="grid  w-full max-w-full items-center gap-1.5">
             <Input
@@ -28,7 +33,7 @@ export default function Room() {
             {/* TODO: Add Search Icon */}
           </div>
         </div>
-        <div className="Menu flex justify-evenly mb-8">
+        <div className="Menu flex justify-evenly mb-4">
           <Button
             variant="outline"
             className={`p-8 rounded-2xl ${
@@ -68,9 +73,9 @@ export default function Room() {
           </Button>
         </div>
         {selectedTab === "Chats" && (
-          <ScrollArea className="ChatList h-1/2 rounded-md border px-4">
+          <div className="ChatList h-1/2 rounded-md border px-4 mb-8 overflow-auto">
             <div className="p-4">
-              <h4 className="mb-4 text-sm font-medium leading-none">
+              <h4 className="mb-7 text-md font-bold leading-none text-center">
                 Your Recent Chat
               </h4>
               {tags.map((tag) => (
@@ -96,7 +101,7 @@ export default function Room() {
                 </>
               ))}
             </div>
-          </ScrollArea>
+          </div>
         )}
         {selectedTab === "Contacts" && (
           <div className="Contacts">Contacts Content</div>
@@ -104,7 +109,21 @@ export default function Room() {
         {selectedTab === "Invite" && (
           <div className="Invite">Invite Content</div>
         )}
-        <div className="Profile"></div>
+        <div className="Profile rounded-full flex justify-between items-center bg-secondary mx-6 gap-3">
+          <div className="flex flex-row items-center">
+            <Avatar className="h-[70px] w-[70px]">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div className="chat flex-col ml-5">
+              <div className="name">John Doe</div>
+              <div className="message text-gray-400 text-sm">Online</div>
+            </div>
+          </div>
+          <div className="pr-6">
+            <SettingsIcon />
+          </div>
+        </div>
       </section>
       <main className="flex-grow bg-[#181818] rounded-3xl xl:w-1/2 md:w-2/3"></main>
       <section className="flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:block hidden"></section>
