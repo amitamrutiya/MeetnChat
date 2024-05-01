@@ -38,11 +38,15 @@ function SetupAudioVideo() {
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const { user } = useUser();
-
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((deviceInfos) => {
-      setDevices(deviceInfos);
-    });
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: false })
+      .then((_) => {
+        navigator.mediaDevices.enumerateDevices().then((devices) => {
+          console.log("devices", devices);
+          setDevices(devices);
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -55,7 +59,8 @@ function SetupAudioVideo() {
         groupIdSet.add(device.groupId);
       }
     }
-    setAudioDevices(uniqueAudioDevices);
+    console.log("uniqueAudioDevices", uniqueAudioDevices);
+    setAudioDevices([...uniqueAudioDevices]);
   }, [devices, setAudioDevices]);
 
   useEffect(() => {
@@ -68,7 +73,8 @@ function SetupAudioVideo() {
         groupIdSet.add(device.groupId);
       }
     }
-    setVideoDevices(uniqueVideoDevices);
+    console.log("uniqueVideoDevices", uniqueVideoDevices);
+    setVideoDevices([...uniqueVideoDevices]);
   }, [devices, setVideoDevices]);
 
   useEffect(() => {
@@ -108,13 +114,13 @@ function SetupAudioVideo() {
         {userStream ? (
           <ReactPlayer url={userStream} playing pip />
         ) : user ? (
-            <Image
-              className="rounded-[8px]"
-              layout="fill"
-              objectFit="cover"
-              src={user.picture as string}
-              alt="Picture of the User"
-            />
+          <Image
+            className="rounded-[8px]"
+            layout="fill"
+            objectFit="cover"
+            src={user.picture as string}
+            alt="Picture of the User"
+          />
         ) : (
           <div className="bg-foreground h-[100%] w-[100%] flex justify-center items-center">
             <Image

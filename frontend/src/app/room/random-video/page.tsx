@@ -36,6 +36,7 @@ export default function Room() {
 
       {!remoteSocketId && (
         <>
+          {/* TODO: Implement different type of user list for random video call */}
           <UsersList
             users={users}
             roomId={roomId}
