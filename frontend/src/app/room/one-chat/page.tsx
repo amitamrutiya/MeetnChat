@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import React from "react";
 
 export default function Room() {
   const [selectedTab, setSelectedTab] = useState("Chats");
@@ -134,8 +135,8 @@ export default function Room() {
 
   return (
     <div className="flex flex-col md:flex-row gap-4 p-4 max-h-screen">
-      <section className="flex-grow  bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:w-1/3 md:block">
-        <div className="flex flex-col justify-evenly h-[100%]">
+      <section className="flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:w-1/3 md:block hidden">
+        <div className="flex flex-col justify-between  h-[100%]">
           <div>
             <div className="Search p-5 mb-8">
               <div className="grid  w-full max-w-full items-center gap-1.5">
@@ -151,7 +152,7 @@ export default function Room() {
             <div className="Menu flex justify-evenly mb-4">
               <Button
                 variant="outline"
-                className={`p-8 rounded-2xl ${
+                className={`p-5 xl:p-8 rounded-2xl ${
                   selectedTab === "Chats" ? "bg-primary" : ""
                 }`}
                 onClick={() => setSelectedTab("Chats")}
@@ -163,7 +164,7 @@ export default function Room() {
               </Button>
               <Button
                 variant="outline"
-                className={`p-8 rounded-2xl ${
+                className={`p-5 xl:p-8 rounded-2xl ${
                   selectedTab === "Contacts" ? "bg-primary" : ""
                 }`}
                 onClick={() => setSelectedTab("Contacts")}
@@ -176,7 +177,7 @@ export default function Room() {
 
               <Button
                 variant="outline"
-                className={`p-8 rounded-2xl ${
+                className={`p-5 xl:p-8 rounded-2xl ${
                   selectedTab === "Invite" ? "bg-primary" : ""
                 }`}
                 onClick={() => setSelectedTab("Invite")}
@@ -187,15 +188,17 @@ export default function Room() {
                 </div>
               </Button>
             </div>
-            {selectedTab === "Chats" && (
-              <div className="ChatList h-1/2 rounded-md border px-4 mb-8 overflow-auto">
-                <div className="p-4">
-                  <h4 className="mb-7 text-md font-bold leading-none text-center">
-                    Your Recent Chat
-                  </h4>
-                  {tags.map((tag) => (
-                    <>
-                      <div key={tag} className="flex justify-between">
+          </div>
+          {selectedTab === "Chats" && (
+            <div className="ChatList mb-10 rounded-md border px-4 overflow-auto">
+              <div className="p-4">
+                <h4 className="text-md font-bold leading-none text-center my-3">
+                  Your Recent Chat
+                </h4>
+                {tags.map((tag) => (
+                  <>
+                    <React.Fragment key={tag}>
+                      <div className="flex justify-between">
                         <div className="left-side flex">
                           <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
@@ -212,20 +215,21 @@ export default function Room() {
                           03:36
                         </div>
                       </div>
-                      <Separator className="my-2" />
-                    </>
-                  ))}
-                </div>
+                    </React.Fragment>
+                    <Separator className="my-2" />
+                  </>
+                ))}
               </div>
-            )}
-            {selectedTab === "Contacts" && (
-              <div className="Contacts">Contacts Content</div>
-            )}
-            {selectedTab === "Invite" && (
-              <div className="Invite">Invite Content</div>
-            )}
-          </div>
-          <div className="Profile mb-10 rounded-full flex justify-between items-center bg-secondary mx-6 gap-3">
+            </div>
+          )}
+          {selectedTab === "Contacts" && (
+            <div className="Contacts">Contacts Content</div>
+          )}
+          {selectedTab === "Invite" && (
+            <div className="Invite">Invite Content</div>
+          )}
+
+          <div className="profile mb-6 rounded-full flex justify-between items-center bg-secondary mx-6 gap-3">
             <div className="flex flex-row items-center">
               <Avatar className="h-[70px] w-[70px]">
                 <AvatarImage src="https://github.com/shadcn.png" />
@@ -286,7 +290,7 @@ export default function Room() {
           </div>{" "}
         </div>
       </main>
-      <section className="p-6 flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:block hidden">
+      <section className="p-6 flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 xl:block hidden">
         <div className="flex flex-col justify-between h-[100%]">
           <div className="flex flex-col mt-6 justify-center items-center">
             <Image
