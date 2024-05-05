@@ -1,27 +1,29 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import {
-  Mail,
-  UsersRound,
-  MessageCircleMore,
-  SettingsIcon,
-  PaperclipIcon,
-  MicIcon,
-  SmileIcon,
-  SendHorizonalIcon,
-  VideoIcon,
-  PhoneCallIcon,
-  AudioLines,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
-import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AudioLines,
+  CheckIcon,
+  Mail,
+  MessageCircleMore,
+  MicIcon,
+  PaperclipIcon,
+  PhoneCallIcon,
+  SendHorizonalIcon,
+  SettingsIcon,
+  SmileIcon,
+  UsersRound,
+  VideoIcon,
+  XIcon,
+} from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Room() {
   const [selectedTab, setSelectedTab] = useState("Chats");
@@ -136,7 +138,7 @@ export default function Room() {
   return (
     <div className="flex flex-col md:flex-row gap-4 p-4 max-h-screen">
       <section className="flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:w-1/3 md:block hidden">
-        <div className="flex flex-col justify-between  h-[100%]">
+        <div className="flex flex-col justify-between  h-full">
           <div>
             <div className="Search p-5 mb-8">
               <div className="grid  w-full max-w-full items-center gap-1.5">
@@ -223,10 +225,97 @@ export default function Room() {
             </div>
           )}
           {selectedTab === "Contacts" && (
-            <div className="Contacts">Contacts Content</div>
+            <div className="Contacts mb-10 rounded-md border px-4 overflow-auto">
+              <div className="p-4">
+                <h4 className="text-md font-bold leading-none text-center my-3">
+                  All Contacts
+                </h4>
+                {tags.map((tag) => (
+                  <>
+                    <React.Fragment key={tag}>
+                      <div className="flex justify-between">
+                        <div className="left-side flex">
+                          <Avatar>
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className="chat flex-col ml-5">
+                            <div className="name">John Doe</div>
+                            <div className="message text-gray-400 text-sm">
+                              Hello My name is John Doe
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                    <Separator className="my-2" />
+                  </>
+                ))}
+              </div>
+            </div>
           )}
           {selectedTab === "Invite" && (
-            <div className="Invite">Invite Content</div>
+            <Tabs defaultValue="account" className="mx-3  w-[95%] h-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="invite">Invite</TabsTrigger>
+                <TabsTrigger value="request">Request</TabsTrigger>
+              </TabsList>
+              <TabsContent value="request">
+                <div className="h-[30rem] my-10 rounded-md border px-2 overflow-auto">
+                  {tags.map((tag) => (
+                    <React.Fragment key={tag}>
+                      <div className="flex justify-between">
+                        <div className="flex">
+                          <Avatar>
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className="chat flex-col ml-2">
+                            <div className="name">John Doe</div>
+                            <div className="message text-gray-400 text-xs">
+                              Hello My name is John Doe
+                            </div>
+                          </div>
+                        </div>
+                        <div className="">
+                          <Button variant="secondary">
+                            <CheckIcon />
+                          </Button>
+                          <Button variant="destructive">
+                            <XIcon />
+                          </Button>
+                        </div>
+                      </div>
+                      <Separator className="my-2" />
+                    </React.Fragment>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="invite">
+                <div className="h-[30rem] my-10 rounded-md border px-4 overflow-auto">
+                  {tags.map((tag) => (
+                    <React.Fragment key={tag}>
+                      <div className="flex justify-between">
+                        <div className="flex">
+                          <Avatar>
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className="chat flex-col ml-5">
+                            <div className="name">John Doe</div>
+                            <div className="message text-gray-400 text-xs">
+                              Hello My name is John Doe
+                            </div>
+                          </div>
+                        </div>
+                        <Button>Invite</Button>
+                      </div>
+                      <Separator className="my-2" />
+                    </React.Fragment>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           )}
 
           <div className="profile mb-6 rounded-full flex justify-between items-center bg-secondary mx-6 gap-3">
@@ -247,7 +336,7 @@ export default function Room() {
         </div>
       </section>
       <main className="px-6 flex-grow bg-[#181818] rounded-3xl xl:w-1/2 md:w-2/3">
-        <div className="flex flex-col justify-between items-center h-[100%]">
+        <div className="flex flex-col justify-between items-center h-full">
           <div className="h-5/6 w-full my-6 overflow-auto">
             {chatData.map((chat, index) => (
               <div
@@ -291,7 +380,7 @@ export default function Room() {
         </div>
       </main>
       <section className="p-6 flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 xl:block hidden">
-        <div className="flex flex-col justify-between h-[100%]">
+        <div className="flex flex-col justify-between h-full">
           <div className="flex flex-col mt-6 justify-center items-center">
             <Image
               src="https://github.com/shadcn.png"
