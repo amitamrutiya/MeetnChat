@@ -2,6 +2,8 @@
 
 ![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/1da19f87-2ac0-4180-b1b8-85acd9904163)
 ![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/a371ca16-6976-4bfd-b81e-206f6b4f89b2)
+![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/e7c39377-bec2-45ea-9a8e-7fcd6c14a23f)
+
 
 This project is a real-time communication application offering various communication options including one-to-one and group video calls, meetings, and text chats. Built using Next.js, TypeScript, Socket.io, Auth0 for authentication, MongoDB for database storage, and Tailwind CSS for styling. The application enables seamless communication and collaboration among users.
 
