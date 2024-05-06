@@ -29,6 +29,7 @@
     "add": "^2.0.6",
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^2.2.0",
     "clsx": "^2.1.0",
     "fabricjs-react": "^1.2.2",
     "lucide-react": "^0.354.0",
