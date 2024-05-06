@@ -8,7 +8,7 @@ import {
   FileTransferContext,
   FileTransferProps,
 } from "@/app/context/FileTransfer";
-import peerService from "@/service/peer";
+import peerService from "@/helpers/peer";
 import { serverInstance } from "@/app/api/serverInstance";
 import { Socket } from "socket.io-client";
 import { IncomingCall, User } from "@/type";

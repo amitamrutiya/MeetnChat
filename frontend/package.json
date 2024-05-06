@@ -28,6 +28,7 @@
     "@tsparticles/slim": "^3.3.0",
     "add": "^2.0.6",
     "axios": "^1.6.7",
+    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.2.0",
     "clsx": "^2.1.0",
@@ -40,9 +41,11 @@
     "npx": "^10.2.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-email": "^2.1.2",
     "react-hook-form": "^7.51.0",
     "react-icons": "^5.0.1",
     "react-player": "^2.15.1",
+    "resend": "^3.2.0",
     "shadcn-ui": "^0.8.0",
     "socket.io-client": "^4.4.1",
     "tailwind-merge": "^2.2.1",
@@ -52,6 +55,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -1,4 +1,4 @@
-import peerService from "@/service/peer";
+import peerService from "@/helpers/peer";
 import { createHmac } from "crypto";
 import { useCallback, useMemo } from "react";
 
