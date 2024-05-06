@@ -4,6 +4,7 @@ import { chatSchema } from "./chat.model";
 export interface User extends Document {
   name: string;
   email: string;
+  password: string;
   profile_image: string;
   bio: string;
   phone_number: string;
@@ -11,6 +12,7 @@ export interface User extends Document {
   friends: mongoose.Schema.Types.ObjectId[];
   is_setup: boolean;
   is_online: boolean;
+  is_verified: boolean;
   chats: mongoose.Types.ObjectId[];
 }
 
@@ -24,7 +26,11 @@ const userSchema: Schema<User> = new Schema(
       type: String,
       unique: true,
       required: [true, "Email is required"],
-      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
+      match: [/^\S+@\S>>>>+\.\S+$/, "Please enter a valid email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
     },
     profile_image: {
       type: String,
@@ -53,6 +59,10 @@ const userSchema: Schema<User> = new Schema(
       default: false,
     },
     is_online: {
+      type: Boolean,
+      default: false,
+    },
+    is_verified: {
       type: Boolean,
       default: false,
     },
