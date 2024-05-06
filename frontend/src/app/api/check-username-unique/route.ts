@@ -4,7 +4,7 @@ import { usernameValidation } from "@/schemas/profileSchema";
 import { z } from "zod";
 
 const UsernameQuerySchema = z.object({
-  username: z.string(),
+  username: usernameValidation,
 });
 
 export default async function GET(req: Request) {
@@ -21,13 +21,41 @@ export default async function GET(req: Request) {
       return Response.json(
         {
           success: false,
-          message: "Invalid query params",
+          message:
+            usernameErrors?.length > 0
+              ? usernameErrors.join(", ")
+              : "Invalid query parameters",
         },
         {
           status: 400,
         }
       );
     }
+    const { username } = result.data;
+    const existingVerifiedUser = await UserModel.findOne({
+      username,
+      is_verified: true,
+    });
+    if (existingVerifiedUser) {
+      return Response.json(
+        {
+          success: false,
+          message: "Username already exists",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+    return Response.json(
+      {
+        success: true,
+        message: "Username is unique",
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.log("Error in check-username-unique", error);
     return Response.json(
