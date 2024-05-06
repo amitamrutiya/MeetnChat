@@ -1,30 +1,46 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
+import { chatSchema } from "./chat.model";
 
-const userSchema = new mongoose.Schema(
+export interface User extends Document {
+  name: string;
+  email: string;
+  profile_image: string;
+  bio: string;
+  phone_number: string;
+  username: string;
+  friends: mongoose.Schema.Types.ObjectId[];
+  is_setup: boolean;
+  is_online: boolean;
+  chats: mongoose.Types.ObjectId[];
+}
+
+const userSchema: Schema<User> = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
     },
     email: {
       type: String,
-      required: true,
+      unique: true,
+      required: [true, "Email is required"],
+      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
     },
     profile_image: {
       type: String,
-      required: true,
     },
     bio: {
       type: String,
-      required: true,
+      default: "Hey there! I am available on ChatApp",
     },
     phone_number: {
       type: String,
-      required: true,
+      match: [/^\d{10}$/, "Please enter a valid phone number"],
+      unique: true,
     },
     username: {
       type: String,
-      required: true,
+      unique: true,
     },
     friends: [
       {
@@ -40,10 +56,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    chats: [chatSchema],
   },
   { timestamps: true }
 );
 
-const userModel =  mongoose.model("User", userSchema);
+const userModel =
+  (mongoose.models.User as mongoose.Model<User>) ||
+  mongoose.model<User>("User", userSchema);
 
 export default userModel;

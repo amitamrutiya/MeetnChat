@@ -1,6 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-const chatSchema = new mongoose.Schema(
+export interface Chat extends Document {
+  sender_id: mongoose.Schema.Types.ObjectId;
+  receiver_id: mongoose.Schema.Types.ObjectId;
+  message: string;
+}
+
+export const chatSchema: Schema<Chat> = new Schema(
   {
     sender_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -20,6 +26,8 @@ const chatSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const chatModel = mongoose.model("Chat", chatSchema);
+const chatModel =
+  (mongoose.models.Chat as mongoose.Model<Chat>) ||
+  mongoose.model<Chat>("Chat", chatSchema);
 
 export default chatModel;
