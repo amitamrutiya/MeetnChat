@@ -23,7 +23,7 @@ import { signInSchema } from "@/schemas/signinSchema";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "./ui/use-toast";
-import { Divide, Loader2 } from "lucide-react";
+import { Loader2, MailIcon } from "lucide-react";
 import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -129,11 +129,13 @@ function JoinRoomForm() {
 
   async function onSignInFormSubmit(values: z.infer<typeof signInSchema>) {
     setIsSubmitting(true);
+    console.log("values", values);
     const result = await signIn("credentials", {
       redirect: false,
       identifier: values.identifier,
       password: values.password,
     });
+    console.log("result", result);
     setIsSubmitting(false);
     if (result?.error) {
       toast({
@@ -212,13 +214,13 @@ function JoinRoomForm() {
             <TabsTrigger value="signup">SignUp</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
-            <div className="w-full max-w-md p-8 space-y-8 bg-secondary rounded-lg shadow-md">
+            <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md">
               <div className="text-center">
                 <h1 className="text-2xl font-extrabold mb-6">
                   Please Login to Use
                 </h1>
                 <p className="mb-4">
-                  Sign up to start your anonymous adventure
+                  Sign in to start your anonymous adventure
                 </p>
               </div>
               <Form {...signinForm}>
@@ -240,8 +242,8 @@ function JoinRoomForm() {
                     )}
                   />
                   <FormField
-                    control={sendVerificationEmailForm.control}
                     name="password"
+                    control={signinForm.control}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex">Password</FormLabel>
@@ -268,6 +270,13 @@ function JoinRoomForm() {
                   </Button>
                 </form>
               </Form>
+              <Button
+                variant={"link"}
+                onClick={() => signIn("google")}
+                className="w-full"
+              >
+                Sign in with Google{" "}
+              </Button>
             </div>
           </TabsContent>
           <TabsContent value="signup">
@@ -412,6 +421,13 @@ function JoinRoomForm() {
                         ) : (
                           "Sign Up"
                         )}
+                      </Button>
+                      <Button
+                        variant={"link"}
+                        onClick={() => signIn("google")}
+                        className="w-full"
+                      >
+                        Sign in with Google{" "}
                       </Button>
                     </form>
                   </Form>

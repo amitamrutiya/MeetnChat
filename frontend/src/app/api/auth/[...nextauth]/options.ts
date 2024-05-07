@@ -1,6 +1,7 @@
 import connectDB from "@/config/database";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import UserModel from "@/model/user.model";
 
@@ -42,6 +43,17 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
   ],
   pages: {
     signIn: "/sign-in",
@@ -66,6 +78,15 @@ export const authOptions: NextAuthOptions = {
         token.username = user.username;
       }
       return token;
+    },
+    async redirect({ url, baseUrl }) {
+      return "/";
+    },
+    async signIn({ account, user }) {
+      if (account?.provider === "google") {
+        return Boolean(user.is_verified && user.email?.endsWith("@gmail.com"));
+      }
+      return true; // Do different verification for other providers that don't have `email_verified`
     },
   },
 };

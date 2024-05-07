@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { signOut } from "next-auth/react";
 
 function LogoutButton() {
   const session = useSession();
@@ -15,13 +16,12 @@ function LogoutButton() {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   return (
-    <Button
-      className="absolute top-0 right-0 m-4"
-      onClick={() => {
-        window.location.href = "/api/auth/logout";
-      }}
-    >
+    <Button className="absolute top-0 right-0 m-4" onClick={() => signOut()}>
       Logout
     </Button>
   );
