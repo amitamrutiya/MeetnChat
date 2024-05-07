@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { SocketContext } from "@/app/context/SocketContext";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import {
@@ -13,9 +12,11 @@ import { serverInstance } from "@/app/api/serverInstance";
 import { Socket } from "socket.io-client";
 import { IncomingCall, User } from "@/type";
 import { createHmac } from "crypto";
+import { useSession } from "next-auth/react";
 
 export function useRoom() {
-  const currentUser = useUser().user;
+  const sesstion = useSession();
+  const currentUser = sesstion.data?.user;
   const socket = useContext(SocketContext) as Socket;
   const { setRemoteMediaStream, remoteStreams } = useContext(
     MediaStreamContext

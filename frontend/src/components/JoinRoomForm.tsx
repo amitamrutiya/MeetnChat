@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
@@ -27,9 +26,12 @@ import { toast } from "./ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import { signIn, useSession } from "next-auth/react";
 
 function JoinRoomForm() {
-  const { user } = useUser();
+  const sesstion = useSession();
+  const user = sesstion.data?.user;
   const router = useRouter();
   const [username, setUsername] = useState("");
   let sendMail = false;
@@ -123,23 +125,27 @@ function JoinRoomForm() {
 
   async function onSignInFormSubmit(values: z.infer<typeof signInSchema>) {
     setIsSubmitting(true);
-    try {
-      const response = await axios.post<ApiResponse>("/api/sign-in", values);
+    const result = await signIn("credentials", {
+      redirect: false,
+      identifier: values.identifier,
+      password: values.password,
+    });
+    setIsSubmitting(false);
+    if (result?.error) {
       toast({
-        title: "Success",
-        description: response.data.message,
-      });
-      setIsSubmitting(false);
-    } catch (error) {
-      console.log("Error in signin of user", error);
-      const axiosError = error as AxiosError<ApiResponse>;
-      let errorMessage = axiosError.response?.data.message;
-      toast({
-        title: "Signin failed",
-        description: errorMessage,
+        title: "Sign in failed",
+        description: "Incorrect username or password",
         variant: "destructive",
       });
-      setIsSubmitting(false);
+    } else {
+      toast({
+        title: "Success",
+        description: "Sign in successful",
+      });
+    }
+
+    if (result?.url) {
+      router.replace("/");
     }
   }
 
@@ -192,150 +198,233 @@ function JoinRoomForm() {
             <Button type="submit">Submit</Button>
           </form>
         </Form>
-      ) : sendMail ? (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-          <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-            <div className="text-center">
-              <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
-                Verify Your Account
-              </h1>
-              <p className="mb-4">
-                Enter the verification code sent to your email
-              </p>
-              <Form {...signupForm}>
-                <form
-                  onSubmit={signupForm.handleSubmit(onSignUpFormSubmit)}
-                  className="w-2/3 space-y-6"
-                >
-                  <FormField
-                    name="code"
-                    control={signupForm.control}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>One-Time Password</FormLabel>
-                        <FormControl>
-                          <InputOTP maxLength={6} {...field}>
-                            <InputOTPGroup>
-                              <InputOTPSlot index={0} />
-                              <InputOTPSlot index={1} />
-                              <InputOTPSlot index={2} />
-                              <InputOTPSlot index={3} />
-                              <InputOTPSlot index={4} />
-                              <InputOTPSlot index={5} />
-                            </InputOTPGroup>
-                          </InputOTP>
-                        </FormControl>
-                        <FormDescription>
-                          Please enter the one-time password sent to your email.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button type="submit">Submit</Button>
-                </form>
-              </Form>
-            </div>
-          </div>
-        </div>
       ) : (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-          <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-            <div className="text-center">
-              <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
-                Please Login to Use
-              </h1>
-              <p className="mb-4">Sign up to start your anonymous adventure</p>
-            </div>
-            <Form {...sendVerificationEmailForm}>
-              <form
-                onSubmit={sendVerificationEmailForm.handleSubmit(
-                  onSendVerificationEmail
-                )}
-                className="space-y-4"
-              >
-                <FormField
-                  name="username"
-                  control={sendVerificationEmailForm.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Username"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            debouncedUsername(e.target.value);
-                          }}
-                        />
-                      </FormControl>
-                      {isCheckingUsername && (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+        <Tabs defaultValue="login" className="w-[400px]">
+          <TabsList>
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="signup">SignUp</TabsTrigger>
+          </TabsList>
+          <TabsContent value="login">
+            <div className="flex justify-center items-center min-h-screen bg-gray-100">
+              <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+                <div className="text-center">
+                  <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
+                    Please Login to Use
+                  </h1>
+                  <p className="mb-4">
+                    Sign up to start your anonymous adventure
+                  </p>
+                </div>
+                <Form {...signinForm}>
+                  <form
+                    onSubmit={signinForm.handleSubmit(onSignInFormSubmit)}
+                    className="space-y-4"
+                  >
+                    <FormField
+                      name="identifier"
+                      control={signinForm.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email/Username</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Email/Username" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                      <p
-                        className={`text-sm ${
-                          usernameMessage === "Username is unique"
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }`}
-                      >
-                        test {usernameMessage}
-                      </p>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="email"
-                  control={sendVerificationEmailForm.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={sendVerificationEmailForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                      wait
-                    </>
-                  ) : (
-                    "Sign Up"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </div>
-          {/* <Link href="/api/auth/login" passHref>
+                    />
+                    <FormField
+                      control={sendVerificationEmailForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                          Please wait
+                        </>
+                      ) : (
+                        "Sign Up"
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
+              {/* <Link href="/api/auth/login" passHref>
             <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white py-2 px-4 rounded border-2 border-transparent hover:border-purple-500 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 animate-pulse w-[100%]">
               Login in with Google
             </Button>
           </Link> */}
-        </div>
+            </div>{" "}
+          </TabsContent>
+          <TabsContent value="signup">
+            {sendMail ? (
+              <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
+                      Verify Your Account
+                    </h1>
+                    <p className="mb-4">
+                      Enter the verification code sent to your email
+                    </p>
+                    <Form {...signupForm}>
+                      <form
+                        onSubmit={signupForm.handleSubmit(onSignUpFormSubmit)}
+                        className="w-2/3 space-y-6"
+                      >
+                        <FormField
+                          name="code"
+                          control={signupForm.control}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>One-Time Password</FormLabel>
+                              <FormControl>
+                                <InputOTP maxLength={6} {...field}>
+                                  <InputOTPGroup>
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                    <InputOTPSlot index={3} />
+                                    <InputOTPSlot index={4} />
+                                    <InputOTPSlot index={5} />
+                                  </InputOTPGroup>
+                                </InputOTP>
+                              </FormControl>
+                              <FormDescription>
+                                Please enter the one-time password sent to your
+                                email.
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button type="submit">Submit</Button>
+                      </form>
+                    </Form>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
+                      Please SignUp to Use
+                    </h1>
+                    <p className="mb-4">
+                      Sign up to start your anonymous adventure
+                    </p>
+                  </div>
+                  <Form {...sendVerificationEmailForm}>
+                    <form
+                      onSubmit={sendVerificationEmailForm.handleSubmit(
+                        onSendVerificationEmail
+                      )}
+                      className="space-y-4"
+                    >
+                      <FormField
+                        name="username"
+                        control={sendVerificationEmailForm.control}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Username</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Username"
+                                {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  debouncedUsername(e.target.value);
+                                }}
+                              />
+                            </FormControl>
+                            {isCheckingUsername && (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            )}
+                            <p
+                              className={`text-sm ${
+                                usernameMessage === "Username is unique"
+                                  ? "text-green-500"
+                                  : "text-red-500"
+                              }`}
+                            >
+                              test {usernameMessage}
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        name="email"
+                        control={sendVerificationEmailForm.control}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder="Email"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={sendVerificationEmailForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                            Please wait
+                          </>
+                        ) : (
+                          "Sign Up"
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                </div>
+                {/* <Link href="/api/auth/login" passHref>
+            <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white py-2 px-4 rounded border-2 border-transparent hover:border-purple-500 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 animate-pulse w-[100%]">
+              Login in with Google
+            </Button>
+          </Link> */}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );

@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "./ui/button";
 import { MicOffIcon, MicIcon, VideoIcon, VideoOffIcon } from "lucide-react";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import {
   AudioVideoStreamContext,
@@ -16,6 +15,7 @@ import AudioVideoDeviceDropDown from "./AudioVideoDeviceDropDown";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import { useStartUserStream } from "@/app/hooks/useStartStream";
 import { useStopUserStream } from "@/app/hooks/useStopStream";
+import { useSession } from "next-auth/react";
 
 function SetupAudioVideo() {
   const { handleStartAudioVideoStream } = useStartUserStream();
@@ -37,7 +37,8 @@ function SetupAudioVideo() {
   } = useContext(AudioVideoDevicesContext) as AudioVideoDevicesProps;
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const { user } = useUser();
+  const session = useSession();
+  const user = session.data?.user;
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: false })
@@ -118,7 +119,7 @@ function SetupAudioVideo() {
             className="rounded-[8px]"
             layout="fill"
             objectFit="cover"
-            src={user.picture as string}
+            src={user.image as string}
             alt="Picture of the User"
           />
         ) : (

@@ -3,8 +3,8 @@ import ReactPlayer from "react-player";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { User } from "@/type";
+import { useSession } from "next-auth/react";
 
 interface AudioVideoBarProps {
   remoteUser: User | undefined;
@@ -19,7 +19,8 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
     MediaStreamContext
   ) as ProviderProps;
 
-  const { user } = useUser();
+  const session = useSession();
+  const user = session.data?.user;
   return (
     <div className="h-full w-full rounded-md bg-transparent flex flex-col items-center ">
       <div className=" bg-foreground h-[45%] w-[69%] flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
@@ -58,7 +59,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
         ) : (
           <Avatar className="h-36 w-36">
             <AvatarImage
-              src={user?.picture?.toString() ?? "/user.png"}
+              src={user?.image?.toString() ?? "/user.png"}
               alt="User"
             />
             <AvatarFallback>CN</AvatarFallback>

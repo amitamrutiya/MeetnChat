@@ -42,10 +42,6 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
   ],
   pages: {
     signIn: "/sign-in",
@@ -71,17 +67,5 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async signIn({ account, user }) {
-      if (account!.provider === "google") {
-        return Boolean(user.is_verified && user!.email!.endsWith("@gmail.com"));
-      }
-      return false;
-    },
   },
 };
-function GoogleProvider(arg0: {
-  clientId: string | undefined;
-  clientSecret: string | undefined;
-}): import("next-auth/providers/index").Provider {
-  throw new Error("Function not implemented.");
-}

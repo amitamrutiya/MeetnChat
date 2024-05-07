@@ -1,10 +1,10 @@
 import React from "react";
 import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import { User } from "@/type";
-import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import UserAvatar from "./UserAvatar";
+import { useSession } from "next-auth/react";
 
 export interface NavbarProps {
   remoteUser?: User | undefined | null;
@@ -14,8 +14,8 @@ export interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = (props) => {
   const router = useRouter();
   const { remoteUser, remoteSocketId } = props;
-  const { user } = useUser();
-  const currentUser = user as UserProfile | undefined;
+  const session = useSession();
+  const currentUser = session.data?.user;
 
   return (
     <nav className="flex items-center justify-between">
@@ -28,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           <div className="mx-5 mt-4 flex items-center text-white">
             <UserAvatar
               username={currentUser?.name || currentUser.email || "Someone"}
-              src={currentUser?.picture || ""}
+              src={currentUser?.image || ""}
               height={40}
               width={40}
             />
@@ -51,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           <div className="mx-6 mt-4 flex">
             <UserAvatar
               username={currentUser?.name || currentUser?.email || "Someone"}
-              src={currentUser?.picture || ""}
+              src={currentUser?.image || ""}
               height={40}
               width={40}
             />
