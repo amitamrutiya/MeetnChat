@@ -65,9 +65,9 @@ export async function POST(request: Request) {
       await newUser.save();
     }
 
-    const emailResponse = await sendVerificationEmail(email, username, "otp");
-
-    if (!emailResponse) {
+    const emailResponse = await sendVerificationEmail(email, username, verifyCode);
+    console.log("emailResponse", emailResponse)
+    if (!emailResponse.success) {
       return Response.json(
         {
           message: "Error sending verification email",

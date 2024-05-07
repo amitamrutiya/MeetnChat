@@ -5,21 +5,21 @@ import ParticlesComponent from "@/components/particles";
 
 export default function Home() {
   return (
-    <main className="h-dvh overflow-auto p-5">
+    <main className="h-dvh overflow-auto">
       <ParticlesComponent id="particles" />
       <ModeToggle />
-      <div className="flex flex-col items-center text-center absolute sm:w-[90vw] sm:mx-5">
+      <div className="flex flex-col items-center text-center absolute">
         <div
-          className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer animate-fadeIn`}
+          className={`min-h-10vh text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer animate-fadeIn mb-5`}
         >
           All in one Website for Meet
         </div>{" "}
-        <div className="flex flex-col-reverse sm:flex-row">
-          <section className="my-[7%] flex flex-wrap justify-center">
+        <div className="flex flex-col-reverse lg:flex-row min-h-[90vh]">
+          <section className="flex-grow lg:w-2/3 flex flex-wrap justify-center items-center">
             <IconCardButton />
           </section>
-          <div className="w-1 border-r-4 bg-slate-100 sm:block hidden"></div>{" "}
-          <section className="join-room">
+          <div className="my-10 w-1 border-r-4 bg-slate-100 lg:block hidden"></div>{" "}
+          <section className="join-room flex flex-grow lg:w-1/3 justify-center items-center">
             <JoinRoomForm />
           </section>
         </div>

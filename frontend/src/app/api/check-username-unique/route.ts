@@ -7,7 +7,7 @@ const UsernameQuerySchema = z.object({
   username: usernameValidation,
 });
 
-export default async function GET(req: Request) {
+export async function GET(req: Request) {
   await connectDB();
 
   try {
@@ -15,7 +15,9 @@ export default async function GET(req: Request) {
     const queryParam = {
       username: searchParams.get("username"),
     };
+    console.log("result", queryParam);
     const result = UsernameQuerySchema.safeParse(queryParam);
+    console.log("result", result);
     if (!result.success) {
       const usernameErrors = result.error.format().username?._errors || [];
       return Response.json(
@@ -50,7 +52,7 @@ export default async function GET(req: Request) {
     return Response.json(
       {
         success: true,
-        message: "Username is unique",
+        message: "username is unique",
       },
       {
         status: 200,

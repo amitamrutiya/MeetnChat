@@ -11,11 +11,15 @@ export async function POST(request: Request) {
   await connectDB();
 
   try {
-    const { username, code } = await request.json();
+    const { username, code }: { username: string; code: string } =
+      await request.json();
+    console.log("username", username, "code", code);
     const decodedUsername = decodeURIComponent(username);
-    const result = VerifyCodeQuerySchema.safeParse({ code });
+    const result = VerifyCodeQuerySchema.safeParse({ code: { code } });
+    console.log("result", result.error);
     if (!result.success) {
       const codeErrors = result.error.format().code?._errors || [];
+      console.log("codeErrors", codeErrors);
       return Response.json(
         {
           success: false,

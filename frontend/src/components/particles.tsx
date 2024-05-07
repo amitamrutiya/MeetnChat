@@ -1,8 +1,6 @@
 "use client";
 import { useTheme } from "next-themes";
-
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-// import configs from "@tsparticles/configs";
 import { loadSlim } from "@tsparticles/slim";
 import { useEffect, useState } from "react";
 

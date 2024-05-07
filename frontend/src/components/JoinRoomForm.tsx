@@ -26,7 +26,7 @@ import { toast } from "./ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { signIn, useSession } from "next-auth/react";
 
 function JoinRoomForm() {
@@ -34,12 +34,14 @@ function JoinRoomForm() {
   const user = sesstion.data?.user;
   const router = useRouter();
   const [username, setUsername] = useState("");
-  let sendMail = false;
+  const [password, setPassword] = useState("");
+  const [sendMail, setSendMail] = useState(false);
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const debouncedUsername = useDebounceCallback(setUsername, 300);
+
   const roomForm = useForm<z.infer<typeof roomSchema>>({
     resolver: zodResolver(roomSchema),
     defaultValues: {
@@ -50,7 +52,7 @@ function JoinRoomForm() {
   const signupForm = useForm<z.infer<typeof verifySchema>>({
     resolver: zodResolver(verifySchema),
     defaultValues: {
-      code: "000000",
+      code: "------",
     },
   });
 
@@ -78,7 +80,7 @@ function JoinRoomForm() {
         setUsernameMessage("");
         try {
           const response = await axios.get(
-            `/api/check-username-unique?${username}`
+            `/api/check-username-unique?username=${username}`
           );
           setUsernameMessage(response.data.message);
         } catch (error) {
@@ -109,7 +111,7 @@ function JoinRoomForm() {
         title: "Success",
         description: response.data.message,
       });
-      setIsSubmitting(false);
+      onSignInFormSubmit({ identifier: username, password });
     } catch (error) {
       console.log("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;
@@ -119,6 +121,7 @@ function JoinRoomForm() {
         description: errorMessage,
         variant: "destructive",
       });
+    } finally {
       setIsSubmitting(false);
     }
   }
@@ -157,7 +160,8 @@ function JoinRoomForm() {
         title: "Success",
         description: response.data.message,
       });
-      sendMail = true;
+      setSendMail(true);
+      setPassword(values.password);
       setIsSubmitting(false);
     } catch (error) {
       console.log("Error in signup of user", error);
@@ -172,12 +176,12 @@ function JoinRoomForm() {
     }
   }
   return (
-    <div className="sm:mx-10 sm:my-[70%] w-full flex items-center justify-center mt-10">
+    <div className="mx-5 sm:w-[400px] w-[350px] flex justify-center items-center lg:mb-96 sm:mb-10">
       {user ? (
         <Form {...roomForm}>
           <form
             onSubmit={roomForm.handleSubmit(onRoomFormSubmit)}
-            className="sm:w-48 space-y-7 w-full pr-5"
+            className="w-full p-8 space-y-8 bg-secondary rounded-lg shadow-md"
           >
             <FormField
               control={roomForm.control}
@@ -200,82 +204,75 @@ function JoinRoomForm() {
         </Form>
       ) : (
         <Tabs defaultValue="login" className="w-[400px]">
-          <TabsList>
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">SignUp</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
-            <div className="flex justify-center items-center min-h-screen bg-gray-100">
-              <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-                <div className="text-center">
-                  <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
-                    Please Login to Use
-                  </h1>
-                  <p className="mb-4">
-                    Sign up to start your anonymous adventure
-                  </p>
-                </div>
-                <Form {...signinForm}>
-                  <form
-                    onSubmit={signinForm.handleSubmit(onSignInFormSubmit)}
-                    className="space-y-4"
-                  >
-                    <FormField
-                      name="identifier"
-                      control={signinForm.control}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email/Username</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Email/Username" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={sendVerificationEmailForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="Password"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-                          Please wait
-                        </>
-                      ) : (
-                        "Sign Up"
-                      )}
-                    </Button>
-                  </form>
-                </Form>
+            <div className="w-full max-w-md p-8 space-y-8 bg-secondary rounded-lg shadow-md">
+              <div className="text-center">
+                <h1 className="text-2xl font-extrabold mb-6">
+                  Please Login to Use
+                </h1>
+                <p className="mb-4">
+                  Sign up to start your anonymous adventure
+                </p>
               </div>
-              {/* <Link href="/api/auth/login" passHref>
-            <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white py-2 px-4 rounded border-2 border-transparent hover:border-purple-500 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 animate-pulse w-[100%]">
-              Login in with Google
-            </Button>
-          </Link> */}
-            </div>{" "}
+              <Form {...signinForm}>
+                <form
+                  onSubmit={signinForm.handleSubmit(onSignInFormSubmit)}
+                  className="space-y-4 flex flex-col"
+                >
+                  <FormField
+                    name="identifier"
+                    control={signinForm.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex">Email/Username</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Email/Username" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={sendVerificationEmailForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex">Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
+                        wait
+                      </>
+                    ) : (
+                      "Log In"
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </div>
           </TabsContent>
           <TabsContent value="signup">
             {sendMail ? (
-              <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+              <div className="flex  bg-secondary">
+                <div className="w-full max-w-md p-8 space-y-8  bg-secondary rounded-lg shadow-md">
                   <div className="text-center">
-                    <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
+                    <h1 className="text-2xl font-extrabold mb-6">
                       Verify Your Account
                     </h1>
                     <p className="mb-4">
@@ -284,7 +281,7 @@ function JoinRoomForm() {
                     <Form {...signupForm}>
                       <form
                         onSubmit={signupForm.handleSubmit(onSignUpFormSubmit)}
-                        className="w-2/3 space-y-6"
+                        className="w-full space-y-6 flex flex-col"
                       >
                         <FormField
                           name="code"
@@ -294,7 +291,7 @@ function JoinRoomForm() {
                               <FormLabel>One-Time Password</FormLabel>
                               <FormControl>
                                 <InputOTP maxLength={6} {...field}>
-                                  <InputOTPGroup>
+                                  <InputOTPGroup className="flex mx-auto">
                                     <InputOTPSlot index={0} />
                                     <InputOTPSlot index={1} />
                                     <InputOTPSlot index={2} />
@@ -320,8 +317,8 @@ function JoinRoomForm() {
                 </div>
               </div>
             ) : (
-              <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+              <div className="flex items-start justify-start">
+                <div className="w-full max-w-md p-8 space-y-8 bg-secondary rounded-lg shadow-md">
                   <div className="text-center">
                     <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
                       Please SignUp to Use
@@ -335,14 +332,14 @@ function JoinRoomForm() {
                       onSubmit={sendVerificationEmailForm.handleSubmit(
                         onSendVerificationEmail
                       )}
-                      className="space-y-4"
+                      className="space-y-4 flex-col flex"
                     >
                       <FormField
                         name="username"
                         control={sendVerificationEmailForm.control}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel className="flex">Username</FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="Username"
@@ -357,13 +354,13 @@ function JoinRoomForm() {
                               <Loader2 className="h-4 w-4 animate-spin" />
                             )}
                             <p
-                              className={`text-sm ${
-                                usernameMessage === "Username is unique"
+                              className={`flex text-xs ${
+                                usernameMessage === "username is unique"
                                   ? "text-green-500"
                                   : "text-red-500"
                               }`}
                             >
-                              test {usernameMessage}
+                              {username} {usernameMessage}
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -374,7 +371,7 @@ function JoinRoomForm() {
                         control={sendVerificationEmailForm.control}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel className="flex">Email</FormLabel>
                             <FormControl>
                               <Input
                                 type="email"
@@ -391,7 +388,7 @@ function JoinRoomForm() {
                         name="password"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel className="flex">Password</FormLabel>
                             <FormControl>
                               <Input
                                 type="password"
@@ -416,11 +413,6 @@ function JoinRoomForm() {
                     </form>
                   </Form>
                 </div>
-                {/* <Link href="/api/auth/login" passHref>
-            <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white py-2 px-4 rounded border-2 border-transparent hover:border-purple-500 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 animate-pulse w-[100%]">
-              Login in with Google
-            </Button>
-          </Link> */}
               </div>
             )}
           </TabsContent>

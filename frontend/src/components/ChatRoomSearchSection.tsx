@@ -138,7 +138,7 @@ function ChatRoomSearchSection() {
         </div>
       )}
       {selectedTab === "Invite" && (
-        <Tabs defaultValue="invite" className="mx-3  w-[95%] h-full">
+        <Tabs defaultValue="invite" className="mx-3 w-[95%] h-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="invite">Invite</TabsTrigger>
             <TabsTrigger value="request">Request</TabsTrigger>
