@@ -23,15 +23,16 @@ import { signInSchema } from "@/schemas/signinSchema";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "./ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { Divide, Loader2 } from "lucide-react";
 import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { signIn, useSession } from "next-auth/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function JoinRoomForm() {
-  const sesstion = useSession();
-  const user = sesstion.data?.user;
+  const session = useSession();
+  const user = session.data?.user;
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -175,7 +176,9 @@ function JoinRoomForm() {
       setIsSubmitting(false);
     }
   }
-  return (
+  return session.status === "loading" ? (
+    <Skeleton className="mx-5 sm:w-[400px] w-[350px] flex justify-center items-center lg:mb-96 sm:mb-10 h-[400px] bg-secondary-foreground" />
+  ) : (
     <div className="mx-5 sm:w-[400px] w-[350px] flex justify-center items-center lg:mb-96 sm:mb-10">
       {user ? (
         <Form {...roomForm}>
