@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { signUpSchema } from "@/schemas/signupSchema";
@@ -23,7 +22,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 import { Loader2 } from "lucide-react";
 import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useAuth } from "@/app/hooks/useAuth";
 
 function SignupForm() {
@@ -36,6 +35,7 @@ function SignupForm() {
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+
   const debouncedUsername = useDebounceCallback(setUsername, 300);
 
   const signupForm = useForm<z.infer<typeof verifySchema>>({
@@ -48,6 +48,7 @@ function SignupForm() {
   const sendVerificationEmailForm = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      fullname: "",
       username: "",
       email: "",
       password: "",
@@ -85,7 +86,9 @@ function SignupForm() {
           <p className="mb-4">Enter the verification code sent to your email</p>
           <Form {...signupForm}>
             <form
-              onSubmit={signupForm.handleSubmit(onSignUpFormSubmit)}
+              onSubmit={signupForm.handleSubmit(() =>
+                onSignUpFormSubmit(signupForm.getValues(), username)
+              )}
               className="w-full space-y-6 flex flex-col"
             >
               <FormField
@@ -113,8 +116,9 @@ function SignupForm() {
                   </FormItem>
                 )}
               />
-
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                Submit
+              </Button>
             </form>
           </Form>
         </div>
@@ -136,6 +140,19 @@ function SignupForm() {
             )}
             className="space-y-4 flex-col flex"
           >
+            <FormField
+              name="fullname"
+              control={sendVerificationEmailForm.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex">Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Full Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               name="username"
               control={sendVerificationEmailForm.control}

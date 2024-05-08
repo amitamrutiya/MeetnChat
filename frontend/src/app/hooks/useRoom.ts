@@ -15,8 +15,13 @@ import { createHmac } from "crypto";
 import { useSession } from "next-auth/react";
 
 export function useRoom() {
-  const sesstion = useSession();
-  const currentUser = sesstion.data?.user;
+  const session = useSession();
+  let currentUser = session.data?.user;
+  useEffect(() => {
+    if (session.data) {
+      currentUser = session.data.user;
+    }
+  }, [session.data]);
   const socket = useContext(SocketContext) as Socket;
   const { setRemoteMediaStream, remoteStreams } = useContext(
     MediaStreamContext
@@ -58,7 +63,7 @@ export function useRoom() {
     try {
       const { data } = await serverInstance.get("/users");
       if (data.users) {
-        console.log(data.users);
+        console.log("data.users" + data.users.length);
         setUsers(data.users);
       }
     } catch (error) {

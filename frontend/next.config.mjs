@@ -6,7 +6,13 @@ const nextConfig = {
       "s.gravatar.com",
       "lh3.googleusercontent.com",
       "github.com",
+      "api.dicebear.com",
     ],
+    formats: ['image/avif', 'image/webp'],
+    loader: 'default',
+    path: '/_next/image',
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
   },
 };
 

@@ -11,9 +11,7 @@ function LogoutButton() {
   const user = session.data?.user;
 
   if (session.status === "loading") {
-    return (
-      <Skeleton className=" absolute top-0 right-0 m-4 h-9 w-20  bg-secondary-foreground" />
-    );
+    return <Skeleton className="relative h-9 w-20 bg-secondary-foreground" />;
   }
 
   if (!user) {
@@ -21,7 +19,7 @@ function LogoutButton() {
   }
 
   return (
-    <Button className="absolute top-0 right-0 m-4" onClick={() => signOut()}>
+    <Button className="relative" onClick={() => signOut()}>
       Logout
     </Button>
   );

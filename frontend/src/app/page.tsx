@@ -1,15 +1,13 @@
 import IconCardButton from "@/components/Icon-card-button";
 import JoinRoomForm from "@/components/JoinRoomForm";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import ParticlesComponent from "@/components/particles";
-import LogoutButton from "@/components/LogoutButton";
+import Navbar from "@/components/Navbar";
 
 export default function Home() {
   return (
     <main className="h-dvh overflow-auto">
       <ParticlesComponent id="particles" />
-      <ModeToggle />
-      <LogoutButton />
+      <Navbar />
 
       <div className="flex flex-col items-center text-center absolute">
         <div
@@ -17,7 +15,7 @@ export default function Home() {
         >
           All in one Website for Meet
         </div>
-        <div className="flex flex-col-reverse lg:flex-row min-h-[90vh]">
+        <div className="flex flex-col-reverse lg:flex-row min-h-[80ovh]">
           <section className="flex-grow lg:w-2/3 flex flex-wrap justify-center items-center">
             <IconCardButton />
           </section>

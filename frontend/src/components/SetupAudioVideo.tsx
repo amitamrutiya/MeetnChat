@@ -18,6 +18,8 @@ import { useStopUserStream } from "@/app/hooks/useStopStream";
 import { useSession } from "next-auth/react";
 
 function SetupAudioVideo() {
+  const session = useSession();
+  const user = session.data?.user;
   const { handleStartAudioVideoStream } = useStartUserStream();
   const { handleStopAudioVideoStream } = useStopUserStream();
   const { userStream } = useContext(MediaStreamContext) as ProviderProps;
@@ -37,8 +39,7 @@ function SetupAudioVideo() {
   } = useContext(AudioVideoDevicesContext) as AudioVideoDevicesProps;
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const session = useSession();
-  const user = session.data?.user;
+
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: false })
@@ -114,6 +115,8 @@ function SetupAudioVideo() {
       <div className="flex justify-center items-center border-8 border-hover p-0 m-0 rounded-xl h-[380px] w-[500px] relative">
         {userStream ? (
           <ReactPlayer url={userStream} playing pip />
+        ) : session.status === "loading" ? (
+          <p>Loading...</p>
         ) : user ? (
           <Image
             className="rounded-[8px]"

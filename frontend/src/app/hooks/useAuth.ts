@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { signInSchema } from "@/schemas/signinSchema";
 import { signIn } from "next-auth/react";
 import { toast } from "@/components/ui/use-toast";
 import { verifySchema } from "@/schemas/verifySchema";
 import { signUpSchema } from "@/schemas/signupSchema";
-("use client");
-
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
+
 export function useAuth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [password, setPassword] = useState("");
@@ -36,24 +35,23 @@ export function useAuth() {
         description: "Sign in successful",
       });
     }
-
-    if (result?.url) {
-      router.replace("/");
-    }
   }
 
-  async function onSignUpFormSubmit(values: z.infer<typeof verifySchema>) {
+  async function onSignUpFormSubmit(
+    values: z.infer<typeof verifySchema>,
+    username: string
+  ) {
     setIsSubmitting(true);
     try {
       const response = await axios.post<ApiResponse>("/api/verify-code", {
-        username: values.username,
+        username,
         code: values.code,
       });
+      await onSignInFormSubmit({ identifier: username, password });
       toast({
         title: "Success",
         description: response.data.message,
       });
-      onSignInFormSubmit({ identifier: values.username, password });
     } catch (error) {
       console.log("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;

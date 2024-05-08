@@ -1,10 +1,12 @@
+"use client";
+
 import React from "react";
 import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import { User } from "@/type";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import UserAvatar from "./UserAvatar";
 import { useSession } from "next-auth/react";
+import { ModeToggle } from "./ui/mode-toggle";
+import LogoutButton from "./LogoutButton";
 
 export interface NavbarProps {
   remoteUser?: User | undefined | null;
@@ -12,14 +14,13 @@ export interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = (props) => {
-  const router = useRouter();
   const { remoteUser, remoteSocketId } = props;
   const session = useSession();
   const currentUser = session.data?.user;
 
   return (
-    <nav className="flex items-center justify-between">
-      <header className="flex items-center text-xl align-middle font-sans font-bold antialiased">
+    <nav className="flex items-center justify-between mx-10 mt-2">
+      <header className="flex items-center text-xl align-middle font-sans font-bold antialiased relative">
         <AudioLines className="mr-2 inline" />
         Connect <span className="text-sky-400/100"> Friends</span>
       </header>
@@ -46,25 +47,21 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           </div>
         </div>
       )}
-      {currentUser && (
-        <>
-          <div className="mx-6 mt-4 flex">
+
+      <div className="mt-4 flex space-x-4">
+        {currentUser && (
+          <>
             <UserAvatar
               username={currentUser?.name || currentUser?.email || "Someone"}
               src={currentUser?.image || ""}
               height={40}
               width={40}
             />
-
-            <Button
-              className="ml-5"
-              onClick={() => router.push("/api/auth/logout")}
-            >
-              LogOut
-            </Button>
-          </div>
-        </>
-      )}
+            <LogoutButton />
+          </>
+        )}
+        <ModeToggle />
+      </div>
     </nav>
   );
 };

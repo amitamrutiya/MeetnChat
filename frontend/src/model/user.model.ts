@@ -5,6 +5,11 @@ export interface User extends Document {
   email: string;
   password: string;
   username: string;
+  fullname: string;
+  profile_image: string;
+  bio: string;
+  phone_number: string;
+  friends: mongoose.Schema.Types.ObjectId[];
   is_online?: boolean;
   is_verified: boolean;
   verifyCode: string;
@@ -30,7 +35,31 @@ const userSchema: Schema<User> = new Schema(
     username: {
       type: String,
       unique: true,
+      required: [true, "Username is required"],
     },
+    fullname: {
+      type: String,
+      required: [true, "Fullname is required"],
+    },
+    profile_image: {
+      type: String,
+    },
+    bio: {
+      type: String,
+      default: "Hey there! I am available on ChatApp",
+    },
+    phone_number: {
+      type: String,
+      match: [/^\d{10}$/, "Please enter a valid phone number"],
+      default: "0000000000",
+      unique: true,
+    },
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     is_online: {
       type: Boolean,
       default: false,

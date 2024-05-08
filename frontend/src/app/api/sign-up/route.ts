@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   await connectDB();
 
   try {
-    const { email, password, username } = await request.json();
+    const { email, password, username, fullname } = await request.json();
     const existingUserVerifiedByUsername = await UserModel.findOne({
       username,
       is_verified: true,
@@ -51,22 +51,31 @@ export async function POST(request: Request) {
 
       await existingUserByEmail.save();
     } else {
+      const firstName = fullname.split(" ")[0];
+      const lastName = fullname.split(" ")[1] ?? "";
+
       const newUser = new UserModel({
         email,
+        fullname,
         password: hashedPassword,
         username: username,
+        profile_image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}+${lastName}`,
         is_online: true,
         is_verified: false,
         verifyCode: verifyCode,
         verifyCodeExpiry: expiryDate,
+        friends: [],
         chats: [],
       });
 
       await newUser.save();
     }
 
-    const emailResponse = await sendVerificationEmail(email, username, verifyCode);
-    console.log("emailResponse", emailResponse)
+    const emailResponse = await sendVerificationEmail(
+      email,
+      username,
+      verifyCode
+    );
     if (!emailResponse.success) {
       return Response.json(
         {
