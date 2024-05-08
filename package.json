@@ -21,7 +21,6 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "next-auth": "^4.24.7",
     "socket.io": "^4.7.4",
     "uuid": "^8.3.2"
   },
