@@ -4,12 +4,12 @@ import React from "react";
 import ReactPlayer from "react-player";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { User } from "@/type";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import AudioVideoButton from "./AudioVideoButton";
 import ChatButton from "./ChatButton";
 import SettingButton from "./SettingButton";
 import EndMeetButton from "./EndMeetButton";
+import { useSession } from "next-auth/react";
 
 interface DashboardProps {
   remoteSocketId: string;
@@ -19,8 +19,8 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
   const { remoteSocketId, remoteUser } = props;
-  const { user } = useUser();
-
+  const session = useSession();
+  const user = session.data?.user;
   const { userStream, remoteStreams } = React.useContext(
     MediaStreamContext
   ) as ProviderProps;
@@ -54,7 +54,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
             ) : (
               <Avatar className="h-36 w-36">
                 <AvatarImage
-                  src={user?.picture?.toString() ?? "/user.png"}
+                  src={user?.image?.toString() ?? "/user.png"}
                   alt="User"
                 />
                 <AvatarFallback>CN</AvatarFallback>

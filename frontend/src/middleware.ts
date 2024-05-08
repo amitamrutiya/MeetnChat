@@ -1,10 +1,14 @@
+import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+export { default } from "next-auth/jwt";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublicPath = path === "/";
 
-  const token = request.cookies.get("appSession")?.value || "";
+  const token = await getToken({
+    req: request,
+  });
 
   if (!isPublicPath && !token) {
     return NextResponse.redirect(new URL("/", request.nextUrl));

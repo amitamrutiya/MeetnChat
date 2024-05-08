@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import peerService from "@/service/peer";
+import peerService from "@/helpers/peer";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import {
   MediaScreenStreamContext,

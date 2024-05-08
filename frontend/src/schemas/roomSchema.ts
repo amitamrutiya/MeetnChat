@@ -2,8 +2,8 @@
 
 import { z } from "zod";
 
-const formSchema = z.object({
+const roomSchema = z.object({
   roomId: z.string().uuid(),
 });
 
-export default formSchema ;
+export default roomSchema;

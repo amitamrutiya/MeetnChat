@@ -3,13 +3,13 @@ import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";
 import { SocketProvider } from "@/app/context/SocketContext";
 import { ThemeProvider } from "@/app/context/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AudioVideoDevicesProvider } from "./context/AudioVideoDevices";
 import { AudioVideoStreamProvider } from "./context/AudioVideoStream";
 import { FileTransferProvider } from "./context/FileTransfer";
 import "./globals.css";
+import AuthProvider from "./context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <UserProvider>
+      <AuthProvider>
         <AppProviders>
           <body className={inter.className}>
             <ThemeProvider
@@ -56,7 +56,7 @@ export default function RootLayout({
             </ThemeProvider>
           </body>
         </AppProviders>
-      </UserProvider>
+      </AuthProvider>
     </html>
   );
 }

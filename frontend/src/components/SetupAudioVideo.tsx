@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "./ui/button";
 import { MicOffIcon, MicIcon, VideoIcon, VideoOffIcon } from "lucide-react";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import {
   AudioVideoStreamContext,
@@ -16,8 +15,11 @@ import AudioVideoDeviceDropDown from "./AudioVideoDeviceDropDown";
 import { MediaStreamContext, ProviderProps } from "@/app/context/MediaStream";
 import { useStartUserStream } from "@/app/hooks/useStartStream";
 import { useStopUserStream } from "@/app/hooks/useStopStream";
+import { useSession } from "next-auth/react";
 
 function SetupAudioVideo() {
+  const session = useSession();
+  const user = session.data?.user;
   const { handleStartAudioVideoStream } = useStartUserStream();
   const { handleStopAudioVideoStream } = useStopUserStream();
   const { userStream } = useContext(MediaStreamContext) as ProviderProps;
@@ -37,7 +39,7 @@ function SetupAudioVideo() {
   } = useContext(AudioVideoDevicesContext) as AudioVideoDevicesProps;
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const { user } = useUser();
+
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: false })
@@ -113,12 +115,14 @@ function SetupAudioVideo() {
       <div className="flex justify-center items-center border-8 border-hover p-0 m-0 rounded-xl h-[380px] w-[500px] relative">
         {userStream ? (
           <ReactPlayer url={userStream} playing pip />
+        ) : session.status === "loading" ? (
+          <p>Loading...</p>
         ) : user ? (
           <Image
             className="rounded-[8px]"
             layout="fill"
             objectFit="cover"
-            src={user.picture as string}
+            src={user.image as string}
             alt="Picture of the User"
           />
         ) : (

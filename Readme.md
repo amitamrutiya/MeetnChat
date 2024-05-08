@@ -5,7 +5,7 @@
 ![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/e7c39377-bec2-45ea-9a8e-7fcd6c14a23f)
 
 
-This project is a real-time communication application offering various communication options including one-to-one and group video calls, meetings, and text chats. Built using Next.js, TypeScript, Socket.io, Auth0 for authentication, MongoDB for database storage, and Tailwind CSS for styling. The application enables seamless communication and collaboration among users.
+This project is a real-time communication application offering various communication options including one-to-one and group video calls, meetings, and text chats. Built using Next.js, TypeScript, Socket.io, next-auth for authentication, MongoDB for database storage, and Tailwind CSS for styling. The application enables seamless communication and collaboration among users.
 
 ## Features
 
@@ -29,7 +29,7 @@ This project is a real-time communication application offering various communica
 - **Next.js:** A React framework for building server-side rendered and static web applications.
 - **TypeScript:** A typed superset of JavaScript that enhances code readability and maintainability.
 - **Socket.io:** A library enabling real-time, bidirectional communication between web clients and servers.
-- **Auth0:** A platform for authentication and authorization.
+- **Next-Auth:** A platform for authentication and authorization.
 - **MongoDB:** A NoSQL database for storing user data, messages, and call logs.
 - **Tailwind CSS:** A utility-first CSS framework for building custom user interfaces.
 
@@ -92,7 +92,7 @@ npm run dev
 > **Note**: The frontend and backend should be running simultaneously for the full functionality of the application.
 
 ## Usage
-1. Sign up or log in using Auth0 authentication.
+1. Sign up or log in using next-auth authentication.
 2. Navigate to the desired communication feature (video call, meeting call, or chat).
 3. Initiate or join a call/chat room.
 4. Enjoy seamless real-time communication with other users.

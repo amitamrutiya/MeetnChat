@@ -7,17 +7,15 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useUser } from "@auth0/nextjs-auth0/client";
+
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const IconCardButton = () => {
-  const { user } = useUser();
+  const session = useSession();
+  const user = session.data?.user;
   return functions.map((f, i) => (
-    <Link
-      key={i}
-      href={user ? f.link : "/api/auth/login"}
-      passHref
-    >
+    <Link key={i} href={user ? f.link : "/api/auth/login"} passHref>
       <HoverCard>
         <HoverCardTrigger>
           {" "}
