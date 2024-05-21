@@ -9,9 +9,9 @@ export async function sendVerificationEmail(
 ): Promise<ApiResponse> {
   try {
     const response = await resend.emails.send({
-      to: "akamrutiya22102002@gmail.com",
+      to: [email],
       subject: "MeetnChillChat | Verification Code",
-      from: "onboarding@resend.dev",
+      from: "meetnchillchat@studynotion.store",
       react: VerificationEmail({ username, otp }),
     });
     if (response.error) {
