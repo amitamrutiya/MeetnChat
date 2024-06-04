@@ -1,5 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
-import { chatSchema } from "./chat.model";
+import { Document, Schema, model, models } from "mongoose";
 
 export interface User extends Document {
   email: string;
@@ -9,15 +8,15 @@ export interface User extends Document {
   profile_image: string;
   bio: string;
   phone_number: string;
-  friends: mongoose.Schema.Types.ObjectId[];
+  friends: Schema.Types.ObjectId[];
   is_online?: boolean;
   is_verified: boolean;
   verifyCode: string;
   verifyCodeExpiry: Date;
-  chats: mongoose.Types.ObjectId[];
+  chats: Schema.Types.ObjectId[];
 }
 
-const userSchema: Schema<User> = new Schema(
+const userSchema = new Schema<User>(
   {
     email: {
       type: String,
@@ -56,7 +55,7 @@ const userSchema: Schema<User> = new Schema(
     },
     friends: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
@@ -76,13 +75,16 @@ const userSchema: Schema<User> = new Schema(
       type: Date,
       required: [true, "Verify Code Expiry is required"],
     },
-    chats: [chatSchema],
+    chats: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Chat",
+      },
+    ],
   },
   { timestamps: true }
 );
 
-const UserModel =
-  (mongoose.models.User as mongoose.Model<User>) ||
-  mongoose.model<User>("User", userSchema);
+const UserModel = models?.User || model("User", userSchema);
 
 export default UserModel;

@@ -1,23 +1,29 @@
 import mongoose from "mongoose";
 
-type ConnectioObject = {
-  isConnected?: number;
-};
-
-const connection: ConnectioObject = {};
+const MONGODB_URI = process.env.MONGO_DB_URI;
 
 const connectDB = async () => {
-  if (connection.isConnected) {
-    console.log("Using existing connection");
+  const connectionState = mongoose.connection.readyState;
+
+  if (connectionState === 1) {
+    console.log("Already connected");
     return;
   }
+
+  if (connectionState === 2) {
+    console.log("Connecting...");
+    return;
+  }
+
   try {
-    const db = await mongoose.connect(process.env.MONGO_DB_URI || "", {});
-    connection.isConnected = db.connections[0].readyState;
-    console.log("\n MongoDB connected");
-  } catch (error) {
-    console.log("MongoDB connection FAILED", error);
-    process.exit(1);
+    mongoose.connect(MONGODB_URI!, {
+      dbName: "MeetNChat",
+      bufferCommands: true,
+    });
+    console.log("Connected");
+  } catch (err: any) {
+    console.log("Error: ", err);
+    throw new Error("Error: ", err);
   }
 };
 

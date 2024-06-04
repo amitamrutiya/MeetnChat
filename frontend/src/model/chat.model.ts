@@ -1,21 +1,19 @@
-import mongoose, { Document, Schema } from "mongoose";
+import { Document, Schema, model, models, Types } from "mongoose";
 
 export interface Chat extends Document {
-  sender_id: mongoose.Schema.Types.ObjectId;
-  receiver_id: mongoose.Schema.Types.ObjectId;
+  sender_id: Schema.Types.ObjectId;
+  receiver_id: Schema.Types.ObjectId;
   message: string;
 }
 
-export const chatSchema: Schema<Chat> = new Schema(
+const chatSchema = new Schema<Chat>(
   {
     sender_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Types.ObjectId,
       required: true,
     },
     receiver_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Types.ObjectId,
       required: true,
     },
     message: {
@@ -26,8 +24,6 @@ export const chatSchema: Schema<Chat> = new Schema(
   { timestamps: true }
 );
 
-const chatModel =
-  (mongoose.models.Chat as mongoose.Model<Chat>) ||
-  mongoose.model<Chat>("Chat", chatSchema);
+const ChatModel = models.chatModel || model("chat", chatSchema);
 
-export default chatModel;
+export default ChatModel;

@@ -5,18 +5,15 @@
   "author": "Amit Amrutiya <amitamrutiya2210@gmail.com>",
   "license": "",
   "scripts": {
-    "dev:server": "nodemon -r --exec ts-node ./backend/src/index.ts",
+    "dev:server": "nodemon -r --exec ts-node ./server/index.ts",
     "dev:client": "cd frontend && npm run dev",
     "dev": "concurrently -n \"server,client\" -c \"red,blue\" \"npm run dev:server\" \"npm run dev:client\"",
-    "start:server": "npx tsc && node backend/dist/index.js",
+    "start:server": "npx tsc && node dist/server/index.js",
     "start:client": "cd frontend && next start",
     "start": "concurrently -n \"server,client\" -c \"red,blue\" \"npm run start:server\" \"npm run start:client\"",
     "format:server": "npx eslint . --ext .js,.jsx",
     "format:client": "cd frontend && npm run format",
-    "format": "concurrently -n \"server,client\" -c \"red,blue\" \"npm run format:server\" \"npm run format:client\"",
-    "test:server": "cd backend && npm run test",
-    "test:client": "cd frontend && npm run test",
-    "test": "concurrently -n \"server,client\" -c \"red,blue\" \"npm run test:server\" \"npm run test:client\""
+    "format": "concurrently -n \"server,client\" -c \"red,blue\" \"npm run format:server\" \"npm run format:client\""
   },
   "dependencies": {
     "cors": "^2.8.5",

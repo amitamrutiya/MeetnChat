@@ -1,12 +1,12 @@
 export interface User {
   socketId: string;
   roomId: string;
-  email?: string | null;
-  email_verified?: boolean | null;
-  name?: string | null;
-  nickname?: string | null;
-  picture?: string | null;
-  sid?: string | null;
+  email?: string;
+  email_verified?: boolean;
+  name?: string;
+  nickname?: string;
+  picture?: string;
+  sid?: string;
   joinedAt: Date;
   isConnected: boolean;
 }

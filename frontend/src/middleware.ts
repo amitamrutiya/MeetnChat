@@ -1,19 +1,30 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
-export { default } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+
+const { auth } = NextAuth(authConfig);
+
+// @ts-ignore
+export default auth((req) => {
+  const { nextUrl } = req;
+  const path = nextUrl.pathname;
   const isPublicPath = path === "/";
+  const isLoggendIn = !!req.auth;
 
-  const token = await getToken({
-    req: request,
-  });
+  if (!isLoggendIn && !isPublicPath) {
+    let callbackUrl = nextUrl.pathname;
+    if (nextUrl.search) {
+      callbackUrl += nextUrl.search;
+    }
 
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/", request.nextUrl));
+    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+    return Response.redirect(
+      new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+    );
   }
-}
+  return null;
+});
 
 export const config = {
   matcher: ["/", "/room/group-meet/:room*", "/room", "/logout"],
