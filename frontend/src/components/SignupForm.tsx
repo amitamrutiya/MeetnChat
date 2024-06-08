@@ -221,6 +221,7 @@ function SignupForm() {
               )}
             </Button>
             <Button
+              type="button"
               variant={"link"}
               onClick={() => signIn("google")}
               className="w-full"

@@ -1,4 +1,3 @@
-
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 
@@ -12,16 +11,7 @@ export default auth((req) => {
   const isLoggendIn = !!req.auth;
 
   if (!isLoggendIn && !isPublicPath) {
-    let callbackUrl = nextUrl.pathname;
-    if (nextUrl.search) {
-      callbackUrl += nextUrl.search;
-    }
-
-    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-
-    return Response.redirect(
-      new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
-    );
+    return Response.redirect(new URL(`/`));
   }
   return null;
 });

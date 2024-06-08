@@ -50,7 +50,6 @@ const userSchema = new Schema<User>(
     phone_number: {
       type: String,
       match: [/^\d{10}$/, "Please enter a valid phone number"],
-      default: "0000000000",
       unique: true,
     },
     friends: [

@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,10 +17,9 @@ import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signinSchema";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { useAuth } from "@/app/hooks/useAuth";
+import { login } from "@/actions/login";
 
 function SignInForm() {
-  const { onSignInFormSubmit, isSubmitting } = useAuth();
   const signinForm = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -27,6 +27,19 @@ function SignInForm() {
       password: "",
     },
   });
+  const [isPending, startTransaction] = useTransition();
+
+  const onSubmit = (value: z.infer<typeof signInSchema>) => {
+    startTransaction(async () => {
+      const response = await login(value);
+      if (response.success === true) {
+        console.log("User Login");
+      } else {
+        // signinForm.reset();
+        console.log(response.message);
+      }
+    });
+  };
 
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md">
@@ -36,14 +49,14 @@ function SignInForm() {
       </div>
       <Form {...signinForm}>
         <form
-          onSubmit={signinForm.handleSubmit(onSignInFormSubmit)}
+          onSubmit={signinForm.handleSubmit(onSubmit)}
           className="space-y-4 flex flex-col"
         >
           <FormField
             name="identifier"
             control={signinForm.control}
             render={({ field }) => (
-              <FormItem >
+              <FormItem>
                 <FormLabel className="flex">Email/Username</FormLabel>
                 <FormControl>
                   <Input placeholder="Email/Username" {...field} />
@@ -65,8 +78,8 @@ function SignInForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
               </>
@@ -77,6 +90,7 @@ function SignInForm() {
         </form>
       </Form>
       <Button
+        type="button"
         variant={"link"}
         onClick={() => signIn("google")}
         className="w-full"

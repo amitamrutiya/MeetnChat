@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
+import { getUserById } from "./actions/user";
+import { User } from "./model/user.model";
 
 export const {
   handlers: { GET, POST },
@@ -17,11 +19,16 @@ export const {
         // return Boolean(user.is_verified && user.email?.endsWith("@gmail.com"));
         return true;
       }
-      return true; // Do different verification for other providers that don't have `email_verified`
+      const existingUser: User = await getUserById(user._id!);
+      if (!existingUser || !existingUser.is_verified) {
+        return false;
+      }
+
+      return true;
     },
     async jwt({ token, user }) {
-      if (user) {
-        token._id = user._id?.toString();
+      if (user && user.email && user._id) {
+        token._id = user._id.toString();
         token.is_verified = user.is_verified;
         token.username = user.username;
         token.email = user.email;
@@ -34,7 +41,7 @@ export const {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && token.email) {
         session.user._id = token._id;
         session.user.is_verified = token.is_verified;
         session.user.username = token.username;

@@ -1,45 +1,27 @@
-import connectDB from "@/config/database";
 import type { NextAuthConfig } from "next-auth";
-import bcrypt from "bcryptjs";
-import UserModel from "@/model/user.model";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import { signInSchema } from "./schemas/signinSchema";
+import axios from "axios";
 
 export default {
   providers: [
     Credentials({
-      id: "credentials",
-      name: "Credentials",
-
-      credentials: {
-        email: { label: "Email", type: "text", placeholder: "Enter email" },
-        password: { label: "Password", type: "password" },
-      },
       async authorize(credentials: any): Promise<any> {
-        await connectDB();
-        try {
-          const user = await UserModel.findOne({
-            $or: [
-              { email: credentials.identifier },
-              { username: credentials.identifier },
-            ],
-          });
-          if (!user) {
-            throw new Error("No user found");
+        const validateFields = signInSchema.safeParse(credentials);
+
+        if (validateFields.success) {
+          try {
+            const res = await axios.post("http://localhost:3000/api/user", {
+              email: validateFields.data.identifier,
+            });
+            return res.data.user;
+          } catch (error) {
+            throw new Error("Error in authorization" + error);
           }
-          if (!user.is_verified) {
-            throw new Error("Please verify your email first");
-          }
-          const isPasswordCorrect = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-          if (!isPasswordCorrect) {
-            throw new Error("Password is incorrect");
-          }
-          return user;
-        } catch (error) {
-          throw new Error("Error in authorization");
+        } else {
+          console.log(validateFields.error);
+          return null;
         }
       },
     }),

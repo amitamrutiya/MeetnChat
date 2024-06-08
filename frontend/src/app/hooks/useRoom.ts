@@ -191,7 +191,7 @@ export function useRoom() {
 
     peerService?.peer?.addEventListener("negotiationneeded", handleNegotiation);
 
-    let temp = { filename: "", size: 0, checksum: null };
+    let temp = { filename: "", size: 0, checksum: undefined };
     let receivedSize = 0;
     let receiveBuffer: Buffer[] = [];
 
@@ -213,6 +213,7 @@ export function useRoom() {
 
           if (typeof data === "string") {
             const { name, size, checksum } = JSON.parse(data);
+
             temp.filename = name;
             temp.size = size;
             temp.checksum = checksum;
@@ -293,7 +294,7 @@ export function useRoom() {
                     temp = {
                       filename: "",
                       size: 0,
-                      checksum: null,
+                      checksum: undefined,
                     };
                     receivedSize = 0;
                     receiveBuffer = [];

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGO_DB_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const connectDB = async () => {
   const connectionState = mongoose.connection.readyState;

@@ -23,7 +23,9 @@ export function useAuth() {
       password: values.password,
     });
     setIsSubmitting(false);
+    console.log("sign in result", result);
     if (result?.error) {
+      console.log("Sign in failed", result.error);
       toast({
         title: "Sign in failed",
         description: "Incorrect username or password",
