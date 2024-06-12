@@ -24,6 +24,7 @@ import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { signIn } from "next-auth/react";
 import { useAuth } from "@/app/hooks/useAuth";
+import { checkUsernameUnique } from "@/actions/check-username-unique";
 
 function SignupForm() {
   const {
@@ -56,15 +57,13 @@ function SignupForm() {
   });
 
   useEffect(() => {
-    const checkUsernameUnique = async () => {
+    const handleCheckUsernameUnique = async () => {
       if (username) {
         setIsCheckingUsername(true);
         setUsernameMessage("");
         try {
-          const response = await axios.get(
-            `/api/check-username-unique?username=${username}`
-          );
-          setUsernameMessage(response.data.message);
+          const response = await checkUsernameUnique({username});
+          setUsernameMessage(response.message);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           setUsernameMessage(
@@ -75,7 +74,7 @@ function SignupForm() {
         }
       }
     };
-    checkUsernameUnique();
+    handleCheckUsernameUnique();
   }, [username]);
 
   return sendMail ? (

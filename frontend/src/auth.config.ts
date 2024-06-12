@@ -2,7 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { signInSchema } from "./schemas/signinSchema";
-import axios from "axios";
+import { getUserByIdentifier } from "./actions/user";
 
 export default {
   providers: [
@@ -12,10 +12,8 @@ export default {
 
         if (validateFields.success) {
           try {
-            const res = await axios.post("http://localhost:3000/api/user", {
-              email: validateFields.data.identifier,
-            });
-            return res.data.user;
+            const user = await getUserByIdentifier(credentials.identifier);
+            return user;
           } catch (error) {
             throw new Error("Error in authorization" + error);
           }

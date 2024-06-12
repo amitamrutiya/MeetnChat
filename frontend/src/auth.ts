@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 import { getUserById } from "./actions/user";
-import { User } from "./model/user.model";
+import { db } from "./lib/db";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 export const {
   handlers: { GET, POST },
@@ -9,6 +10,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
   },
@@ -19,7 +21,7 @@ export const {
         // return Boolean(user.is_verified && user.email?.endsWith("@gmail.com"));
         return true;
       }
-      const existingUser: User = await getUserById(user._id!);
+      const existingUser = await getUserById(user.id!);
       if (!existingUser || !existingUser.is_verified) {
         return false;
       }
