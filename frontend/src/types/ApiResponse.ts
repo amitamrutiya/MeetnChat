@@ -1,4 +1,4 @@
-import { Chat } from "@/model/chat.model";
+import { Chat } from "@prisma/client";
 
 export interface ApiResponse {
   success: boolean;

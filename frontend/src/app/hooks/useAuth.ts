@@ -8,6 +8,8 @@ import { verifySchema } from "@/schemas/verifySchema";
 import { signUpSchema } from "@/schemas/signupSchema";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
+import { verifyCode } from "@/actions/verify-code";
+import { register } from "@/actions/register";
 
 export function useAuth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,14 +47,14 @@ export function useAuth() {
   ) {
     setIsSubmitting(true);
     try {
-      const response = await axios.post<ApiResponse>("/api/verify-code", {
+      const response = await verifyCode({
         username,
-        code: values.code,
+        code: { code: values.code },
       });
       await onSignInFormSubmit({ identifier: username, password });
       toast({
         title: "Success",
-        description: response.data.message,
+        description: response.message,
       });
     } catch (error) {
       console.log("Error in signup of user", error);
@@ -71,10 +73,10 @@ export function useAuth() {
   async function onSendVerificationEmail(values: z.infer<typeof signUpSchema>) {
     setIsSubmitting(true);
     try {
-      const response = await axios.post<ApiResponse>("/api/sign-up", values);
+      const response = await register(values);
       toast({
         title: "Success",
-        description: response.data.message,
+        description: response.message,
       });
       setSendMail(true);
       setPassword(values.password);
