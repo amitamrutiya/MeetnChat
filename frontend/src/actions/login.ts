@@ -4,8 +4,7 @@ import * as z from "zod";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { signInSchema } from "@/schemas/signinSchema";
-import { getUserByEmail } from "@/actions/user";
-import { User } from "@/model/user.model";
+import { getUserByIdentifier } from "@/actions/user";
 import bcrypt from "bcryptjs";
 
 export async function login(values: z.infer<typeof signInSchema>) {
@@ -16,7 +15,7 @@ export async function login(values: z.infer<typeof signInSchema>) {
   }
   const { identifier, password } = validatedFields.data;
 
-  const existingUser: User = await getUserByEmail(identifier);
+  const existingUser = await getUserByIdentifier(identifier);
   if (
     !existingUser ||
     !existingUser.email ||

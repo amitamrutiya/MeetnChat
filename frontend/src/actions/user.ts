@@ -1,15 +1,15 @@
 "use server";
 
-import connectDB from "@/config/database";
-import UserModel from "@/model/user.model";
+import { db } from "@/lib/db";
 
-export async function getUserByEmail(identifier: string) {
+export async function getUserByIdentifier(identifier: string) {
   try {
-    await connectDB();
-    const User = await UserModel.findOne({
-      $or: [{ email: identifier }, { username: identifier }],
+    const user = await db.user.findFirst({
+      where: {
+        OR: [{ email: identifier }, { username: identifier }],
+      },
     });
-    return User;
+    return user;
   } catch (error) {
     console.log(error);
     return null;
@@ -18,8 +18,11 @@ export async function getUserByEmail(identifier: string) {
 
 export async function getUserById(id: string) {
   try {
-    await connectDB();
-    const User = await UserModel.findById(id);
+    const User = await db.user.findUnique({
+      where: {
+        id,
+      },
+    });
     return User;
   } catch (error) {
     console.log(error);
