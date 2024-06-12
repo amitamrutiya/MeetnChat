@@ -21,7 +21,7 @@ model User {
   fullname         String
   profile_image    String?
   bio              String   @default("Hey there! I am available on ChatApp")
-  phone_number     String   @unique
+  phone_number     String?  @unique
   friends          String[]
   is_online        Boolean  @default(false)
   is_verified      Boolean  @default(false)
