@@ -3,16 +3,16 @@ import JoinRoomForm from "@/components/JoinRoomForm";
 import ParticlesComponent from "@/components/particles";
 import Navbar from "@/components/Navbar";
 import { FlipWords } from "@/components/ui/filp-word";
-import Globe from "@/components/Globe";
 import GlobeSection from "@/components/Globe";
+import { Spotlight } from "@/components/ui/spot-light";
 
 export default function Home() {
   const words = ["Omegal", "Google Meet", "Whatsapp"];
   return (
     <main className="h-dvh overflow-auto">
+      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" />
       <ParticlesComponent id="particles" />
       <Navbar />
-
       <div className="flex flex-col items-center text-center absolute">
         <div
           className={`min-h-10vh text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer animate-fadeIn my-5`}
