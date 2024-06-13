@@ -14,7 +14,7 @@ function JoinRoomForm() {
   return session.status === "loading" ? (
     <Skeleton className="mx-5 sm:w-[400px] w-[350px] flex justify-center items-center lg:mb-96 sm:mb-10 h-[400px] bg-secondary-foreground" />
   ) : (
-    <div className="mx-5 sm:w-[400px] w-[350px] flex justify-center items-center lg:mb-96 sm:mb-10">
+    <div className="mx-5 sm:w-[400px] w-[350px] flex flex-col justify-center items-center lg:mb-96 sm:mb-10 ">
       {user ? (
         <RoomIdForm />
       ) : (

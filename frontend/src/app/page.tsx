@@ -3,6 +3,8 @@ import JoinRoomForm from "@/components/JoinRoomForm";
 import ParticlesComponent from "@/components/particles";
 import Navbar from "@/components/Navbar";
 import { FlipWords } from "@/components/ui/filp-word";
+import Globe from "@/components/Globe";
+import GlobeSection from "@/components/Globe";
 
 export default function Home() {
   const words = ["Omegal", "Google Meet", "Whatsapp"];
@@ -27,6 +29,7 @@ export default function Home() {
             <JoinRoomForm />
           </section>
         </div>
+        <GlobeSection />
       </div>
     </main>
   );
