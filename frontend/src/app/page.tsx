@@ -8,7 +8,7 @@ import { Spotlight } from "@/components/ui/spot-light";
 export default function Home() {
   const words = ["Omegal", "Google Meet", "Whatsapp"];
   return (
-    <main className="h-dvh overflow-auto">
+    <main className="h-dvh overflow-auto absolute inset-0 -z-10 w-full items-center [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" />
       <Navbar />
       <div className="flex flex-col items-center text-center absolute">
