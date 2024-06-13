@@ -1,6 +1,5 @@
 import IconCardButton from "@/components/Icon-card-button";
 import JoinRoomForm from "@/components/JoinRoomForm";
-import ParticlesComponent from "@/components/particles";
 import Navbar from "@/components/Navbar";
 import { FlipWords } from "@/components/ui/filp-word";
 import GlobeSection from "@/components/Globe";
@@ -11,7 +10,6 @@ export default function Home() {
   return (
     <main className="h-dvh overflow-auto">
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" />
-      <ParticlesComponent id="particles" />
       <Navbar />
       <div className="flex flex-col items-center text-center absolute">
         <div

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { PinContainer } from "./ui/3d-pin";
 import { BackgroundGradient } from "./ui/background-gradient";
+import { Meteors } from "./ui/meteors";
 
 const IconCardButton = () => {
   const session = useSession();
@@ -28,6 +29,7 @@ const IconCardButton = () => {
                 {f.title}
               </p>
               <p className="text-md font-sans font-bold">{f.subtitle}</p>
+              <Meteors number={20} />
             </div>
           </BackgroundGradient>
         </div>
