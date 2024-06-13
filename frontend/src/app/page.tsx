@@ -22,7 +22,7 @@ export default function Home() {
           <section className="flex-grow lg:w-2/3 flex flex-wrap justify-center items-center">
             <IconCardButton />
           </section>
-          <div className="my-10 w-1 border-r-4 bg-slate-100 lg:block hidden"></div>{" "}
+          <div className="my-10 w-1 border-r-4 bg-slate-100 lg:block hidden"></div>
           <section className="join-room flex flex-grow lg:w-1/3 justify-center items-center">
             <JoinRoomForm />
           </section>

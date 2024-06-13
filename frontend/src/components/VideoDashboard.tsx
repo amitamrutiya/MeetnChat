@@ -94,7 +94,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
               </Avatar>
             )}
           </div>
-        </div>{" "}
+        </div>
       </div>
       <div className="flex flex-row">
         <div className="sm:w-auto rounded-lg bg-slate-600 px-3 mx-auto py-2">
@@ -105,7 +105,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
             <EndMeetButton />
           </div>
         </div>
-      </div>{" "}
+      </div>
     </div>
   );
 };

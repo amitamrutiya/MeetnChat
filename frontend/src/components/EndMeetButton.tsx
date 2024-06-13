@@ -44,7 +44,6 @@ function EndMeetButton() {
 
   return (
     <div>
-      {" "}
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
