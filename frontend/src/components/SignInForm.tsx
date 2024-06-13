@@ -18,6 +18,7 @@ import { signInSchema } from "@/schemas/signinSchema";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { login } from "@/actions/login";
+import { BottomGradient, LabelInputContainer } from "./Common";
 
 function SignInForm() {
   const signinForm = useForm<z.infer<typeof signInSchema>>({
@@ -57,10 +58,12 @@ function SignInForm() {
             control={signinForm.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex">Email/Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Email/Username" {...field} />
-                </FormControl>
+                <LabelInputContainer>
+                  <FormLabel className="flex">Email/Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email/Username" {...field} />
+                  </FormControl>
+                </LabelInputContainer>
                 <FormMessage />
               </FormItem>
             )}
@@ -70,15 +73,21 @@ function SignInForm() {
             control={signinForm.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex">Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Password" {...field} />
-                </FormControl>
+                <LabelInputContainer>
+                  <FormLabel className="flex">Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Password" {...field} />
+                  </FormControl>
+                </LabelInputContainer>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isPending}>
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+          >
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
@@ -86,6 +95,7 @@ function SignInForm() {
             ) : (
               "Log In"
             )}
+            <BottomGradient />
           </Button>
         </form>
       </Form>
@@ -93,9 +103,9 @@ function SignInForm() {
         type="button"
         variant={"link"}
         onClick={() => signIn("google")}
-        className="w-full"
+        className=" relative group/btn  h-10 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
       >
-        Sign in with Google{" "}
+        <span>Sign in with Google</span> <BottomGradient />
       </Button>
     </div>
   );

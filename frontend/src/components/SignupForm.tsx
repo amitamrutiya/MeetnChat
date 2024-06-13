@@ -19,12 +19,14 @@ import { useDebounceCallback } from "usehooks-ts";
 import { signUpSchema } from "@/schemas/signupSchema";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
-import { Loader2 } from "lucide-react";
+import { Bot, Loader2 } from "lucide-react";
 import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { signIn } from "next-auth/react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { checkUsernameUnique } from "@/actions/check-username-unique";
+import { cn } from "@/lib/utils";
+import { BottomGradient, LabelInputContainer } from "./Common";
 
 function SignupForm() {
   const {
@@ -62,7 +64,7 @@ function SignupForm() {
         setIsCheckingUsername(true);
         setUsernameMessage("");
         try {
-          const response = await checkUsernameUnique({username});
+          const response = await checkUsernameUnique({ username });
           setUsernameMessage(response.message);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
@@ -144,10 +146,12 @@ function SignupForm() {
               control={sendVerificationEmailForm.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex">Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter Full Name" {...field} />
-                  </FormControl>
+                  <LabelInputContainer>
+                    <FormLabel className="flex">Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter Full Name" {...field} />
+                    </FormControl>
+                  </LabelInputContainer>
                   <FormMessage />
                 </FormItem>
               )}
@@ -157,17 +161,19 @@ function SignupForm() {
               control={sendVerificationEmailForm.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex">Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Username"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        debouncedUsername(e.target.value);
-                      }}
-                    />
-                  </FormControl>
+                  <LabelInputContainer>
+                    <FormLabel className="flex">Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Username"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          debouncedUsername(e.target.value);
+                        }}
+                      />
+                    </FormControl>
+                  </LabelInputContainer>
                   {isCheckingUsername && (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   )}
@@ -189,10 +195,13 @@ function SignupForm() {
               control={sendVerificationEmailForm.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex">Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Email" {...field} />
-                  </FormControl>
+                  <LabelInputContainer>
+                    {" "}
+                    <FormLabel className="flex">Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Email" {...field} />
+                    </FormControl>
+                  </LabelInputContainer>
                   <FormMessage />
                 </FormItem>
               )}
@@ -202,33 +211,44 @@ function SignupForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex">Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
-                  </FormControl>
+                  <LabelInputContainer>
+                    <FormLabel className="flex">Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
+                    </FormControl>
+                  </LabelInputContainer>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                 </>
               ) : (
-                "Sign Up"
+                <span>Sign Up</span>
               )}
-            </Button>
-            <Button
-              type="button"
-              variant={"link"}
-              onClick={() => signIn("google")}
-              className="w-full"
-            >
-              Sign in with Google{" "}
+              <BottomGradient />
             </Button>
           </form>
         </Form>
+        <Button
+          type="button"
+          variant={"link"}
+          onClick={() => signIn("google")}
+          className=" relative group/btn  h-10 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+        >
+          <span>Sign in with Google</span> <BottomGradient />
+        </Button>
       </div>
     </div>
   );
