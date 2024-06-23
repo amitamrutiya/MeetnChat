@@ -1,3 +1,5 @@
+"use client";
+
 import { useContext, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "./ui/button";
@@ -100,7 +102,7 @@ function SetupAudioVideo() {
 
   useEffect(() => {
     if (!audio && !video) handleStopAudioVideoStream();
-  }, [audio, video]);
+  }, [audio, handleStopAudioVideoStream, video]);
 
   <style jsx>{`
     .image {
@@ -117,12 +119,12 @@ function SetupAudioVideo() {
           <ReactPlayer url={userStream} playing pip />
         ) : session.status === "loading" ? (
           <p>Loading...</p>
-        ) : user ? (
+        ) : user?.image ? (
           <Image
             className="rounded-[8px]"
             layout="fill"
             objectFit="cover"
-            src={user.image as string}
+            src={user.image}
             alt="Picture of the User"
           />
         ) : (

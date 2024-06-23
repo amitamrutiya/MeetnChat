@@ -28,23 +28,26 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
-        <p className="text-lg">{username[0]}</p>
+        <p className="text-lg">{username}</p>
       </>
     );
   return (
-    <Avatar
-      style={{
-        cursor: "pointer",
-        marginLeft: 1,
-        marginRight: 1,
-        width: height ?? 90,
-        height: width ?? 90,
-        backgroundColor: getRandomColorCode(),
-      }}
-    >
-      <AvatarImage src={src} />
-      <AvatarFallback>{username[0]}</AvatarFallback>
-    </Avatar>
+    <>
+      <Avatar
+        style={{
+          cursor: "pointer",
+          marginLeft: 1,
+          marginRight: 1,
+          width: height ?? 90,
+          height: width ?? 90,
+          backgroundColor: getRandomColorCode(),
+        }}
+      >
+        <AvatarImage src={src} />
+        <AvatarFallback>{username}</AvatarFallback>
+      </Avatar>
+      <p className="text-lg">{username}</p>
+    </>
   );
 };
 

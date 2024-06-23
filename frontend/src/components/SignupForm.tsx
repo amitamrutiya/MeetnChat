@@ -25,9 +25,9 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { signIn } from "next-auth/react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { checkUsernameUnique } from "@/actions/check-username-unique";
-import { cn } from "@/lib/utils";
 import { BottomGradient, LabelInputContainer } from "./Common";
 import ShineBorder from "./ui/shine-border";
+import { useSearchParams } from "next/navigation";
 
 function SignupForm() {
   const {
@@ -48,6 +48,8 @@ function SignupForm() {
       code: "",
     },
   });
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const sendVerificationEmailForm = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -86,13 +88,13 @@ function SignupForm() {
       duration={7}
       borderWidth={4}
     >
-      <div className="flex  bg-secondary">
-        <div className="w-full max-w-md p-8 space-y-8  bg-secondary rounded-lg shadow-md">
+      <div className="flex bg-black">
+        <div className="w-full max-w-md p-8 space-y-8  bg-black rounded-lg shadow-md">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold mb-6">
+            <h1 className="text-2xl font-extrabold mb-6 text-white">
               Verify Your Account
             </h1>
-            <p className="mb-4">
+            <p className="mb-4 text-white">
               Enter the verification code sent to your email
             </p>
             <Form {...signupForm}>
@@ -127,8 +129,20 @@ function SignupForm() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" disabled={isSubmitting}>
-                  Submit
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
+                      wait
+                    </>
+                  ) : (
+                    <span>Submit</span>
+                  )}
+                  <BottomGradient />
                 </Button>
               </form>
             </Form>
@@ -157,7 +171,7 @@ function SignupForm() {
               onSubmit={sendVerificationEmailForm.handleSubmit(
                 onSendVerificationEmail
               )}
-              className="space-y-4 flex-col flex"
+              className="space-y-4 flex-col flex "
             >
               <FormField
                 name="fullname"
@@ -192,18 +206,20 @@ function SignupForm() {
                         />
                       </FormControl>
                     </LabelInputContainer>
-                    {isCheckingUsername && (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    )}
-                    <p
-                      className={`flex text-xs ${
-                        usernameMessage === "username is unique"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {username} {usernameMessage}
-                    </p>
+                    <div className="flex gap-3">
+                      {isCheckingUsername && (
+                        <Loader2 className="h-4 w-4 animate-spin text-red-500" />
+                      )}
+                      <p
+                        className={`flex text-xs ${
+                          usernameMessage === "username is unique"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {username} {usernameMessage}
+                      </p>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -216,7 +232,7 @@ function SignupForm() {
                     <LabelInputContainer>
                       <FormLabel className="flex">Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="Email" {...field} />
+                        <Input placeholder="Email" {...field} />
                       </FormControl>
                     </LabelInputContainer>
                     <FormMessage />
@@ -244,7 +260,9 @@ function SignupForm() {
               />
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={
+                  isSubmitting || usernameMessage !== "username is unique"
+                }
                 className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
               >
                 {isSubmitting ? (
@@ -262,7 +280,11 @@ function SignupForm() {
           <Button
             type="button"
             variant={"link"}
-            onClick={() => signIn("google")}
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: callbackUrl || "/",
+              })
+            }
             className=" relative group/btn  h-10 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
           >
             <span>Sign in with Google</span> <BottomGradient />

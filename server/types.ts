@@ -2,10 +2,10 @@ export interface User {
   socketId: string;
   roomId: string;
   email?: string;
-  email_verified?: boolean;
-  name?: string;
-  nickname?: string;
-  picture?: string;
+  is_verified?: boolean;
+  fullname?: string;
+  username?: string;
+  profile_image?: string;
   sid?: string;
   joinedAt: Date;
   isConnected: boolean;

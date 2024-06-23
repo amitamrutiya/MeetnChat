@@ -19,9 +19,9 @@ export default function Home() {
           ? <br /> All in one Website for Meet
         </div>
         <div className="flex flex-col-reverse lg:flex-row min-h-[80ovh]">
-          <section className="flex-grow lg:w-2/3 flex flex-wrap justify-center items-center">
+          <div className="flex-grow lg:w-2/3 flex flex-wrap justify-center items-center">
             <IconCardButton />
-          </section>
+          </div>
           <div className="my-10 w-1 border-r-4 bg-slate-100 lg:block hidden"></div>
           <section className="join-room flex flex-grow lg:w-1/3 justify-center items-center">
             <JoinRoomForm />

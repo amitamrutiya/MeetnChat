@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { signUpSchema } from "@/schemas/signupSchema";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { User } from "@prisma/client";
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 
 export async function register(values: z.infer<typeof signUpSchema>) {
@@ -31,6 +30,7 @@ export async function register(values: z.infer<typeof signUpSchema>) {
       email,
     },
   });
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   const expiryDate = new Date();
@@ -38,13 +38,13 @@ export async function register(values: z.infer<typeof signUpSchema>) {
   const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   if (existingUserByEmail && existingUserByEmail.is_verified) {
-    existingUserByEmail.password = hashedPassword;
-    existingUserByEmail.verifyCode = verifyCode;
-    existingUserByEmail.verifyCodeExpiry = expiryDate;
-    existingUserByEmail.updatedAt = new Date();
-    await db.user.create({
-      data: existingUserByEmail,
-    });
+    // existingUserByEmail.password = hashedPassword;
+    // existingUserByEmail.verifyCode = verifyCode;
+    // existingUserByEmail.verifyCodeExpiry = expiryDate;
+    // existingUserByEmail.updatedAt = new Date();
+    // await db.user.create({
+    //   data: existingUserByEmail,
+    // });
     return { success: false, message: "User already exists with this email" };
   } else {
     const firstName = fullname.split(" ")[0];
