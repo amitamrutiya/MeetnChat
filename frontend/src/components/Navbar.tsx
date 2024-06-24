@@ -3,7 +3,7 @@ import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import UserAvatar from "./UserAvatar";
 import LogoutButton from "./LogoutButton";
 import { currentUser } from "@/lib/auth";
-import { User } from "@prisma/client";
+import { User } from "@/type";
 
 export interface NavbarProps {
   remoteUser?: User | undefined | null;
@@ -32,8 +32,8 @@ const Navbar: React.FC<NavbarProps> = async (props) => {
             <ArrowLeftRightIcon fontSize={20} />
             {remoteUser ? (
               <UserAvatar
-                username={remoteUser?.username || "Someone"}
-                src={remoteUser?.profile_image || ""}
+                username={remoteUser?.name || "Someone"}
+                src={remoteUser?.picture || ""}
                 height={40}
                 width={40}
               />
