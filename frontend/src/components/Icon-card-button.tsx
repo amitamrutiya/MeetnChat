@@ -1,16 +1,13 @@
-"use client";
-
 import React from "react";
 import functions from "@/app/data/functions";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { PinContainer } from "./ui/3d-pin";
 import { BackgroundGradient } from "./ui/background-gradient";
 import { Meteors } from "./ui/meteors";
+import { currentUser } from "@/lib/auth";
 
-const IconCardButton = () => {
-  const session = useSession();
-  const user = session.data?.user;
+const IconCardButton = async () => {
+  const user = await currentUser();
   return functions.map((f, i) => (
     <Link key={i} href={user ? f.link : "/api/auth/login"} passHref>
       <PinContainer title={f.description}>

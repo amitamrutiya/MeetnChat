@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,12 +35,13 @@ function RoomIdForm() {
       color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
       duration={7}
       borderWidth={4}
+      className="w-full"
     >
       {" "}
       <Form {...roomForm}>
         <form
           onSubmit={roomForm.handleSubmit(onRoomFormSubmit)}
-          className="w-full p-8 space-y-8 bg-secondary rounded-lg shadow-md"
+          className=" p-8 space-y-8 rounded-lg shadow-md"
         >
           <FormField
             control={roomForm.control}

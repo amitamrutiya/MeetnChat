@@ -13,7 +13,7 @@ export default function Home() {
       <Navbar />
       <div className="flex flex-col items-center text-center absolute">
         <div
-          className={`min-h-10vh text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer animate-fadeIn my-5`}
+          className={`min-h-10vh text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer my-5`}
         >
           Miss <FlipWords words={words} />
           ? <br /> All in one Website for Meet

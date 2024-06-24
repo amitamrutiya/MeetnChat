@@ -26,7 +26,7 @@ export default function VerificationEmail({
         <title>Verification Code</title>
         <header className="flex items-center justify-center text-xl my-6 align-middle font-sans font-bold antialiased">
           <AudioLines className="mr-2 inline" />
-          Connect <span className="text-sky-400/100"> Friends</span>
+          Meet <span className="text-sky-400/100"> ChillChat</span>
         </header>
         <Font
           fontFamily="Roboto"

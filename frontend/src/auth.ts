@@ -17,15 +17,16 @@ export const {
   ...authConfig,
   callbacks: {
     async signIn({ account, user }) {
-      if (account?.provider === "google") {
-        // return Boolean(user.is_verified && user.email?.endsWith("@gmail.com"));
-        return true;
-      }
+      // if (account?.provider === "google") {
+      // return Boolean(user.is_verified && user.email?.endsWith("@gmail.com"));
+      // return true;
+      // }
+      if (account?.provider !== "credentials") return true;
+
       const existingUser = await getUserById(user.id!);
       if (!existingUser || !existingUser.is_verified) {
         return false;
       }
-
       return true;
     },
     async jwt({ token, user }) {
