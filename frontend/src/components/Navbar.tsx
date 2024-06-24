@@ -5,7 +5,6 @@ import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import { User } from "@/type";
 import UserAvatar from "./UserAvatar";
 import { useSession } from "next-auth/react";
-import { ModeToggle } from "./ui/mode-toggle";
 import LogoutButton from "./LogoutButton";
 
 export interface NavbarProps {
@@ -60,7 +59,6 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             <LogoutButton />
           </>
         )}
-        <ModeToggle />
       </div>
     </nav>
   );

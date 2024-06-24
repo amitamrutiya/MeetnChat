@@ -49,10 +49,14 @@ function SignInForm() {
       duration={7}
       borderWidth={4}
     >
-      <div className="w-full max-w-md p-8 space-y-6 bg-background rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 space-y-6 bg-background rounded-lg shadow-md ">
         <div className="text-center">
-          <h1 className="text-2xl font-extrabold mb-6">Please Login to Use</h1>
-          <p className="mb-4">Sign in to start your anonymous adventure</p>
+          <h1 className="text-2xl font-extrabold mb-6 text-white">
+            Please Login to Use
+          </h1>
+          <p className="mb-4 text-white">
+            Sign in to start your anonymous adventure
+          </p>
         </div>
         <Form {...signinForm}>
           <form
@@ -65,7 +69,9 @@ function SignInForm() {
               render={({ field }) => (
                 <FormItem>
                   <LabelInputContainer>
-                    <FormLabel className="flex">Email/Username</FormLabel>
+                    <FormLabel className="flex">
+                      Email/Username
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Email/Username" {...field} />
                     </FormControl>

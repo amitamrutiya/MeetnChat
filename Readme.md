@@ -37,7 +37,7 @@ This project is a real-time communication application offering various communica
 
 1. Clone the repository to your local machine.
 ```
-https://github.com/amitamrutiya2210/MeetnChat
+https://github.com/amitamrutiya/MeetnChat
 ```
 
 2. Navigate to the project directory.

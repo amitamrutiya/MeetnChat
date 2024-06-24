@@ -1,7 +1,6 @@
 import { MediaStreamProvider } from "@/app/context/MediaStream";
 import { MediaScreenStreamProvider } from "@/app/context/ScreenStream";
 import { SocketProvider } from "@/app/context/SocketContext";
-import { ThemeProvider } from "@/app/context/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -45,15 +44,8 @@ export default function RootLayout({
       <AuthProvider>
         <AppProviders>
           <body className={inter.className}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-            </ThemeProvider>
+            {children}
+            <Toaster />
           </body>
         </AppProviders>
       </AuthProvider>

@@ -145,10 +145,12 @@ function SignupForm() {
       <div className="flex items-start justify-start">
         <div className="w-full max-w-md p-8 space-y-8 bg-background rounded-lg shadow-md">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold tracking-tighter mb-6">
+            <h1 className="text-2xl font-extrabold tracking-tighter mb-6 text-white">
               Please SignUp to Use
             </h1>
-            <p className="mb-4">Sign up to start your anonymous adventure</p>
+            <p className="mb-4 text-white">
+              Sign up to start your anonymous adventure
+            </p>
           </div>
           <Form {...sendVerificationEmailForm}>
             <form

@@ -39,7 +39,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            `flex h-9 w-full rounded-md border border-secondary-foreground bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 border-none bg-gray-50 dark:bg-zinc-800 text-black dark:text-white shadow-input placeholder:text-neutral-400 dark:placeholder-text-neutral-600  focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600 dark:shadow-[0px_0px_1px_1px_var(--neutral-700)] group-hover/input:shadow-none duration-400
+            `flex h-9 w-full rounded-lg border border-secondary-foreground bg-transparent px-3 py-1 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 border-none  bg-zinc-800 text-white shadow-input placeholder:text-neutral-400 placeholder-text-neutral-600   focus-visible:ring-neutral-600 shadow-[0px_0px_1px_1px_var(--neutral-700)] group-hover/input:shadow-none duration-400
            `,
             className
           )}
