@@ -30,7 +30,7 @@ export function useRoom() {
     FileTransferContext
   ) as FileTransferProps;
   const params = useParams();
-  const roomId = params.room;
+  let roomId: string = params.room as string;
 
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incommingCallData, setIncommingCallData] = useState<
@@ -62,6 +62,7 @@ export function useRoom() {
     console.log("Refreshing user list");
     try {
       const { data } = await serverInstance.get("/users");
+      console.log("data.users" + JSON.stringify(data.users));
       if (data.users) {
         console.log("data.users" + data.users.length);
         setUsers(data.users);
