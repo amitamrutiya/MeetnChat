@@ -2,7 +2,7 @@
 
 import { Input, Avatar, AvatarImage, AvatarFallback } from "@repo/ui";
 import { SettingsIcon, SearchIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getUserById } from "app/actions/user/get-user";
 import EditProfileDialoge from "components/edit-profile-dialoge";
@@ -10,12 +10,16 @@ import ChatSearchInviteTab from "./chat-search-invite-tab";
 import ChatSearchContactsTab from "./chat-search-contacts-tab";
 import ChatSearchMainTab from "./chat-search-main-tab";
 import ChatSearchNavButton from "./chat-search-nav-button";
-import { chat } from "hooks/use-chat";
+import { useChat } from "hooks/use-chat";
 import { useWebSocket } from "components/web-socket-context";
+import { getExistingChats } from "app/actions/chat/get-chats";
+import { useSetRecoilState } from "recoil";
+import { oldChatState } from "@repo/store";
 
 function ChatRoomSearchSection() {
   const currentUser = useSession().data?.user;
   const [settingDialog, setSettingDialog] = useState<boolean>(false);
+  const setOldChats = useSetRecoilState(oldChatState);
   const { ws } = useWebSocket();
   const {
     fetchFrequentChatUsers,
@@ -25,7 +29,7 @@ function ChatRoomSearchSection() {
     setRequestUserData,
     setContacts,
     setInviteUserData,
-  } = chat();
+  } = useChat();
 
   useEffect(() => {}, [
     fetchFrequentChatUsers,
@@ -93,6 +97,32 @@ function ChatRoomSearchSection() {
               return newMap;
             });
           }
+          break;
+        }
+
+        case "LOAD_EXISTING_CHATS": {
+          const response = await getExistingChats({
+            sender_id: currentUser?.id ?? "",
+            receiver_id: message.payload.receiver_id,
+          });
+          console.log("Existing chats:", response);
+          if (response.success) {
+            setOldChats(response.data!);
+          } else {
+            console.error("Failed to load existing chats");
+          }
+          break;
+        }
+        case "LOAD_NEW_CHAT": {
+          setOldChats((oldChats) => [...oldChats, message.payload]);
+          break;
+        }
+        case "CHAT_MESSAGE_DELETED": {
+          setOldChats((oldChats) => oldChats.filter((chat) => chat.id !== message.payload.chat_id));
+          break;
+        }
+        case "CHAT_MESSAGE_UPDATED": {
+          setOldChats((oldChats) => oldChats.map((chat) => (chat.id === message.payload.id ? message.payload : chat)));
           break;
         }
         default:

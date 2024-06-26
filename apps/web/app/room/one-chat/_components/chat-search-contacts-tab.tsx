@@ -7,7 +7,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 
 const ChatSearchContactsTab = () => {
-  const { contacts } = chat();
+  const { contacts } = useChat();
   const [selectChat, setSelectChat] = useRecoilState(selectChatAtom);
 
   return (
