@@ -11,7 +11,16 @@ export default auth((req) => {
   const isLoggendIn = !!req.auth;
 
   if (!isLoggendIn && !isPublicPath) {
-    return Response.redirect(new URL(`/`));
+    let callbackUrl = nextUrl.pathname;
+    if (nextUrl.search) {
+      callbackUrl += nextUrl.search;
+    }
+
+    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+    return Response.redirect(
+      new URL(`/?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+    );
   }
   return null;
 });
