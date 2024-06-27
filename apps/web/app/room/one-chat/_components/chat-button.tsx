@@ -1,6 +1,6 @@
 import { MessageCircleMoreIcon, SendHorizonalIcon } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, useContext } from "react";
-import MessageDiv from "../../../../components/message-div";
+import MessageDiv from "../../../../components/chat-div";
 import FileTransfer from "../../../../components/file-transfer";
 import FileCard from "../../../../components/file-card";
 import { Message } from "@repo/common";
