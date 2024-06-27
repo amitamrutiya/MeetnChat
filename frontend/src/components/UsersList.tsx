@@ -2,8 +2,20 @@ import { User } from "@/type";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-function UsersList(props: any) {
+type UsersListProps = {
+  users: User[];
+  roomId: string;
+  currentUser: any;
+  calledToUserId?: string;
+  handleClickUser: (user: User) => void;
+};
+
+function UsersList(props: UsersListProps) {
   const { users, roomId, currentUser, calledToUserId, handleClickUser } = props;
+  console.log(users);
+  console.log(currentUser);
+  console.log(roomId);
+  console.log(calledToUserId);
   return (
     <div className="flex w-full items-center justify-center text-white">
       {users &&
