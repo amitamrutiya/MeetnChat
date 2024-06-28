@@ -1,12 +1,12 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import IncomingCallDialog from "@/components/IncomingCallDialog";
 import UsersList from "@/components/UsersList";
 import SetupAudioVideo from "@/components/SetupAudioVideo";
 import { ShareButton } from "@/components/ShareButton";
 import MeetDashboard from "@/components/MeetDashboard";
 import { useRoom } from "@/app/hooks/useRoom";
+import RoomNavbar from "@/components/RoomNavbar";
 
 export default function Room() {
   const {
@@ -25,7 +25,7 @@ export default function Room() {
 
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
-      <Navbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
+      <RoomNavbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
 
       {remoteSocketId && (
         <MeetDashboard

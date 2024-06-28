@@ -20,10 +20,11 @@ export function useAuth() {
   async function onSignInFormSubmit(values: z.infer<typeof signInSchema>) {
     setIsSubmitting(true);
     const result = await signIn("credentials", {
-      redirect: false,
+      redirect: true,
       identifier: values.identifier,
       password: values.password,
     });
+
     setIsSubmitting(false);
     console.log("sign in result", result);
     if (result?.error) {
@@ -51,11 +52,18 @@ export function useAuth() {
         username,
         code: { code: values.code },
       });
-      await onSignInFormSubmit({ identifier: username, password });
-      toast({
-        title: "Success",
-        description: response.message,
-      });
+      if (response.success) {
+        await onSignInFormSubmit({ identifier: username, password });
+        toast({
+          title: "Success",
+          description: response.message,
+        });
+      } else {
+        toast({
+          title: response.message,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.log("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;
@@ -74,13 +82,19 @@ export function useAuth() {
     setIsSubmitting(true);
     try {
       const response = await register(values);
-      toast({
-        title: "Success",
-        description: response.message,
-      });
-      setSendMail(true);
-      setPassword(values.password);
-      setIsSubmitting(false);
+      if (response.success) {
+        toast({
+          title: "Success",
+          description: response.message,
+        });
+        setSendMail(true);
+        setPassword(values.password);
+      } else {
+        toast({
+          title: response.message,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.log("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;
@@ -90,6 +104,7 @@ export function useAuth() {
         description: errorMessage,
         variant: "destructive",
       });
+    } finally {
       setIsSubmitting(false);
     }
   }

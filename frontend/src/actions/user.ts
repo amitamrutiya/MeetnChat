@@ -1,8 +1,9 @@
-"use server";
-
 import { db } from "@/lib/db";
+import { User } from "@prisma/client";
 
-export async function getUserByIdentifier(identifier: string) {
+export async function getUserByIdentifier(
+  identifier: string
+): Promise<User | null> {
   try {
     const user = await db.user.findFirst({
       where: {
@@ -16,7 +17,7 @@ export async function getUserByIdentifier(identifier: string) {
   }
 }
 
-export async function getUserById(id: string) {
+export async function getUserById(id: string): Promise<User | null> {
   try {
     const User = await db.user.findUnique({
       where: {

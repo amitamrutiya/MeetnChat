@@ -2,7 +2,9 @@
 
 import {
   MicIcon,
-  PaperclipIcon, SendHorizonalIcon, SmileIcon
+  PaperclipIcon,
+  SendHorizonalIcon,
+  SmileIcon,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 
@@ -153,7 +155,7 @@ function ChatRoomSection() {
         <SmileIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
         <PaperclipIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
         <MicIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
-      </div>{" "}
+      </div>
     </div>
   );
 }

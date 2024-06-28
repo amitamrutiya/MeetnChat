@@ -39,7 +39,7 @@ export function ShareButton() {
                 typeof window !== "undefined" ? window.location.href : ""
               }
               readOnly
-            />{" "}
+            />
           </div>
           <Button
             type="submit"
