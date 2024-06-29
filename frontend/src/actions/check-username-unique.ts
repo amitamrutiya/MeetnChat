@@ -21,7 +21,9 @@ export async function checkUsernameUnique(
   const existingVerifiedUser = await db.user.findFirst({
     where: {
       username,
-      is_verified: true,
+      emailVerified: {
+        not: null,
+      },
     },
   });
 

@@ -17,7 +17,9 @@ export async function register(values: z.infer<typeof signUpSchema>) {
   const existingUserVerifiedByUsername = await db.user.findFirst({
     where: {
       username,
-      is_verified: true,
+      emailVerified: {
+        not: null,
+      },
     },
   });
 
@@ -37,7 +39,7 @@ export async function register(values: z.infer<typeof signUpSchema>) {
   expiryDate.setMinutes(expiryDate.getMinutes() + 10);
   const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  if (existingUserByEmail && existingUserByEmail.is_verified) {
+  if (existingUserByEmail && existingUserByEmail.emailVerified) {
     // existingUserByEmail.password = hashedPassword;
     // existingUserByEmail.verifyCode = verifyCode;
     // existingUserByEmail.verifyCodeExpiry = expiryDate;
@@ -52,12 +54,12 @@ export async function register(values: z.infer<typeof signUpSchema>) {
     const newUser = await db.user.create({
       data: {
         email,
-        fullname,
+        name: fullname,
         password: hashedPassword,
         username: username,
-        profile_image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}+${lastName}`,
+        image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}+${lastName}`,
         is_online: true,
-        is_verified: false,
+        emailVerified: new Date(),
         verifyCode: verifyCode,
         verifyCodeExpiry: expiryDate,
         friends: [],

@@ -27,8 +27,8 @@ const RoomNavbar: React.FC<RoomNavbarProps> = (props) => {
         <div>
           <div className="mx-5 mt-4 flex items-center text-white">
             <UserAvatar
-              username={user?.fullname || user.email || "Someone"}
-              src={user?.profile_image || ""}
+              username={user?.name || user.email || "Someone"}
+              src={user?.image || ""}
               height={40}
               width={40}
             />
@@ -52,7 +52,7 @@ const RoomNavbar: React.FC<RoomNavbarProps> = (props) => {
           <>
             <UserAvatar
               username={user?.username || user?.email || "Someone"}
-              src={user?.profile_image || ""}
+              src={user?.image || ""}
               height={40}
               width={40}
             />

@@ -5,11 +5,10 @@ import { JWT } from "next-auth/jwt";
 declare module "next-auth" {
   interface User {
     _id?: string;
-    is_verified?: boolean;
     username?: string;
     email?: string;
-    fullname?: string;
-    profile_image?: string;
+    name?: string;
+    image?: string;
     bio?: string;
     phone_number?: string;
     is_online?: boolean;
@@ -18,11 +17,10 @@ declare module "next-auth" {
   interface Session {
     user: {
       _id?: string;
-      is_verified?: boolean;
       username?: string;
       email?: string;
-      fullname?: string;
-      profile_image?: string;
+      name?: string;
+      image?: string;
       bio?: string;
       phone_number?: string;
       is_online?: boolean;
@@ -33,11 +31,10 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     _id?: string;
-    is_verified?: boolean;
     username?: string;
     email?: string;
-    fullname?: string;
-    profile_image?: string;
+    name?: string;
+    image?: string;
     bio?: string;
     phone_number?: string;
     is_online?: boolean;

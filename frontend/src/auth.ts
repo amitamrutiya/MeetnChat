@@ -11,17 +11,24 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          emailVerified: new Date(),
+        },
+      });
+    },
+  },
   callbacks: {
     async signIn({ account, profile, user }) {
-      if (account?.provider === "google") {
-        console.log("profile", profile);
-        return !!profile?.email_verified;
-      }
       if (account?.provider !== "credentials") return true;
 
       const existingUser: User | null = await getUserById(user.id!);
-      console.log("existingUser", existingUser);
-      if (!existingUser || !existingUser.is_verified) {
+      if (!existingUser || !existingUser.emailVerified) {
         return false;
       }
       return true;
@@ -30,11 +37,10 @@ export const {
       if (token.sub) {
         session.user.id = token.sub;
       }
-      session.user.is_verified = token.is_verified;
       session.user.username = token.username;
       // @ts-ignore
-      session.user.fullname = token.name;
-      session.user.profile_image = token.profile_image;
+      session.user.name = token.name;
+      session.user.image = token.image;
       session.user.bio = token.bio;
       session.user.phone_number = token.phone_number;
       session.user.is_online = token.is_online;
@@ -50,14 +56,15 @@ export const {
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
 
-      token.name = existingUser.fullname;
-      token.email = existingUser.email;
-      token.username = existingUser.username;
+      if (existingUser.email && existingUser.username && existingUser.name) {
+        token.name = existingUser.name;
+        token.email = existingUser.email;
+        token.username = existingUser.username;
+      }
       token.bio = existingUser.bio;
       token.is_online = existingUser.is_online;
-      token.is_verified = existingUser.is_verified;
-      token.username = existingUser.username;
-      token.picture = existingUser.profile_image;
+      token.emailVerified = existingUser.emailVerified;
+      if (existingUser.image) token.image = existingUser.image;
       return token;
     },
   },

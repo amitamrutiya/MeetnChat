@@ -37,7 +37,7 @@ export async function verifyCode(value: verifyCodeType) {
         id: user.id,
       },
       data: {
-        is_verified: true,
+        emailVerified: new Date(),
       },
     });
 

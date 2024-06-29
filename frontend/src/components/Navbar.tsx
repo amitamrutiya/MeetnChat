@@ -19,7 +19,7 @@ const Navbar = async () => {
           <>
             <UserAvatar
               username={user?.name || user?.email || "Someone"}
-              src={user?.profile_image || ""}
+              src={user?.image || ""}
               height={40}
               width={40}
             />

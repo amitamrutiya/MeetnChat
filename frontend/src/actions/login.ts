@@ -25,7 +25,7 @@ export async function login(values: z.infer<typeof signInSchema>) {
     return { success: false, message: "Email does not exist!" };
   }
 
-  if (!existingUser.is_verified) {
+  if (!existingUser.emailVerified) {
     return {
       success: false,
       message: "Email not verified. First verify email",
