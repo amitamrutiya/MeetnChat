@@ -18,7 +18,7 @@ const RoomNavbar: React.FC<RoomNavbarProps> = (props) => {
   const user = session.data?.user;
 
   return (
-    <nav className="flex items-center justify-between mx-10 mt-2">
+    <nav className="flex w-full items-center justify-between mx-">
       <header className="flex items-center text-xl align-middle font-sans font-bold antialiased relative">
         <AudioLines className="mr-2 inline" />
         Meet <span className="text-sky-400/100"> ChillChat</span>
