@@ -18,7 +18,6 @@ model User {
   image            String?
   bio              String    @default("Hey there! I am available on ChatApp")
   phone_number     String?   @unique
-  pending_friends  String[]  @default([])
   friends          String[]  @default([])
   is_online        Boolean   @default(false)
   is_connected     Boolean   @default(false)
@@ -88,10 +87,12 @@ model Group {
 }
 
 model GroupChat {
-  id        String   @id @default(cuid()) @map("_id")
-  group_id  String
-  sender_id String
-  message   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(cuid()) @map("_id")
+  group_id     String
+  sender_id    String
+  sender_name  String
+  sender_image String
+  message      String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 }
