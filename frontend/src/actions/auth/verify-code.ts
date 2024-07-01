@@ -29,7 +29,7 @@ export async function verifyCode(value: verifyCodeType) {
   }
 
   const isCodeValid = user.verifyCode === code;
-  const isCodeExpired = new Date(user.verifyCodeExpiry) > new Date();
+  const isCodeExpired = new Date(user.verifyCodeExpiry ?? 0) > new Date();
 
   if (isCodeValid && isCodeExpired) {
     await db.user.update({
