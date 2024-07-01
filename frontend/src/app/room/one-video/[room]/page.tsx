@@ -25,12 +25,13 @@ export default function Room() {
 
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
-      <RoomNavbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
+    <RoomNavbar remoteSocketId={remoteSocketId} remoteUser={remoteUser}/>
 
       {remoteSocketId && (
         <VideoDashboard
           remoteSocketId={remoteSocketId}
           whiteboardID={whiteboardID}
+          remoteUser={remoteUser}
         />
       )}
 

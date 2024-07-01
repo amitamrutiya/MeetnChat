@@ -9,7 +9,7 @@ import { currentUser } from "@/lib/auth";
 const IconCardButton = async () => {
   const user = await currentUser();
   return functions.map((f, i) => (
-    <Link key={i} href={user ? f.link : "/api/auth/login"} passHref>
+    <Link key={i} href={user ? f.link : "/" } passHref>
       <PinContainer title={f.description}>
         <div className="text-center mx-5 my-5 px-2 py-2 flex h-[250px] w-[250px] cursor-pointer items-center justify-center rounded-md shadow-md hover:bg-hover sm:my-0">
           <BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-secondary dark:bg-zinc-900">

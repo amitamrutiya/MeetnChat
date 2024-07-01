@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+
 import { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { SocketContext } from "@/app/context/SocketContext";
@@ -17,11 +19,13 @@ import { useSession } from "next-auth/react";
 export function useRoom() {
   const session = useSession();
   let currentUser = session.data?.user;
+
   useEffect(() => {
     if (session.data) {
       currentUser = session.data.user;
     }
   }, [session.data]);
+
   const socket = useContext(SocketContext) as Socket;
   const { setRemoteMediaStream, remoteStreams } = useContext(
     MediaStreamContext
@@ -29,6 +33,7 @@ export function useRoom() {
   const { setAvailableFiles } = useContext(
     FileTransferContext
   ) as FileTransferProps;
+
   const params = useParams();
   let roomId: string = params.room as string;
 
@@ -37,9 +42,11 @@ export function useRoom() {
     IncomingCall | undefined
   >();
   const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
+
   const [remoteUser, setRemoteUser] = useState<undefined | User>();
   const [users, setUsers] = useState<User[]>([]);
   const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
+
   const secret = "$3#Ia";
 
   const joinRoom = useCallback(async () => {
@@ -91,15 +98,18 @@ export function useRoom() {
       setIncommingCallData(data);
     }
   }, []);
-
+  useEffect(() => {
+    console.log("Remote user updated:", remoteUser);
+  }, [remoteUser]);
+  
   const handleAcceptIncommingCall = useCallback(async () => {
     console.log("Accepting incomming call", incommingCallData);
     if (!incommingCallData) return;
     const { from, user, offer, roomId } = incommingCallData;
     if (offer) {
       const answer = await peerService.getAnswer(offer);
+      console.log("Answer" + answer);
       if (answer) {
-        socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteUser({
           ...user,
           roomId,
@@ -107,6 +117,8 @@ export function useRoom() {
           joinedAt: new Date(),
           socketId: from,
         });
+        console.log("Setting remote socket id" + remoteUser);
+        socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteSocketId(from);
       }
     }

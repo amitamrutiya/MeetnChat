@@ -8,8 +8,8 @@ import { verifySchema } from "@/schemas/verifySchema";
 import { signUpSchema } from "@/schemas/signupSchema";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
-import { verifyCode } from "@/actions/verify-code";
-import { register } from "@/actions/register";
+import { verifyCode } from "@/actions/auth/verify-code";
+import { register } from "@/actions/auth/register";
 
 export function useAuth() {
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -109,7 +109,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
         ) : (
           <Avatar className="h-36 w-36">
             <AvatarImage
-              src={remoteUser?.picture?.toString() ?? "/user.png"}
+              src={remoteUser?.image?.toString() ?? "/user.png"}
               alt="User"
             />
             <AvatarFallback>CN</AvatarFallback>
