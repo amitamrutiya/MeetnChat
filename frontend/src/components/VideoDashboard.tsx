@@ -17,7 +17,7 @@ interface DashboardProps {
   remoteUser?: User;
 }
 
-const Dashboard: React.FC<DashboardProps> = (props) => {
+const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
   const { remoteSocketId, remoteUser } = props;
   const session = useSession();
   const user = session.data?.user;
@@ -25,6 +25,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     MediaStreamContext
   ) as ProviderProps;
 
+  console.log("remoteUser", remoteUser);
   return (
     <div className="flex flex-col mx-[20%]">
       <div className="mb-10 h-[74vh] overflow-auto">
@@ -87,7 +88,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
             ) : (
               <Avatar className="h-36 w-36">
                 <AvatarImage
-                  src={remoteUser?.picture?.toString() ?? "/user.png"}
+                  src={remoteUser?.image ?? "/user.png"}
                   alt="User"
                 />
                 <AvatarFallback>CN</AvatarFallback>

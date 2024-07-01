@@ -12,21 +12,12 @@ type UsersListProps = {
 
 function UsersList(props: UsersListProps) {
   const { users, roomId, currentUser, calledToUserId, handleClickUser } = props;
-  console.log(users);
-  console.log(currentUser);
-  console.log(roomId);
-  console.log(calledToUserId);
   return (
     <div className="flex w-full items-center justify-center text-white">
       {users &&
         users
-          .filter(
-            (e: User) =>
-              e.name !== `${currentUser?.name} - ${currentUser?.email}`
-          )
-          .filter((e: User) => {
-            return e.roomId === roomId;
-          })
+          .filter((e: User) => e.username !== currentUser?.username)
+          .filter((e: User) => e.roomId === roomId)
           .map((user: User, index: number) => (
             <div
               key={`${user.name}-${index}`}
@@ -38,7 +29,7 @@ function UsersList(props: UsersListProps) {
               }
             >
               <Avatar>
-                <AvatarImage src={user.picture ?? ""} />
+                <AvatarImage src={user.image} />
                 <AvatarFallback>{user.name}</AvatarFallback>
               </Avatar>
             </div>

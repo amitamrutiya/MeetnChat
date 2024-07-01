@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signinSchema";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { login } from "@/actions/login";
+import { login } from "@/actions/auth/login";
 import { BottomGradient, LabelInputContainer } from "./Common";
 import ShineBorder from "./ui/shine-border";
 
@@ -69,9 +69,7 @@ function SignInForm() {
               render={({ field }) => (
                 <FormItem>
                   <LabelInputContainer>
-                    <FormLabel className="flex">
-                      Email/Username
-                    </FormLabel>
+                    <FormLabel className="flex">Email/Username</FormLabel>
                     <FormControl>
                       <Input placeholder="Email/Username" {...field} />
                     </FormControl>

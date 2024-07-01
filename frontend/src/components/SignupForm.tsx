@@ -24,7 +24,7 @@ import { verifySchema } from "@/schemas/verifySchema";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { signIn } from "next-auth/react";
 import { useAuth } from "@/app/hooks/useAuth";
-import { checkUsernameUnique } from "@/actions/check-username-unique";
+import { checkUsernameUnique } from "@/actions/auth/check-username-unique";
 import { BottomGradient, LabelInputContainer } from "./Common";
 import ShineBorder from "./ui/shine-border";
 import { useSearchParams } from "next/navigation";
