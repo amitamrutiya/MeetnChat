@@ -63,7 +63,6 @@ export async function register(values: z.infer<typeof signUpSchema>) {
         verifyCode: verifyCode,
         verifyCodeExpiry: expiryDate,
         friends: [],
-        chats: undefined,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

@@ -4,8 +4,9 @@ export type User = {
   email?: string;
   email_verified?: boolean;
   name?: string;
+  username?: string;
   nickname?: string;
-  picture?: string;
+  image?: string;
   sid?: string;
   joinedAt: Date;
   isConnected: boolean;

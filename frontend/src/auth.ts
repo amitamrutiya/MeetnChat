@@ -19,12 +19,13 @@ export const {
         },
         data: {
           emailVerified: new Date(),
+          username: user.email?.split("@")[0],
         },
       });
     },
   },
   callbacks: {
-    async signIn({ account, profile, user }) {
+    async signIn({ account, user }) {
       if (account?.provider !== "credentials") return true;
 
       const existingUser: User | null = await getUserById(user.id!);
@@ -47,7 +48,6 @@ export const {
       if (token.email) {
         session.user.email = token.email;
       }
-      console.log("session", session);
       return session;
     },
     async jwt({ token }) {
