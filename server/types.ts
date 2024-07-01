@@ -3,9 +3,9 @@ export interface User {
   roomId: string;
   email?: string;
   is_verified?: boolean;
-  fullname?: string;
+  name?: string;
   username?: string;
-  profile_image?: string;
+  image?: string;
   sid?: string;
   joinedAt: Date;
   isConnected: boolean;

@@ -26,15 +26,7 @@ io.on("connection", (socket: Socket) => {
   // When a client joins a room
   socket.on("room:join", (data) => {
     // Destructure the data received from the client
-    const {
-      roomId,
-      email,
-      is_verified,
-      fullname,
-      username,
-      profile_image,
-      sid,
-    } = data;
+    const { roomId, email, is_verified, name, username, image, sid } = data;
     // Set the user data in the users Map
     console.log(data);
     users.set(socket.id, {
@@ -42,9 +34,9 @@ io.on("connection", (socket: Socket) => {
       roomId,
       email,
       is_verified,
-      fullname,
+      name,
       username,
-      profile_image,
+      image,
       sid,
       joinedAt: new Date(),
       isConnected: false,

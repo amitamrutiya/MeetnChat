@@ -47,7 +47,6 @@ function SetupAudioVideo() {
       .getUserMedia({ audio: true, video: false })
       .then((_) => {
         navigator.mediaDevices.enumerateDevices().then((devices) => {
-          console.log("devices", devices);
           setDevices(devices);
         });
       });
@@ -63,7 +62,6 @@ function SetupAudioVideo() {
         groupIdSet.add(device.groupId);
       }
     }
-    console.log("uniqueAudioDevices", uniqueAudioDevices);
     setAudioDevices([...uniqueAudioDevices]);
   }, [devices, setAudioDevices]);
 
@@ -77,7 +75,6 @@ function SetupAudioVideo() {
         groupIdSet.add(device.groupId);
       }
     }
-    console.log("uniqueVideoDevices", uniqueVideoDevices);
     setVideoDevices([...uniqueVideoDevices]);
   }, [devices, setVideoDevices]);
 

@@ -6,7 +6,6 @@ import { currentUser } from "@/lib/auth";
 
 const Navbar = async () => {
   const user = await currentUser();
-  console.log("user", user);
   return (
     <nav className="flex items-center justify-between mx-10 mt-2">
       <header className="flex items-center text-xl align-middle font-sans font-bold antialiased relative">
