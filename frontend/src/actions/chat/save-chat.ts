@@ -13,7 +13,7 @@ export async function saveChat({
   message,
   sender_id,
   receiver_id,
-}: saveChatType): Promise<Chat | null> {
+}: saveChatType) {
   try {
     const chat: Chat = await db.chat.create({
       data: {
@@ -25,9 +25,9 @@ export async function saveChat({
       },
     });
 
-    return chat;
+    return { success: true, message: "Chat saved successfully" };
   } catch (error) {
     console.error("Error saving chat", error);
-    return null;
+    return { success: false, message: "Error saving chat" };
   }
 }
