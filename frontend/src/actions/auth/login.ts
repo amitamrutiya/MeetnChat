@@ -4,8 +4,8 @@ import * as z from "zod";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { signInSchema } from "@/schemas/signinSchema";
-import { getUserByIdentifier } from "@/actions/user";
 import bcrypt from "bcryptjs";
+import { getUserByIdentifier } from "../user/get-user";
 
 export async function login(values: z.infer<typeof signInSchema>) {
   const validatedFields = signInSchema.safeParse(values);
