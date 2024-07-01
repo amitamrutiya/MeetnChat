@@ -54,7 +54,7 @@ model Account {
 }
 
 model Chat {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(cuid()) @map("_id")
   sender_id   String
   receiver_id String
   message     String
