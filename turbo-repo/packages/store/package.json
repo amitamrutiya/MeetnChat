@@ -12,8 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "recoil": "^0.7.7",
+    "@repo/common": "*",
     "react": "^18.2.0",
-    "@repo/common": "*"
+    "recoil": "^0.7.7",
+    "socket.io-client": "^4.7.5"
   }
 }
