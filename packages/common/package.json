@@ -1,0 +1,19 @@
+{
+  "name": "@repo/common",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.16.1",
+    "@repo/db": "*",
+    "zod": "^3.23.8"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@repo/store",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@repo/common": "*",
+    "react": "^18.2.0",
+    "recoil": "^0.7.7",
+    "socket.io-client": "^4.7.5"
+  }
+}
