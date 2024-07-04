@@ -45,49 +45,19 @@ https://github.com/amitamrutiya/MeetnChat
 cd MeetnChat
 ```
 
-### Backend Setup
-
-3. Navigate to the Backend Directory:
-```
-cd backend
-```
-
-4. Install dependencies using npm.
+3. Install turbo repo dependencies
 ```
 yarn install
 ```
 
-5. Run Backend Server
+4. Edit the .env file and fill in the required values for environment variables from sample.env file
+
+5. Start turbo repo
 ```
-npm run start
+yarn dev
 ```
 
-### Frontend Setup
-
-6. Navigate to the Frontend Directory:
-```
-cd frontend
-```
-
-7. Install dependencies using npm.
-```
-yarn install
-```
-
-8. Copy the sample environment variables file and rename it to `.env.local`
-```
-cp sample.env.local .env.local
-```
-
-9. Edit the .env file and fill in the required values for environment variables such as database
-connection URI, session secret, etc.
-
-10. Start the server.
-```
-npm run dev
-```
-
-11. Access the application through your web browser at http://localhost:3000.
+6. Access the web application through your web browser at http://localhost:3000.
 
 > **Note**: The frontend and backend should be running simultaneously for the full functionality of the application.
 
