@@ -24,3 +24,4 @@ export * from "./shad/ui/flip-word";
 export * from "./shad/ui/shine-border";
 export * from "./shad/ui/input-otp";
 export * from "./shad/ui/hover-card";
+export * from "./shad/ui/globe"

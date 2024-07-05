@@ -1,4 +1,4 @@
-import { FlipWords, Spotlight } from "@repo/ui";
+import { FlipWords, Globe, Spotlight } from "@repo/ui";
 import IconCardButton from "../components/icon-card-button";
 import JoinRoomForm from "../components/join-room-form";
 import Navbar from "../components/navbar";
@@ -27,6 +27,7 @@ export default function Home() {
             <JoinRoomForm />
           </section>
         </div>
+        <Globe />
       </div>
     </main>
   );
