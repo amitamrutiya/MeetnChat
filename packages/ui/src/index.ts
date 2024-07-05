@@ -9,7 +9,6 @@ export * from "./shad/ui/background-gradient";
 export * from "./shad/ui/dialog";
 export * from "./shad/ui/dropdown-menu";
 export * from "./shad/ui/form";
-export * from "./shad/ui/hover-border-gradient";
 export * from "./shad/ui/input";
 export * from "./shad/ui/label";
 export * from "./shad/ui/meteors";
@@ -23,4 +22,5 @@ export * from "./shad/ui/textarea";
 export * from "./shad/ui/tooltip";
 export * from "./shad/ui/flip-word";
 export * from "./shad/ui/shine-border";
-export * from "./shad/ui/input-otp"
+export * from "./shad/ui/input-otp";
+export * from "./shad/ui/hover-card";
