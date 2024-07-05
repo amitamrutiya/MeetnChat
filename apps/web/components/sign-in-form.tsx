@@ -1,6 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,20 +7,11 @@ import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { BottomGradient, LabelInputContainer } from "./common";
 import { signInSchema } from "@repo/common";
-import {
-  Button,
-  ShineBorder,
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  Input,
-  FormMessage,
-} from "@repo/ui";
-import { login } from "../app/actions/auth/login";
+import { Button, ShineBorder, Form, FormField, FormItem, FormLabel, FormControl, Input, FormMessage } from "@repo/ui";
+import { useAuth } from "hooks/use-auth";
 
 function SignInForm() {
+  const { onSignInFormSubmit, isSubmitting } = useAuth();
   const signinForm = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -29,40 +19,16 @@ function SignInForm() {
       password: "",
     },
   });
-  const [isPending, startTransaction] = useTransition();
-
-  const onSubmit = (value: z.infer<typeof signInSchema>) => {
-    startTransaction(async () => {
-      const response = await login(value);
-      if (response.success === true) {
-        console.log("User Login");
-      } else {
-        // signinForm.reset();
-        console.log(response.message);
-      }
-    });
-  };
 
   return (
-    <ShineBorder
-      color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-      duration={7}
-      borderWidth={4}
-    >
+    <ShineBorder color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} duration={7} borderWidth={4}>
       <div className="w-full max-w-md p-8 space-y-6 bg-background rounded-lg shadow-md ">
         <div className="text-center">
-          <h1 className="text-2xl font-extrabold mb-6 text-white">
-            Please Login to Use
-          </h1>
-          <p className="mb-4 text-white">
-            Sign in to start your anonymous adventure
-          </p>
+          <h1 className="text-2xl font-extrabold mb-6 text-white">Please Login to Use</h1>
+          <p className="mb-4 text-white">Sign in to start your anonymous adventure</p>
         </div>
         <Form {...signinForm}>
-          <form
-            onSubmit={signinForm.handleSubmit(onSubmit)}
-            className="space-y-4 flex flex-col"
-          >
+          <form onSubmit={signinForm.handleSubmit(onSignInFormSubmit)} className="space-y-4 flex flex-col">
             <FormField
               name="identifier"
               control={signinForm.control}
@@ -86,11 +52,7 @@ function SignInForm() {
                   <LabelInputContainer>
                     <FormLabel className="flex">Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        {...field}
-                      />
+                      <Input type="password" placeholder="Password" {...field} />
                     </FormControl>
                   </LabelInputContainer>
                   <FormMessage />
@@ -99,10 +61,10 @@ function SignInForm() {
             />
             <Button
               type="submit"
-              disabled={isPending}
+              disabled={isSubmitting}
               className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             >
-              {isPending ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                 </>

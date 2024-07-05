@@ -9,14 +9,12 @@ import { signIn } from "next-auth/react";
 
 export async function login(values: z.infer<typeof signInSchema>) {
   const validatedFields = signInSchema.safeParse(values);
-
   if (!validatedFields.success) {
     return { success: false, message: validatedFields.error.message };
   }
   const { identifier, password } = validatedFields.data;
 
   const existingUser = await getUserByIdentifier(identifier);
-  console.log(existingUser, "existingUser");
   if (!existingUser || !existingUser.email || !existingUser.username || !existingUser.password) {
     return { success: false, message: "Email does not exist!" };
   }
@@ -34,13 +32,12 @@ export async function login(values: z.infer<typeof signInSchema>) {
       message: "Invalid credentials",
     };
   }
-
   try {
     await signIn("credentials", {
       identifier,
       password,
     });
-    return { success: true, message: "User Login " };
+    return { success: true, message: "User Login" };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
