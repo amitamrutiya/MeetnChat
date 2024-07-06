@@ -28,11 +28,7 @@ export default function Room() {
       <RoomNavbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
 
       {remoteSocketId && (
-        <VideoDashboard
-          remoteSocketId={remoteSocketId}
-          whiteboardID={whiteboardID}
-          remoteUser={remoteUser}
-        />
+        <VideoDashboard remoteSocketId={remoteSocketId} whiteboardID={whiteboardID} remoteUser={remoteUser} />
       )}
 
       {!remoteSocketId && (
@@ -47,9 +43,7 @@ export default function Room() {
           <SetupAudioVideo />
           <div className="flex flex-col items-center justify-center mt-5 space-y-5">
             <ShareButton />
-            <h6 className="font-sans text-slate-400">
-              Tip: Click on user to make call
-            </h6>
+            <h6 className="font-sans text-slate-400">Tip: Click on user to make call</h6>
           </div>
         </>
       )}

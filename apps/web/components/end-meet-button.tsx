@@ -18,18 +18,14 @@ import {
 } from "@repo/ui";
 import { useStopUserStream } from "../hooks/use-stop-stream";
 import { useRecoilValue } from "recoil";
-import {
-  socketStateAtom,
-  userScreenStreamAtom,
-  userStreamAtom,
-} from "@repo/store";
+import { SocketContext, userScreenStreamAtom, userStreamAtom } from "@repo/store";
+import { useContext } from "react";
 
 function EndMeetButton() {
-  const { handleStopAudioVideoStream, handleStopScreenShareStream } =
-    useStopUserStream();
+  const { handleStopAudioVideoStream, handleStopScreenShareStream } = useStopUserStream();
   const userStream = useRecoilValue(userStreamAtom);
   const userScreenStream = useRecoilValue(userScreenStreamAtom);
-  const socket = useRecoilValue(socketStateAtom);
+  const socket = useContext(SocketContext);
   const router = useRouter();
 
   return (
@@ -45,17 +41,11 @@ function EndMeetButton() {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Are you sure you want to end the call?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    You will be disconnected from the call.
-                  </AlertDialogDescription>
+                  <AlertDialogTitle>Are you sure you want to end the call?</AlertDialogTitle>
+                  <AlertDialogDescription>You will be disconnected from the call.</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => {}}>
-                    Cancle
-                  </AlertDialogCancel>
+                  <AlertDialogCancel onClick={() => {}}>Cancle</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-destructive text-destructive-foreground"
                     onClick={() => {

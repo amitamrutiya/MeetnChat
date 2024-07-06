@@ -1,26 +1,35 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { useParams } from "next/navigation";
 import { createHmac } from "crypto";
 import { useSession } from "next-auth/react";
 import { IncomingCall, User } from "@repo/common";
 import { serverInstance } from "../app/api/server-instance";
 import peerService from "../app/helpers/peer";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { availableFilesAtom, remoteStreamsAtom, socketStateAtom } from "@repo/store";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { availableFilesAtom, remoteStreamsAtom, SocketContext } from "@repo/store";
+import { Socket } from "socket.io-client";
 
 export function useRoom() {
-  const session = useSession();
-  let currentUser = session.data?.user;
+  const { data: sessionData } = useSession();
+  // const socket = useConnectSocket();
+  const [remoteMediaStreams, setRemoteMediaStream] = useRecoilState(remoteStreamsAtom);
+  const setAvailableFiles = useSetRecoilState(availableFilesAtom);
+  const { room: roomId } = useParams();
 
-  useEffect(() => {
-    if (session.data) {
-      currentUser = session.data.user;
-    }
-  }, [session.data]);
+  const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
+  const [incomingCallData, setIncomingCallData] = useState<IncomingCall | undefined>();
+  const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
+  const [remoteUser, setRemoteUser] = useState<undefined | User>();
+  const [users, setUsers] = useState<User[]>([]);
+  const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
 
-  const socket = useRecoilValue(socketStateAtom)!;
+  const currentUser = sessionData?.user;
+  const secret = "$3#Ia";
+
+  const socket = useContext(SocketContext) as Socket;
+
   useEffect(() => {
     if (!socket) return;
 
@@ -33,45 +42,25 @@ export function useRoom() {
     };
   }, [socket]);
 
-  const [remoteMediaStreams, setRemoteMediaStream] = useRecoilState(remoteStreamsAtom);
-  const [, setAvailableFiles] = useRecoilState(availableFilesAtom);
-
-  const params = useParams();
-  let roomId: string = params.room as string;
-
-  const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
-  const [incommingCallData, setIncommingCallData] = useState<IncomingCall | undefined>();
-  const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
-
-  const [remoteUser, setRemoteUser] = useState<undefined | User>();
-  const [users, setUsers] = useState<User[]>([]);
-  const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
-
-  const secret = "$3#Ia";
-
   const joinRoom = useCallback(async () => {
-    if (!currentUser || !roomId) return;
-    if (process.env.ENVIRONMENT !== "development") {
-      if (users.map((e) => e.email).includes(currentUser.email)) return;
-    }
+    if (!currentUser || !roomId || !socket) return;
+    if (process.env.ENVIRONMENT !== "development" && users.some((e) => e.email === currentUser.email)) return;
+
     console.log("Joining room");
     try {
-      socket.emit("room:join", {
-        roomId,
-        ...currentUser,
-      });
+      socket.emit("room:join", { roomId, ...currentUser });
     } catch (error) {
       console.error("Error joining room", error);
     }
-  }, [currentUser]);
+  }, [currentUser, roomId, socket, users]);
 
   const handleRefreshUserList = useCallback(async () => {
     console.log("Refreshing user list");
     try {
       const { data } = await serverInstance.get("/users");
-      console.log("data.users" + JSON.stringify(data.users));
+      console.log("data.users", JSON.stringify(data.users));
       if (data.users) {
-        console.log("data.users" + data.users.length);
+        console.log("data.users", data.users.length);
         setUsers(data.users);
       }
     } catch (error) {
@@ -79,86 +68,85 @@ export function useRoom() {
     }
   }, []);
 
-  const handleClickUser = useCallback(async (user: User) => {
-    console.log("Calling user", user);
-    const offer = await peerService.getOffer();
-    if (offer) {
-      socket.emit("peer:call", {
-        to: user.socketId,
-        offer,
-        roomId,
-      });
+  const handleClickUser = useCallback(
+    async (user: User) => {
+      if (!socket) return;
+      console.log("Calling user", user);
+      const offer = await peerService.getOffer();
+      if (offer) {
+        socket.emit("peer:call", { to: user.socketId, offer, roomId });
+        setCalledToUserId(user.socketId);
+      }
+    },
+    [roomId, socket]
+  );
+
+  const handleIncomingCall = useCallback(async (data: IncomingCall) => {
+    console.log("Incoming call", data);
+    if (data) {
+      setIncomingCallData(data);
     }
-    setCalledToUserId(user.socketId);
   }, []);
 
-  const handleIncommingCall = useCallback(async (data: IncomingCall) => {
-    console.log("Incomming call", data);
-    if (data) {
-      setIncommingCallData(data);
-    }
-  }, []);
   useEffect(() => {
     console.log("Remote user updated:", remoteUser);
   }, [remoteUser]);
 
-  const handleAcceptIncommingCall = useCallback(async () => {
-    console.log("Accepting incomming call", incommingCallData);
-    if (!incommingCallData) return;
-    const { from, user, offer, roomId } = incommingCallData;
+  const handleAcceptIncomingCall = useCallback(async () => {
+    if (!socket) return;
+    console.log("Accepting incoming call", incomingCallData);
+    if (!incomingCallData) return;
+    const { from, user, offer, roomId } = incomingCallData;
     if (offer) {
       const answer = await peerService.getAnswer(offer);
-      console.log("Answer" + answer);
+      console.log("Answer", answer);
       if (answer) {
-        setRemoteUser({
-          ...user,
-          roomId,
-          isConnected: true,
-          joinedAt: new Date(),
-          socketId: from,
-        });
-        console.log("Setting remote socket id" + remoteUser);
+        setRemoteUser({ ...user, roomId, isConnected: true, joinedAt: new Date(), socketId: from });
+        console.log("Setting remote socket id", remoteUser);
         socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteSocketId(from);
       }
     }
-    setIncommingCallData(undefined);
-  }, [incommingCallData]);
+    setIncomingCallData(undefined);
+  }, [incomingCallData, remoteUser, socket]);
 
-  const handleCallAccepted = useCallback(async (data: any) => {
-    console.log("Call accepted", data);
-    const { offer, from, user, roomId } = data;
+  const handleCallAccepted = useCallback(
+    async (data: any) => {
+      if (!socket) return;
+      console.log("Call accepted", data);
+      const { offer, from, user, roomId } = data;
 
-    await peerService.setRemoteDesc(offer);
-    setRemoteUser({
-      ...user,
-      roomId,
-      isConnected: true,
-      joinedAt: new Date(),
-      socketId: from,
-    });
-    setRemoteSocketId(from);
-  }, []);
+      await peerService.setRemoteDesc(offer);
+      setRemoteUser({ ...user, roomId, isConnected: true, joinedAt: new Date(), socketId: from });
+      setRemoteSocketId(from);
+    },
+    [socket]
+  );
 
-  const handleRejectIncommingCall = useCallback(() => {
+  const handleRejectIncomingCall = useCallback(() => {
     console.log("Rejecting incoming call");
-    setIncommingCallData(undefined);
+    setIncomingCallData(undefined);
   }, []);
 
   const handleNegotiation = useCallback(async () => {
+    if (!socket) return;
     console.log("Handle negotiation");
     const offer = await peerService.getOffer();
     socket.emit("peer:negotiate", { to: peerService.remoteSocketId, offer });
-  }, [remoteSocketId]);
+  }, [remoteSocketId, socket]);
 
-  const handleRequiredPeerNegotiate = useCallback(async (data: any) => {
-    console.log("Required peer negotiate", data);
-    const { from, offer } = data;
-    if (offer) {
-      const answer = await peerService.getAnswer(offer);
-      socket.emit("peer:negosiate:result", { to: from, offer: answer });
-    }
-  }, []);
+  const handleRequiredPeerNegotiate = useCallback(
+    async (data: any) => {
+      if (!socket) return;
+      console.log("Required peer negotiate", data);
+      const { from, offer } = data;
+      if (offer) {
+        const answer = await peerService.getAnswer(offer);
+        socket.emit("peer:negotiate:result", { to: from, offer: answer });
+      }
+    },
+    [socket]
+  );
 
   const handleRequiredPeerNegotiateFinalResult = useCallback(async (data: any) => {
     console.log("Required peer negotiate final result", data);
@@ -190,12 +178,11 @@ export function useRoom() {
 
   useEffect(() => {
     joinRoom();
-  }, [currentUser]);
+  }, [currentUser, joinRoom]);
 
   useEffect(() => {
     handleRefreshUserList();
     peerService.init();
-
     peerService?.peer?.addEventListener("negotiationneeded", handleNegotiation);
 
     let temp = { filename: "", size: 0, checksum: undefined };
@@ -204,143 +191,75 @@ export function useRoom() {
 
     if (peerService.peer) {
       peerService.peer.addEventListener("track", async (ev) => {
-        const remoteStream = ev.streams;
-        if (remoteStream && setRemoteMediaStream) {
-          setRemoteMediaStream([...remoteMediaStreams, remoteStream[0]!]);
+        const remoteStream = ev.streams[0];
+        if (remoteStream) {
+          setRemoteMediaStream((prev) => [...prev, remoteStream]);
         }
       });
-      peerService.peer.addEventListener("ended", async () => {});
-    }
 
-    if (peerService.peer)
       peerService.peer.ondatachannel = (e) => {
         peerService.remoteDataChanel = e.channel;
-        peerService.remoteDataChanel.onmessage = (e) => {
+        peerService.remoteDataChanel.onmessage = async (e) => {
           const { data } = e;
-
           if (typeof data === "string") {
             const { name, size, checksum } = JSON.parse(data);
-
-            temp.filename = name;
-            temp.size = size;
-            temp.checksum = checksum;
-
-            setAvailableFiles((e) => [
+            temp = { filename: name, size, checksum };
+            setAvailableFiles((prev) => [
               {
                 name: temp.filename,
                 size: temp.size,
-                recievedSize: 0,
+                receivedSize: 0,
                 checksum: temp.checksum,
                 checksumMatched: false,
                 timestamp: Date.now(),
               },
-              ...e,
+              ...prev,
             ]);
           } else {
-            try {
-              if (data && receivedSize < temp.size) {
-                receiveBuffer.push(data);
-                receivedSize += data.byteLength;
-                setAvailableFiles((e) =>
-                  e.map((e) =>
-                    e.name === temp.filename
-                      ? {
-                          name: temp.filename,
-                          size: temp.size,
-                          recievedSize: receivedSize,
-                          checksum: temp.checksum,
-                          checksumMatched: false,
-                          timestamp: Date.now(),
-                        }
-                      : e
-                  )
-                );
-              }
-              if (data && receivedSize === temp.size) {
-                const blob = new Blob(receiveBuffer);
+            if (receivedSize < temp.size) {
+              receiveBuffer.push(data);
+              receivedSize += data.byteLength;
+              setAvailableFiles((prev) =>
+                prev.map((file) => (file.name === temp.filename ? { ...file, receivedSize } : file))
+              );
+            }
+            if (receivedSize === temp.size) {
+              const blob = new Blob(receiveBuffer);
+              const arrayBuffer = await blob.arrayBuffer();
+              const bufferString = JSON.stringify(arrayBuffer);
+              const hash = createHmac("md5", secret).update(bufferString).digest("hex");
 
-                (async () => {
-                  const arraybuffer = await blob.arrayBuffer();
-                  const bufferString = JSON.stringify(arraybuffer);
-                  const hash = createHmac("md5", secret).update(bufferString).digest("hex");
-
-                  if (temp.checksum !== hash) {
-                    setAvailableFiles((e) =>
-                      e.map((e) =>
-                        e.name === temp.filename
-                          ? {
-                              name: temp.filename,
-                              size: temp.size,
-                              recievedSize: receivedSize,
-                              blob,
-                              checksumMatched: false,
-                              checksum: temp.checksum,
-                              timestamp: Date.now(),
-                            }
-                          : e
-                      )
-                    );
-                  } else {
-                    setAvailableFiles((e) =>
-                      e.map((e) =>
-                        e.name === temp.filename
-                          ? {
-                              name: temp.filename,
-                              size: temp.size,
-                              recievedSize: receivedSize,
-                              blob,
-                              checksum: temp.checksum,
-                              checksumMatched: true,
-                              timestamp: Date.now(),
-                            }
-                          : e
-                      )
-                    );
-                    temp = {
-                      filename: "",
-                      size: 0,
-                      checksum: undefined,
-                    };
-                    receivedSize = 0;
-                    receiveBuffer = [];
-                  }
-                })();
-              }
-            } catch (error) {
-              console.error("Error receiving file", error);
+              setAvailableFiles((prev) =>
+                prev.map((file) =>
+                  file.name === temp.filename
+                    ? { ...file, blob, checksumMatched: temp.checksum === hash, timestamp: Date.now() }
+                    : file
+                )
+              );
+              temp = { filename: "", size: 0, checksum: undefined };
+              receivedSize = 0;
+              receiveBuffer = [];
             }
           }
         };
-        peerService.remoteDataChanel.onopen = () => console.log("Data Chanel Created!");
+        peerService.remoteDataChanel.onopen = () => console.log("Data Channel Created!");
       };
+    }
 
     return () => {
       peerService?.peer?.removeEventListener("negotiationneeded", handleNegotiation);
     };
-  }, [remoteMediaStreams]);
+  }, [handleNegotiation, handleRefreshUserList, setAvailableFiles, setRemoteMediaStream]);
 
   useEffect(() => {
-    if (remoteSocketId) {
-      socket.off("refresh:user-list", handleRefreshUserList);
-      socket.on("user-disconnected", handleUserDisconnect);
-    }
+    if (!socket) return;
 
-    return () => {
-      socket.on("refresh:user-list", handleRefreshUserList);
-      socket.off("user-disconnected", handleUserDisconnect);
-    };
-  }, [remoteSocketId]);
-
-  useEffect(() => {
     const socketListeners = [
       { event: "refresh:user-list", handler: handleRefreshUserList },
-      { event: "peer:incomming-call", handler: handleIncommingCall },
+      { event: "peer:incoming-call", handler: handleIncomingCall },
       { event: "peer:call:accepted", handler: handleCallAccepted },
       { event: "peer:negotiate", handler: handleRequiredPeerNegotiate },
-      {
-        event: "peer:negosiate:result",
-        handler: handleRequiredPeerNegotiateFinalResult,
-      },
+      { event: "peer:negotiate:result", handler: handleRequiredPeerNegotiateFinalResult },
       { event: "whiteboard:id", handler: handleSetWhiteboardID },
     ];
 
@@ -353,7 +272,15 @@ export function useRoom() {
         socket.off(event, handler);
       });
     };
-  }, []);
+  }, [
+    socket,
+    handleRefreshUserList,
+    handleIncomingCall,
+    handleCallAccepted,
+    handleRequiredPeerNegotiate,
+    handleRequiredPeerNegotiateFinalResult,
+    handleSetWhiteboardID,
+  ]);
 
   return {
     users,
@@ -362,11 +289,11 @@ export function useRoom() {
     remoteSocketId,
     currentUser,
     roomId,
-    incommingCallData,
+    incomingCallData,
     calledToUserId,
     handleRefreshUserList,
     handleClickUser,
-    handleAcceptIncommingCall,
-    handleRejectIncommingCall,
+    handleAcceptIncomingCall,
+    handleRejectIncomingCall,
   };
 }

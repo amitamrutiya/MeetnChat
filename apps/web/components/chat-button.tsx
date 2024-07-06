@@ -1,5 +1,5 @@
 import { MessageCircleMoreIcon, SendHorizonalIcon } from "lucide-react";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useContext } from "react";
 import MessageDiv from "./message-div";
 import FileTransfer from "./file-transfer";
 import FileCard from "./file-card";
@@ -20,29 +20,22 @@ import {
   TooltipContent,
 } from "@repo/ui";
 import { useRecoilValue } from "recoil";
-import { availableFilesAtom, socketStateAtom } from "@repo/store";
+import { availableFilesAtom, SocketContext } from "@repo/store";
 
 function ChatButton(props: { remoteSocketId: string }) {
   const { remoteSocketId } = props;
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [inputChatMessage, setInputChatMessage] = useState<
-    string | undefined
-  >();
-  const socket = useRecoilValue(socketStateAtom);
+  const [inputChatMessage, setInputChatMessage] = useState<string | undefined>();
+  const socket = useContext(SocketContext);
   const availableFiles = useRecoilValue(availableFilesAtom);
   const chatBoxContainerRef = useRef<HTMLDivElement>(null);
-  const combined = [...availableFiles, ...messages].sort(
-    (a, b) => a.timestamp - b.timestamp
-  );
+  const combined = [...availableFiles, ...messages].sort((a, b) => a.timestamp - b.timestamp);
 
   useEffect(() => {
     if (chatBoxContainerRef.current) {
-      chatBoxContainerRef.current.scrollTo(
-        0,
-        chatBoxContainerRef.current.scrollHeight
-      );
+      chatBoxContainerRef.current.scrollTo(0, chatBoxContainerRef.current.scrollHeight);
     }
   }, [messages, isChatOpen]);
 
@@ -99,10 +92,7 @@ function ChatButton(props: { remoteSocketId: string }) {
                 <SheetTitle>Chat</SheetTitle>
                 <SheetDescription>Start a conversation</SheetDescription>
               </SheetHeader>
-              <div
-                ref={chatBoxContainerRef}
-                className="w-full h-full rounded-md border overflow-y-auto p-2"
-              >
+              <div ref={chatBoxContainerRef} className="w-full h-full rounded-md border overflow-y-auto p-2">
                 <div className="flex-grow max-w-[752px]">
                   <div className="grid grid-cols-1 gap-2">
                     <div className="col-span-1">
@@ -115,12 +105,7 @@ function ChatButton(props: { remoteSocketId: string }) {
                               </li>
                             );
                           } else {
-                            return (
-                              <FileCard
-                                key={`${item.name}-${index}`}
-                                file={item}
-                              />
-                            );
+                            return <FileCard key={`${item.name}-${index}`} file={item} />;
                           }
                         })}
                       </ul>
