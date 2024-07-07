@@ -1,4 +1,4 @@
-import { Chat } from "@prisma/client";
+import { Chat, User } from "@prisma/client";
 
 export type AvailableFiles = {
   name: string;
@@ -17,19 +17,6 @@ export interface ApiResponse {
   chats?: Array<Chat>;
 }
 
-export type User = {
-  socketId: string;
-  roomId: string;
-  email?: string;
-  email_verified?: boolean;
-  name?: string;
-  username?: string;
-  nickname?: string;
-  image?: string;
-  sid?: string;
-  joinedAt: Date;
-  isConnected: boolean;
-};
 export type IncomingCall = {
   roomId: string;
   from: string;
@@ -43,4 +30,10 @@ export type Message = {
   message: string;
   isSelf: boolean;
   timestamp: number;
+};
+
+export type RoomUser = {
+  id: string;
+  fullname: string;
+  email: string;
 };

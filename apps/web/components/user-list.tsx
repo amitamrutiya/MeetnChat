@@ -1,4 +1,4 @@
-import { User } from "@repo/common";
+import { User } from "@prisma/client";
 import { Avatar, AvatarImage, AvatarFallback } from "@repo/ui";
 import React from "react";
 
@@ -29,7 +29,7 @@ function UsersList(props: UsersListProps) {
               }
             >
               <Avatar>
-                <AvatarImage src={user.image} />
+                <AvatarImage src={user.image ?? ""} />
                 <AvatarFallback>{user.name}</AvatarFallback>
               </Avatar>
             </div>

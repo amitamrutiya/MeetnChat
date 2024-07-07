@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback, useContext } from "react";
 import { useParams } from "next/navigation";
 import { createHmac } from "crypto";
 import { useSession } from "next-auth/react";
-import { IncomingCall, User } from "@repo/common";
+import { IncomingCall } from "@repo/common";
+
 import { serverInstance } from "../app/api/server-instance";
 import peerService from "../app/helpers/peer";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { availableFilesAtom, remoteStreamsAtom, SocketContext } from "@repo/store";
 import { Socket } from "socket.io-client";
+import { User } from "@prisma/client";
 
 export function useRoom() {
   const { data: sessionData } = useSession();
@@ -29,18 +31,6 @@ export function useRoom() {
   const secret = "$3#Ia";
 
   const socket = useContext(SocketContext) as Socket;
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("message", (message) => {
-      console.log(message);
-    });
-
-    return () => {
-      socket.off("message");
-    };
-  }, [socket]);
 
   const joinRoom = useCallback(async () => {
     if (!currentUser || !roomId || !socket) return;
@@ -75,7 +65,7 @@ export function useRoom() {
       const offer = await peerService.getOffer();
       if (offer) {
         socket.emit("peer:call", { to: user.socketId, offer, roomId });
-        setCalledToUserId(user.socketId);
+        setCalledToUserId(user.socketId!);
       }
     },
     [roomId, socket]
@@ -101,7 +91,7 @@ export function useRoom() {
       const answer = await peerService.getAnswer(offer);
       console.log("Answer", answer);
       if (answer) {
-        setRemoteUser({ ...user, roomId, isConnected: true, joinedAt: new Date(), socketId: from });
+        setRemoteUser({ ...user, roomId, is_connected: true, createdAt: new Date(), socketId: from });
         console.log("Setting remote socket id", remoteUser);
         socket.emit("peer:call:accepted", { to: from, offer: answer, roomId });
         setRemoteSocketId(from);
@@ -293,6 +283,7 @@ export function useRoom() {
     calledToUserId,
     handleRefreshUserList,
     handleClickUser,
+    handleUserDisconnect,
     handleAcceptIncomingCall,
     handleRejectIncomingCall,
   };
