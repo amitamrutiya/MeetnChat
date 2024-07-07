@@ -5,7 +5,7 @@ import { AudioLines, ArrowLeftRightIcon } from "lucide-react";
 import UserAvatar from "./user-avatar";
 import LogoutButton from "./logout-button";
 import { useSession } from "next-auth/react";
-import { User } from "@repo/common";
+import { User } from "@prisma/client";
 
 export interface RoomNavbarProps {
   remoteUser?: User | undefined | null;

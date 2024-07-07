@@ -15,15 +15,11 @@ import {
 import { useState } from "react";
 
 function IncomingCallDialog(props: {
-  incommingCallData: IncomingCall;
-  handleAcceptIncommingCall: () => void;
-  handleRejectIncommingCall: () => void;
+  incomingCallData: IncomingCall;
+  handleAcceptIncomingCall: () => void;
+  handleRejectIncomingCall: () => void;
 }) {
-  const {
-    incommingCallData,
-    handleAcceptIncommingCall,
-    handleRejectIncommingCall,
-  } = props;
+  const { incomingCallData, handleAcceptIncomingCall, handleRejectIncomingCall } = props;
   const [open, setOpen] = useState(true);
   return (
     <>
@@ -31,9 +27,7 @@ function IncomingCallDialog(props: {
         <AlertDialogTrigger></AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {incommingCallData.user.name} is calling you
-            </AlertDialogTitle>
+            <AlertDialogTitle>{incomingCallData.user.name} is calling you</AlertDialogTitle>
             <AlertDialogDescription>
               If you accept, you will be connected to a video call with them.
             </AlertDialogDescription>
@@ -41,7 +35,7 @@ function IncomingCallDialog(props: {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => {
-                handleAcceptIncommingCall();
+                handleAcceptIncomingCall();
                 setOpen(false);
               }}
             >
@@ -50,7 +44,7 @@ function IncomingCallDialog(props: {
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground"
               onClick={() => {
-                handleRejectIncommingCall();
+                handleRejectIncomingCall();
                 setOpen(false);
               }}
             >

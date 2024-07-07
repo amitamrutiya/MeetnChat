@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import AudioVideoBar from "./audio-video-bar";
 import MeetControllerBar from "./meet-controller-bar";
-import { User } from "@repo/common";
+import { User } from "@prisma/client";
 import { PinIcon } from "lucide-react";
 import { useRecoilValue } from "recoil";
 import {

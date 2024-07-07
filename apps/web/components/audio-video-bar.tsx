@@ -1,7 +1,7 @@
 import ReactPlayer from "react-player";
 import { useSession } from "next-auth/react";
-import { User } from "@repo/common";
 import { Avatar, AvatarFallback, AvatarImage, Button } from "@repo/ui";
+import { User } from "@prisma/client";
 import { useRecoilValue } from "recoil";
 import { remoteStreamsAtom, userStreamAtom } from "@repo/store";
 
@@ -33,10 +33,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
                 {pinVideoObj && pinVideoObj.id == userStream.id ? (
-                  <button
-                    className="absolute top-[50%] left-0 right-0 hidden group-hover:block"
-                    onClick={unPinVideo}
-                  >
+                  <button className="absolute top-[50%] left-0 right-0 hidden group-hover:block" onClick={unPinVideo}>
                     <Button className="m-auto" title="UnPin video" />
                   </button>
                 ) : (
@@ -47,18 +44,13 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
                     <Button className="m-auto" title="Pin video" />
                   </button>
                 )}
-                <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">
-                  {"You"}
-                </span>
+                <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">{"You"}</span>
               </div>
             )}
           </>
         ) : (
           <Avatar className="h-36 w-36">
-            <AvatarImage
-              src={user?.image?.toString() ?? "/user.png"}
-              alt="User"
-            />
+            <AvatarImage src={user?.image?.toString() ?? "/user.png"} alt="User" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         )}
@@ -105,10 +97,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
           </div>
         ) : (
           <Avatar className="h-36 w-36">
-            <AvatarImage
-              src={remoteUser?.image?.toString() ?? "/user.png"}
-              alt="User"
-            />
+            <AvatarImage src={remoteUser?.image?.toString() ?? "/user.png"} alt="User" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         )}
