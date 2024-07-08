@@ -7,7 +7,7 @@ import ChatButton from "./chat-button";
 import SettingButton from "./setting-button";
 import EndMeetButton from "./end-meet-button";
 import { useSession } from "next-auth/react";
-import { User } from "@repo/common";
+import { User } from "@prisma/client";
 import { Avatar, AvatarImage, AvatarFallback } from "@repo/ui";
 import { useRecoilValue } from "recoil";
 import { remoteStreamsAtom, userStreamAtom } from "@repo/store";
@@ -46,18 +46,13 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
                       objectFit: "cover",
                     }}
                   />
-                  <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">
-                    {"You"}
-                  </span>
+                  <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">{"You"}</span>
                 </div>
                 )
               </>
             ) : (
               <Avatar className="h-36 w-36">
-                <AvatarImage
-                  src={user?.image?.toString() ?? "/user.png"}
-                  alt="User"
-                />
+                <AvatarImage src={user?.image?.toString() ?? "/user.png"} alt="User" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             )}
@@ -87,10 +82,7 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
               </div>
             ) : (
               <Avatar className="h-36 w-36">
-                <AvatarImage
-                  src={remoteUser?.image ?? "/user.png"}
-                  alt="User"
-                />
+                <AvatarImage src={remoteUser?.image ?? "/user.png"} alt="User" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             )}
