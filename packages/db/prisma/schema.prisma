@@ -9,6 +9,8 @@ datasource db {
 
 model User {
   id               String    @id @default(uuid()) @map("_id")
+  socketId         String?   @unique
+  roomId           String?   @unique
   email            String?   @unique
   password         String?
   username         String?   @unique
@@ -18,6 +20,7 @@ model User {
   phone_number     String?   @unique
   friends          String[]
   is_online        Boolean   @default(false)
+  is_connected     Boolean   @default(false)
   emailVerified    DateTime?
   verifyCode       String?
   verifyCodeExpiry DateTime?
