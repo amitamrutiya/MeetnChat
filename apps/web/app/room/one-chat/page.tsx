@@ -1,7 +1,6 @@
-
-import ChatRoomProfileSction from "../../../components/chat-room-profile-section";
-import ChatRoomSearchSection from "../../../components/chat-room-search-section";
-import ChatRoomSection from "../../../components/chat-room-section";
+import ChatRoomProfileSction from "components/chat-room-profile-section";
+import ChatRoomSearchSection from "components/chat-room-search-section";
+import ChatRoomSection from "components/chat-room-section";
 
 export default function Room() {
   return (

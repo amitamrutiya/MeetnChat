@@ -1,12 +1,12 @@
 "use client";
 
-import IncomingCallDialog from "../../../../components/incoming-call-dialogue";
-import RoomNavbar from "../../../../components/room-navbar";
-import SetupAudioVideo from "../../../../components/setup-audio-video";
-import { ShareButton } from "../../../../components/share-button";
-import UsersList from "../../../../components/user-list";
-import VideoDashboard from "../../../../components/video-dashboard";
-import { useRoom } from "../../../../hooks/use-room";
+import IncomingCallDialog from "components/incoming-call-dialogue";
+import RoomNavbar from "components/room-navbar";
+import SetupAudioVideo from "components/setup-audio-video";
+import { ShareButton } from "components/share-button";
+import UsersList from "components/user-list";
+import VideoDashboard from "components/video-dashboard";
+import { useRoom } from "hooks/use-room";
 
 export default function Room() {
   const {
@@ -14,13 +14,13 @@ export default function Room() {
     whiteboardID,
     remoteUser,
     remoteSocketId,
-    incommingCallData,
     calledToUserId,
     currentUser,
+    incomingCallData,
     roomId,
     handleClickUser,
-    handleAcceptIncommingCall,
-    handleRejectIncommingCall,
+    handleAcceptIncomingCall,
+    handleRejectIncomingCall,
   } = useRoom();
 
   return (
@@ -35,7 +35,7 @@ export default function Room() {
         <>
           <UsersList
             users={users}
-            roomId={roomId}
+            roomId={roomId as string}
             currentUser={currentUser}
             calledToUserId={calledToUserId}
             handleClickUser={handleClickUser}
@@ -48,11 +48,11 @@ export default function Room() {
         </>
       )}
 
-      {incommingCallData && (
+      {incomingCallData && (
         <IncomingCallDialog
-          incommingCallData={incommingCallData}
-          handleAcceptIncommingCall={handleAcceptIncommingCall}
-          handleRejectIncommingCall={handleRejectIncommingCall}
+          incomingCallData={incomingCallData}
+          handleAcceptIncomingCall={handleAcceptIncomingCall}
+          handleRejectIncomingCall={handleRejectIncomingCall}
         />
       )}
     </div>

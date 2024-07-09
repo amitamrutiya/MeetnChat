@@ -1,12 +1,12 @@
 "use client";
 
-import IncomingCallDialog from "../../../../components/incoming-call-dialogue";
-import MeetDashboard from "../../../../components/meet-dashboard";
-import RoomNavbar from "../../../../components/room-navbar";
-import SetupAudioVideo from "../../../../components/setup-audio-video";
-import { ShareButton } from "../../../../components/share-button";
-import UsersList from "../../../../components/user-list";
-import { useRoom } from "../../../../hooks/use-room";
+import IncomingCallDialog from "components/incoming-call-dialogue";
+import MeetDashboard from "components/meet-dashboard";
+import RoomNavbar from "components/room-navbar";
+import SetupAudioVideo from "components/setup-audio-video";
+import { ShareButton } from "components/share-button";
+import UsersList from "components/user-list";
+import { useRoom } from "hooks/use-room";
 
 export default function Room() {
   const {
@@ -14,31 +14,26 @@ export default function Room() {
     whiteboardID,
     remoteUser,
     remoteSocketId,
-    incommingCallData,
+    incomingCallData,
     calledToUserId,
     currentUser,
     roomId,
     handleClickUser,
-    handleAcceptIncommingCall,
-    handleRejectIncommingCall,
+    handleAcceptIncomingCall,
+    handleRejectIncomingCall,
   } = useRoom();
 
   return (
     <div className="flex h-dvh flex-col justify-between  p-5">
       <RoomNavbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
 
-      {remoteSocketId && (
-        <MeetDashboard
-          remoteSocketId={remoteSocketId}
-          whiteboardID={whiteboardID}
-        />
-      )}
+      {remoteSocketId && <MeetDashboard remoteSocketId={remoteSocketId} whiteboardID={whiteboardID} />}
 
       {!remoteSocketId && (
         <>
           <UsersList
             users={users}
-            roomId={roomId}
+            roomId={roomId as string}
             currentUser={currentUser}
             calledToUserId={calledToUserId}
             handleClickUser={handleClickUser}
@@ -46,18 +41,16 @@ export default function Room() {
           <SetupAudioVideo />
           <div className="flex flex-col items-center justify-center mt-5 space-y-5">
             <ShareButton />
-            <h6 className="font-sans text-slate-400">
-              Tip: Click on user to make call
-            </h6>
+            <h6 className="font-sans text-slate-400">Tip: Click on user to make call</h6>
           </div>
         </>
       )}
 
-      {incommingCallData && (
+      {incomingCallData && (
         <IncomingCallDialog
-          incommingCallData={incommingCallData}
-          handleAcceptIncommingCall={handleAcceptIncommingCall}
-          handleRejectIncommingCall={handleRejectIncommingCall}
+          incomingCallData={incomingCallData}
+          handleAcceptIncomingCall={handleAcceptIncomingCall}
+          handleRejectIncomingCall={handleRejectIncomingCall}
         />
       )}
     </div>
