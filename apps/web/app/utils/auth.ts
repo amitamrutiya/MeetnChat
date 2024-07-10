@@ -75,3 +75,25 @@ export const {
     signIn: "/",
   },
 });
+
+interface RateLimiter {
+  timestamps: Date[];
+}
+const userRateLimits = new Map<string, RateLimiter>();
+
+export const rateLimit = (userId: string, rateLimitCount: number, rateLimitInterval: number): boolean => {
+  const now = new Date();
+  const userLimiter = userRateLimits.get(userId) ?? { timestamps: [] };
+
+  userLimiter.timestamps = userLimiter.timestamps.filter(
+    (timestamp) => now.getTime() - timestamp.getTime() < rateLimitInterval
+  );
+
+  if (userLimiter.timestamps.length >= rateLimitCount) {
+    return false; // Rate limit exceeded
+  }
+
+  userLimiter.timestamps.push(now);
+  userRateLimits.set(userId, userLimiter);
+  return true;
+};
