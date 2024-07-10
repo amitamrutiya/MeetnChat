@@ -3,7 +3,9 @@ import express from "express";
 import { Socket, Server as SocketServer } from "socket.io";
 import { v4 as uuidV4 } from "uuid";
 import cors from "cors";
-import { User, RoomUser } from "./types";
+import { User } from "@prisma/client";
+//@ts-ignore
+import { RoomUser } from "@repo/common";
 
 const PORT: number = Number(process.env.PORT) || 8000;
 const app: express.Application = express();
@@ -26,20 +28,17 @@ io.on("connection", (socket: Socket) => {
   // When a client joins a room
   socket.on("room:join", (data) => {
     // Destructure the data received from the client
-    const { roomId, email, is_verified, name, username, image, sid } = data;
-    // Set the user data in the users Map
+
+    const { roomId, user } = data as {
+      user: User;
+      roomId: string;
+    };
+
     console.log(data);
     users.set(socket.id, {
+      ...user,
       socketId: socket.id,
-      roomId,
-      email,
-      is_verified,
-      name,
-      username,
-      image,
-      sid,
-      joinedAt: new Date(),
-      isConnected: false,
+      roomId: roomId,
     });
     // Emit an event to refresh the user list
     io.emit("refresh:user-list");
@@ -142,7 +141,7 @@ app.get("/users", (req, res) => {
     .map((e) => ({
       ...e,
     }))
-    .filter((e) => !e.isConnected);
+    .filter((e) => !e.is_connected);
   return res.json({ users: idleUsers });
 });
 
