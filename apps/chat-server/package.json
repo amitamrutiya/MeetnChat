@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@repo/db": "*",
     "typescript": "^5.5.2",
     "ws": "^8.18.0"
   },
