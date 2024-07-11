@@ -35,37 +35,31 @@ export const {
       return true;
     },
     async session({ session, token }) {
-      if (token.sub) {
-        session.user.id = token.sub;
-      }
-      session.user.username = token.username;
-      // @ts-ignore
-      session.user.name = token.name;
-      session.user.image = token.image;
-      session.user.bio = token.bio;
-      session.user.phone_number = token.phone_number;
-      session.user.is_online = token.is_online;
-      if (token.email) {
-        session.user.email = token.email;
-      }
-      return session;
-    },
-    async jwt({ token }) {
-      if (!token.sub) return token;
+      if (!token.sub) return session;
 
       const existingUser = await getUserById(token.sub);
-      if (!existingUser) return token;
-
-      if (existingUser.email && existingUser.username && existingUser.name) {
-        token.name = existingUser.name;
-        token.email = existingUser.email;
-        token.username = existingUser.username;
+      if (existingUser && existingUser.email) {
+        session.user.id = existingUser.id;
+        session.user.name = existingUser.name;
+        session.user.email = existingUser.email;
+        session.user.username = existingUser.username;
+        session.user.bio = existingUser.bio;
+        session.user.is_online = existingUser.is_online;
+        session.user.image = existingUser.image;
+        session.user.phone_number = existingUser.phone_number;
+        session.user.emailVerified = existingUser.emailVerified;
+        session.user.createdAt = existingUser.createdAt;
+        session.user.updatedAt = existingUser.updatedAt;
+        session.user.roomId = existingUser.roomId;
+        session.user.socketId = existingUser.socketId;
+        session.user.friends = existingUser.friends;
+        session.user.is_connected = existingUser.is_connected;
+        session.user.is_online = existingUser.is_online;
+        session.user.password = existingUser.password;
+        session.user.verifyCode = existingUser.verifyCode;
+        session.user.verifyCodeExpiry = existingUser.verifyCodeExpiry;
       }
-      token.bio = existingUser.bio;
-      token.is_online = existingUser.is_online;
-      token.emailVerified = existingUser.emailVerified;
-      if (existingUser.image) token.image = existingUser.image;
-      return token;
+      return session;
     },
   },
   adapter: PrismaAdapter(db),

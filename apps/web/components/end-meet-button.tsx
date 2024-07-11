@@ -20,6 +20,7 @@ import { useStopUserStream } from "../hooks/use-stop-stream";
 import { useRecoilValue } from "recoil";
 import { SocketContext, userScreenStreamAtom, userStreamAtom } from "@repo/store";
 import { useContext } from "react";
+import { useRoom } from "hooks/use-room";
 
 function EndMeetButton() {
   const { handleStopAudioVideoStream, handleStopScreenShareStream } = useStopUserStream();
@@ -27,6 +28,7 @@ function EndMeetButton() {
   const userScreenStream = useRecoilValue(userScreenStreamAtom);
   const socket = useContext(SocketContext);
   const router = useRouter();
+  const { handleUserDisconnect, setIsDisconnect } = useRoom();
 
   return (
     <div>
@@ -49,14 +51,19 @@ function EndMeetButton() {
                   <AlertDialogAction
                     className="bg-destructive text-destructive-foreground"
                     onClick={() => {
+                      setIsDisconnect(true);
                       if (userStream) {
                         handleStopAudioVideoStream();
                       }
                       if (userScreenStream) {
                         handleStopScreenShareStream();
                       }
-                      if (socket) socket.emit("user-disconnect");
-                      router.push("/");
+                      if (socket) {
+                        handleUserDisconnect();
+                        socket.emit("user-disconnect");
+                      }
+
+                      router.replace("/");
                     }}
                   >
                     End Call

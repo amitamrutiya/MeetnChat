@@ -19,15 +19,16 @@ export function useRoom() {
   const [remoteMediaStreams, setRemoteMediaStream] = useRecoilState(remoteStreamsAtom);
   const setAvailableFiles = useSetRecoilState(availableFilesAtom);
   const { room: roomId } = useParams();
-
   const [calledToUserId, setCalledToUserId] = useState<string | undefined>();
   const [incomingCallData, setIncomingCallData] = useState<IncomingCall | undefined>();
+  const [isDisconnect, setIsDisconnect] = useState(false);
   const [remoteSocketId, setRemoteSocketId] = useState<string | undefined>();
   const [remoteUser, setRemoteUser] = useState<undefined | User>();
   const [users, setUsers] = useState<User[]>([]);
   const [whiteboardID, setWhiteboardID] = useState<string | null>(null);
 
   const currentUser = sessionData?.user;
+  if (currentUser) currentUser.roomId = roomId as string;
   const secret = "$3#Ia";
 
   const socket = useContext(SocketContext) as Socket;
@@ -38,19 +39,18 @@ export function useRoom() {
 
     console.log("Joining room");
     try {
-      socket.emit("room:join", { roomId, ...currentUser });
+      console.log(currentUser);
+      socket.emit("room:join", { currentUser });
     } catch (error) {
       console.error("Error joining room", error);
     }
-  }, [currentUser, roomId, socket, users]);
+  }, [currentUser, socket, users]);
 
   const handleRefreshUserList = useCallback(async () => {
     console.log("Refreshing user list");
     try {
       const { data } = await serverInstance.get("/users");
-      console.log("data.users", JSON.stringify(data.users));
       if (data.users) {
-        console.log("data.users", data.users.length);
         setUsers(data.users);
       }
     } catch (error) {
@@ -77,10 +77,6 @@ export function useRoom() {
       setIncomingCallData(data);
     }
   }, []);
-
-  useEffect(() => {
-    console.log("Remote user updated:", remoteUser);
-  }, [remoteUser]);
 
   const handleAcceptIncomingCall = useCallback(async () => {
     if (!socket) return;
@@ -152,15 +148,18 @@ export function useRoom() {
     }
   }, []);
 
-  const handleUserDisconnect = useCallback(
-    (payload: any) => {
-      const { socketId = null } = payload;
-      if (socketId && remoteSocketId === socketId) {
-        setRemoteUser(undefined);
-      }
-    },
-    [remoteSocketId]
-  );
+  const handleUserDisconnect = useCallback(() => {
+    setRemoteUser(undefined);
+    setRemoteSocketId(undefined);
+    setRemoteMediaStream([]);
+    setAvailableFiles([]);
+    setWhiteboardID(null);
+  }, []);
+
+  const handleUserDisconnected = useCallback((payload: any) => {
+    setUsers((prev) => prev.filter((user) => user.socketId !== payload.socketId));
+    setIsDisconnect(true);
+  }, []);
 
   useEffect(() => {
     peerService.remoteSocketId = remoteSocketId;
@@ -251,6 +250,7 @@ export function useRoom() {
       { event: "peer:negotiate", handler: handleRequiredPeerNegotiate },
       { event: "peer:negotiate:result", handler: handleRequiredPeerNegotiateFinalResult },
       { event: "whiteboard:id", handler: handleSetWhiteboardID },
+      { event: "user-disconnected", handler: handleUserDisconnected },
     ];
 
     socketListeners.forEach(({ event, handler }) => {
@@ -278,9 +278,11 @@ export function useRoom() {
     remoteUser,
     remoteSocketId,
     currentUser,
+    isDisconnect,
     roomId,
     incomingCallData,
     calledToUserId,
+    setIsDisconnect,
     handleRefreshUserList,
     handleClickUser,
     handleUserDisconnect,
