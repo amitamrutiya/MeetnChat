@@ -28,17 +28,10 @@ io.on("connection", (socket: Socket) => {
   // When a client joins a room
   socket.on("room:join", (data) => {
     // Destructure the data received from the client
-
-    const { roomId, user } = data as {
-      user: User;
-      roomId: string;
-    };
-
-    console.log(data);
+    const { currentUser }: { currentUser: User } = data;
+    currentUser.socketId = socket.id;
     users.set(socket.id, {
-      ...user,
-      socketId: socket.id,
-      roomId: roomId,
+      ...currentUser,
     });
     // Emit an event to refresh the user list
     io.emit("refresh:user-list");
@@ -48,7 +41,8 @@ io.on("connection", (socket: Socket) => {
   socket.on("peer:call", (data) => {
     const { to, offer, roomId } = data;
     // Emit an event to the recipient about the incoming call
-    socket.to(to).emit("peer:incomming-call", {
+    console.log(to);
+    socket.to(to).emit("peer:incoming-call", {
       roomId,
       from: socket.id,
       user: users.get(socket.id),
@@ -126,7 +120,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   // When a client disconnects
-  socket.on("user-disconnect", () => {
+  socket.on("user-disconnect", (data) => {
     // Remove the user from the users Map
     users.delete(socket.id);
     // Emit an event that the user has disconnected
