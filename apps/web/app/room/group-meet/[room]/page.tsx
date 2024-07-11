@@ -1,5 +1,6 @@
 "use client";
 
+import EndCallNotificationDialogue from "components/end-call-notification-dialogue";
 import IncomingCallDialog from "components/incoming-call-dialogue";
 import RoomNavbar from "components/room-navbar";
 import SetupAudioVideo from "components/setup-audio-video";
@@ -18,6 +19,7 @@ export default function Room() {
     calledToUserId,
     currentUser,
     roomId,
+    isDisconnect,
     handleClickUser,
     handleAcceptIncomingCall,
     handleRejectIncomingCall,
@@ -53,6 +55,8 @@ export default function Room() {
           handleRejectIncomingCall={handleRejectIncomingCall}
         />
       )}
+
+      {isDisconnect && <EndCallNotificationDialogue />}
     </div>
   );
 }
