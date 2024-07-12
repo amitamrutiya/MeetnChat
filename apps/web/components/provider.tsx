@@ -12,9 +12,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
     <SessionProvider>
       <RecoilRoot>
         <SocketProvider>
-          <WebSocketProvider>
-          {children}
-          </WebSocketProvider>
+          <WebSocketProvider>{children}</WebSocketProvider>
         </SocketProvider>
       </RecoilRoot>
       <Toaster />

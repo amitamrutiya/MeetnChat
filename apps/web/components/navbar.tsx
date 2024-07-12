@@ -7,8 +7,8 @@ import { currentUser } from "../app/helpers/auth";
 const Navbar = async () => {
   const user = await currentUser();
   return (
-    <nav className="flex items-center justify-between mx-10 mt-2">
-      <header className="flex items-center text-xl align-middle font-sans font-bold antialiased relative">
+    <nav className="mx-10 mt-2 flex items-center justify-between">
+      <header className="relative flex items-center align-middle font-sans text-xl font-bold antialiased">
         <AudioLines className="mr-2 inline text-white" />
         <span className="text-white"> Meet</span> <span className="text-sky-400/100"> ChillChat</span>
       </header>

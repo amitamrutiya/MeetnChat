@@ -7,7 +7,7 @@ import SignupForm from "./sign-up-form";
 async function JoinRoomForm() {
   const user = await currentUser();
   return (
-    <div className="mx-5 sm:w-[400px] md:w-[500px] w-[350px] flex flex-col justify-center items-center lg:mb-96 sm:mb-10 ">
+    <div className="mx-5 flex w-[350px] flex-col items-center justify-center sm:mb-10 sm:w-[400px] md:w-[500px] lg:mb-96">
       {user ? (
         <RoomIdForm />
       ) : (

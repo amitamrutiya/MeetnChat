@@ -19,13 +19,13 @@ const RoomNavbar: React.FC<RoomNavbarProps> = (props: RoomNavbarProps) => {
 
   return (
     <nav className="flex w-full items-center justify-between">
-      <header className="flex items-center text-xl align-middle font-sans font-bold antialiased relative">
+      <header className="relative flex items-center align-middle font-sans text-xl font-bold antialiased">
         <AudioLines className="mr-2 inline" />
         Meet <span className="text-sky-400/100"> ChillChat</span>
       </header>
       {user && remoteSocketId && (
         <div>
-          <div className="mt-4 flex gap-3 items-center text-white">
+          <div className="mt-4 flex items-center gap-3 text-white">
             <UserAvatar
               username={user?.name || user?.email || "Someone"}
               src={user?.image || ""}

@@ -6,14 +6,8 @@
     "rootDir": "src",
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "node"
   },
-  "include": [
-    "src",
-    "./.eslintrc.js"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src", "./.eslintrc.js"],
+  "exclude": ["node_modules", "dist"]
 }

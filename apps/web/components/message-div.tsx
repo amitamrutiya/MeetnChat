@@ -12,7 +12,7 @@ function MessageDiv(props: Message) {
   );
   return (
     <div className="mb-2">
-      <div className="flex items-center w-full pb-0">
+      <div className="flex w-full items-center pb-0">
         {!isSelf && (
           <div className="mr-3">
             <Avatar className="bg-slate-500 shadow-xl">
@@ -22,11 +22,9 @@ function MessageDiv(props: Message) {
           </div>
         )}
         <div
-          className={`rounded-2xl ${
-            isSelf ? "rounded-tr-none" : "rounded-tl-none"
-          } ${
+          className={`rounded-2xl ${isSelf ? "rounded-tr-none" : "rounded-tl-none"} ${
             isSelf ? "bg-slate-700" : "bg-sky-600"
-          } p-2 text-white shadow-xl flex-grow`}
+          } flex-grow p-2 text-white shadow-xl`}
         >
           {message}
         </div>
@@ -40,11 +38,7 @@ function MessageDiv(props: Message) {
         )}
       </div>
 
-      <small
-        className={`${
-          isSelf ? "pl-[16px]" : "float-right pr-[16px]"
-        } text-slate-400 mb-2`}
-      >
+      <small className={`${isSelf ? "pl-[16px]" : "float-right pr-[16px]"} mb-2 text-slate-400`}>
         {convertedTime && convertedTime}
       </small>
     </div>

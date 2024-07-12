@@ -5,8 +5,7 @@ import { userScreenStreamAtom, userStreamAtom } from "@repo/store";
 
 export const useStopUserStream = () => {
   const [userMediaStrem, setUserMediaStream] = useRecoilState(userStreamAtom);
-  const [userScreenStream, setUserMediaScreenStream] =
-    useRecoilState(userScreenStreamAtom);
+  const [userScreenStream, setUserMediaScreenStream] = useRecoilState(userScreenStreamAtom);
 
   const handleStopAudioVideoStream = () => {
     if (userMediaStrem) {

@@ -13,11 +13,7 @@ import {
 import { useStartUserStream } from "../hooks/use-start-stream";
 import { useStopUserStream } from "../hooks/use-stop-stream";
 import { useRecoilValue } from "recoil";
-import {
-  selectedAudioDeviceAtom,
-  selectedVideoDeviceAtom,
-  userStreamAtom,
-} from "@repo/store";
+import { selectedAudioDeviceAtom, selectedVideoDeviceAtom, userStreamAtom } from "@repo/store";
 
 function SettingButton() {
   const selectedAudioDevice = useRecoilValue(selectedAudioDeviceAtom);
@@ -36,9 +32,7 @@ function SettingButton() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Choose Your Device</DialogTitle>
-          <DialogDescription>
-            Select the device you want to use for audio and video.
-          </DialogDescription>
+          <DialogDescription>Select the device you want to use for audio and video.</DialogDescription>
         </DialogHeader>
         <AudioVideoDeviceDropDown />
         <DialogFooter>
@@ -47,10 +41,7 @@ function SettingButton() {
             onClick={() => {
               if (userStream) {
                 handleStopAudioVideoStream();
-                handleStartAudioVideoStream(
-                  selectedAudioDevice,
-                  selectedVideoDevice
-                );
+                handleStartAudioVideoStream(selectedAudioDevice, selectedVideoDevice);
               }
             }}
           >

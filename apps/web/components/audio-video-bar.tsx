@@ -19,8 +19,8 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
   const session = useSession();
   const user = session.data?.user;
   return (
-    <div className="h-full w-full rounded-md bg-transparent flex flex-col items-center ">
-      <div className=" bg-foreground h-[45%] w-[69%] flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
+    <div className="flex h-full w-full flex-col items-center rounded-md bg-transparent">
+      <div className="bg-foreground flex h-[45%] w-[69%] items-center justify-center rounded-xl border-8 border-blue-500 p-4 shadow-lg">
         {userStream ? (
           <>
             {pinVideoObj?.id !== userStream.id && (
@@ -33,18 +33,18 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
                 {pinVideoObj && pinVideoObj.id == userStream.id ? (
-                  <button className="absolute top-[50%] left-0 right-0 hidden group-hover:block" onClick={unPinVideo}>
+                  <button className="absolute left-0 right-0 top-[50%] hidden group-hover:block" onClick={unPinVideo}>
                     <Button className="m-auto" title="UnPin video" />
                   </button>
                 ) : (
                   <button
-                    className="absolute top-[50%] left-0 right-0 hidden group-hover:block"
+                    className="absolute left-0 right-0 top-[50%] hidden group-hover:block"
                     onClick={() => pinVideo(userStream.id)}
                   >
                     <Button className="m-auto" title="Pin video" />
                   </button>
                 )}
-                <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">{"You"}</span>
+                <span className="absolute left-0 right-0 top-[80%] hidden group-hover:block">{"You"}</span>
               </div>
             )}
           </>
@@ -56,7 +56,7 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
         )}
       </div>
       <div className="my-3" />
-      <div className="bg-foreground h-[45%] w-[69%] flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
+      <div className="bg-foreground flex h-[45%] w-[69%] items-center justify-center rounded-xl border-8 border-blue-500 p-4 shadow-lg">
         {remoteStreams.length > 0 ? (
           <div>
             {remoteStreams
@@ -78,14 +78,14 @@ const AudioVideoBar: React.FC<AudioVideoBarProps> = (props) => {
                     />
                     {pinVideoObj && pinVideoObj.id == stream.id ? (
                       <button
-                        className="absolute top-[50%] left-0 right-0 hidden group-hover:block"
+                        className="absolute left-0 right-0 top-[50%] hidden group-hover:block"
                         onClick={unPinVideo}
                       >
                         <Button className="m-auto" title="UnPin video" />
                       </button>
                     ) : (
                       <button
-                        className="absolute top-[50%] left-0 right-0 hidden group-hover:block"
+                        className="absolute left-0 right-0 top-[50%] hidden group-hover:block"
                         onClick={() => pinVideo(stream.id)}
                       >
                         <Button className="m-auto" title="Pin video" />

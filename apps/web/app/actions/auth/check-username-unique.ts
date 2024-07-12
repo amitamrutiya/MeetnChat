@@ -8,9 +8,7 @@ const UsernameQuerySchema = z.object({
   username: usernameValidation,
 });
 
-export async function checkUsernameUnique(
-  values: z.infer<typeof UsernameQuerySchema>
-) {
+export async function checkUsernameUnique(values: z.infer<typeof UsernameQuerySchema>) {
   const validatedFields = UsernameQuerySchema.safeParse(values);
 
   if (!validatedFields.success) {

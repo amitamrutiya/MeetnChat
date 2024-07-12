@@ -42,7 +42,7 @@ export default function Room() {
           console.error("Unknown message type:", message.type);
       }
     };
-    
+
     newSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
@@ -56,7 +56,7 @@ export default function Room() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen w-full justify-center items-center">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center">
       <h1>Group Chat</h1>
       <h2>This page is still under development. You can explore other functionality.</h2>
       <Button

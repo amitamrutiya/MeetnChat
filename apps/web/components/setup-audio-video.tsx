@@ -30,23 +30,17 @@ function SetupAudioVideo() {
   const [video, setVideo] = useRecoilState(isVideoStreamEnabledAtom);
   const [audioDevices, setAudioDevices] = useRecoilState(audioDevicesAtom);
   const [videoDevices, setVideoDevices] = useRecoilState(videoDevicesAtom);
-  const [selectedAudioDevice, setSelectedAudioDevice] = useRecoilState(
-    selectedAudioDeviceAtom
-  );
-  const [selectedVideoDevice, setSelectedVideoDevice] = useRecoilState(
-    selectedVideoDeviceAtom
-  );
+  const [selectedAudioDevice, setSelectedAudioDevice] = useRecoilState(selectedAudioDeviceAtom);
+  const [selectedVideoDevice, setSelectedVideoDevice] = useRecoilState(selectedVideoDeviceAtom);
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: false })
-      .then((_) => {
-        navigator.mediaDevices.enumerateDevices().then((devices) => {
-          setDevices(devices);
-        });
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((_) => {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        setDevices(devices);
       });
+    });
   }, []);
 
   useEffect(() => {
@@ -107,29 +101,17 @@ function SetupAudioVideo() {
   `}</style>;
 
   return (
-    <div className="flex flex-col w-full items-center justify-center">
-      <div className="flex justify-center items-center border-8 border-hover p-0 m-0 rounded-xl h-[380px] w-[500px] relative">
+    <div className="flex w-full flex-col items-center justify-center">
+      <div className="border-hover relative m-0 flex h-[380px] w-[500px] items-center justify-center rounded-xl border-8 p-0">
         {userStream ? (
           <ReactPlayer url={userStream} playing pip />
         ) : session.status === "loading" ? (
           <p>Loading...</p>
         ) : user?.image ? (
-          <Image
-            className="rounded-[8px]"
-            layout="fill"
-            objectFit="cover"
-            src={user.image}
-            alt="Picture of the User"
-          />
+          <Image className="rounded-[8px]" layout="fill" objectFit="cover" src={user.image} alt="Picture of the User" />
         ) : (
-          <div className="bg-foreground h-[100%] w-[100%] flex justify-center items-center">
-            <Image
-              className="rounded-[8px]"
-              height={350}
-              width={350}
-              src={"/user.png"}
-              alt="Picture of the User"
-            />
+          <div className="bg-foreground flex h-[100%] w-[100%] items-center justify-center">
+            <Image className="rounded-[8px]" height={350} width={350} src={"/user.png"} alt="Picture of the User" />
           </div>
         )}
       </div>

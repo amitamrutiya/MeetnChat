@@ -4,7 +4,6 @@
 ![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/a371ca16-6976-4bfd-b81e-206f6b4f89b2)
 ![image](https://github.com/amitamrutiya2210/MeetnChat/assets/91112485/e7c39377-bec2-45ea-9a8e-7fcd6c14a23f)
 
-
 This project is a real-time communication application offering various communication options including one-to-one and group video calls, meetings, and text chats. Built using Next.js, TypeScript, Socket.io, next-auth for authentication, MongoDB for database storage, and Tailwind CSS for styling. The application enables seamless communication and collaboration among users.
 
 ## Features
@@ -23,7 +22,6 @@ This project is a real-time communication application offering various communica
 
 - **Talk with Random:** Connect with a random user for spontaneous conversations. Experience the excitement of meeting new people and exchanging ideas on various topics.
 
-
 ## Technologies Used
 
 - **Next.js:** A React framework for building server-side rendered and static web applications.
@@ -36,16 +34,19 @@ This project is a real-time communication application offering various communica
 ## Setup Instructions
 
 1. Clone the repository to your local machine.
+
 ```
 https://github.com/amitamrutiya/MeetnChat
 ```
 
 2. Navigate to the project directory.
+
 ```
 cd MeetnChat
 ```
 
 3. Install turbo repo dependencies
+
 ```
 yarn install
 ```
@@ -53,6 +54,7 @@ yarn install
 4. Edit the .env file and fill in the required values for environment variables from sample.env file
 
 5. Start turbo repo
+
 ```
 yarn dev
 ```
@@ -62,13 +64,16 @@ yarn dev
 > **Note**: The frontend and backend should be running simultaneously for the full functionality of the application.
 
 ## Usage
+
 1. Sign up or log in using next-auth authentication.
 2. Navigate to the desired communication feature (video call, meeting call, or chat).
 3. Initiate or join a call/chat room.
 4. Enjoy seamless real-time communication with other users.
 
 ## Deployment
+
 This project is not deployed yet. This project is in a development phase. We will deploy it soon.
 
 ## Contributing
+
 We welcome contributions from the community. This project is still in a very initial level, so let's work together to make it bigger. Feel free to make any additional adjustments or customize it further to better suit your project's specific details and style.

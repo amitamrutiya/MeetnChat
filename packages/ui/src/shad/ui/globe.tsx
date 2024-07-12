@@ -94,8 +94,8 @@ export function Globe({ className, config = GLOBE_CONFIG }: { className?: string
 
   return (
     <div className={cn("inset-0 mx-auto aspect-[1/1] w-full max-w-[600px]", className)}>
-      <h2 className="text-center text-xl md:text-4xl font-bold text-white mt-14">Best way to connect with people</h2>
-      <p className="text-center text-base md:text-lg font-normal text-neutral-300 font-sans max-w-md mt-2 mx-auto">
+      <h2 className="mt-14 text-center text-xl font-bold text-white md:text-4xl">Best way to connect with people</h2>
+      <p className="mx-auto mt-2 max-w-md text-center font-sans text-base font-normal text-neutral-300 md:text-lg">
         Connect with people around the world with just a click of a button. Best way to connect with people.
       </p>
       <canvas

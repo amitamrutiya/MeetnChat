@@ -10,10 +10,7 @@ function LogoutButton(user: { user: any }) {
   }
 
   return (
-    <Button
-      className="relative"
-      onClick={() => signOut({ redirect: true, callbackUrl: "/" })}
-    >
+    <Button className="relative" onClick={() => signOut({ redirect: true, callbackUrl: "/" })}>
       Logout
     </Button>
   );

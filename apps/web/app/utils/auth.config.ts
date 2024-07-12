@@ -17,14 +17,9 @@ export default {
 
         if (validateFields.success) {
           try {
-            const user = await getUserByIdentifier(
-              validateFields.data.identifier
-            );
+            const user = await getUserByIdentifier(validateFields.data.identifier);
             if (!user || !user.password) return null;
-            const passwordMatch = await bcrypt.compare(
-              validateFields.data.password,
-              user.password
-            );
+            const passwordMatch = await bcrypt.compare(validateFields.data.password, user.password);
 
             if (passwordMatch) {
               return user;

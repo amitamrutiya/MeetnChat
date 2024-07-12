@@ -32,13 +32,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ className, type, ...pr
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
-      className="p-[2px] rounded-lg w-full transition duration-300 group/input"
+      className="group/input w-full rounded-lg p-[2px] transition duration-300"
     >
       <input
         type={type}
         className={cn(
-          `flex h-9 w-full rounded-lg border border-secondary-foreground bg-transparent px-3 py-1 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 border-none  bg-zinc-800 text-white shadow-input placeholder:text-neutral-400 placeholder-text-neutral-600  focus-visible:ring-neutral-600 shadow-[0px_0px_1px_1px_var(--neutral-700)] group-hover/input:shadow-none duration-400
-           `,
+          `border-secondary-foreground placeholder:text-muted-foreground focus-visible:ring-ring shadow-input placeholder-text-neutral-600 duration-400 flex h-9 w-full rounded-lg border border-none bg-transparent bg-zinc-800 px-3 py-1 text-sm text-white shadow-[0px_0px_1px_1px_var(--neutral-700)] transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-600 disabled:cursor-not-allowed disabled:opacity-50 group-hover/input:shadow-none`,
           className
         )}
         ref={ref}

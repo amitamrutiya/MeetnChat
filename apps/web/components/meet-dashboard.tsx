@@ -7,11 +7,7 @@ import MeetControllerBar from "./meet-controller-bar";
 import { User } from "@prisma/client";
 import { PinIcon } from "lucide-react";
 import { useRecoilValue } from "recoil";
-import {
-  remoteStreamsAtom,
-  userScreenStreamAtom,
-  userStreamAtom,
-} from "@repo/store";
+import { remoteStreamsAtom, userScreenStreamAtom, userStreamAtom } from "@repo/store";
 
 interface DashboardProps {
   remoteSocketId: string;
@@ -46,9 +42,9 @@ const MeetDashboard: React.FC<DashboardProps> = (props) => {
   }, []);
 
   return (
-    <div className="mt-5  text-white">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-        <div className="lg:col-span-2 md:col-span-2 sm:col-span-1 xs:col-span-1">
+    <div className="mt-5 text-white">
+      <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">
+        <div className="xs:col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2">
           {pinVideo ? (
             <div className="group relative">
               <ReactPlayer
@@ -62,21 +58,17 @@ const MeetDashboard: React.FC<DashboardProps> = (props) => {
                 muted={pinVideo.id === userStream?.id}
               />
               <button
-                className="absolute top-[50%] left-0 right-0 hid  den group-hover:block"
+                className="hid den absolute left-0 right-0 top-[50%] group-hover:block"
                 onClick={handleUnPinVideo}
               >
                 <PinIcon className="m-auto" />
               </button>
             </div>
           ) : (
-            <iframe
-              src={`https://witeboard.com/${whiteboardID}`}
-              height="100%"
-              width="100%"
-            />
+            <iframe src={`https://witeboard.com/${whiteboardID}`} height="100%" width="100%" />
           )}
         </div>
-        <div className="lg:col-span-1 md:col-span-1 sm:col-span-1 xs:col-span-1">
+        <div className="xs:col-span-1 sm:col-span-1 md:col-span-1 lg:col-span-1">
           <div className="mb-2 h-[74vh] overflow-auto">
             <AudioVideoBar
               pinVideoObj={pinVideo}

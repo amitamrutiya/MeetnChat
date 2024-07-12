@@ -208,39 +208,39 @@ function ChatRoomSearchSection() {
   };
 
   return (
-    <div className="flex flex-col justify-between  h-full">
+    <div className="flex h-full flex-col justify-between">
       <div>
-        <div className="Search p-5 mb-8">
-          <div className="grid  w-full max-w-full items-center gap-1.5">
+        <div className="Search mb-8 p-5">
+          <div className="grid w-full max-w-full items-center gap-1.5">
             <Input className="rounded-3xl" type="search" id="search" placeholder="Search" />
             {/* TODO: Add Search Icon */}
           </div>
         </div>
-        <div className="Menu flex justify-evenly mb-4">
+        <div className="Menu mb-4 flex justify-evenly">
           <Button
             variant="outline"
-            className={`p-5 xl:p-8 rounded-2xl ${selectedTab === "Chats" ? "bg-primary" : ""}`}
+            className={`rounded-2xl p-5 xl:p-8 ${selectedTab === "Chats" ? "bg-primary" : ""}`}
             onClick={async () => {
               setSelectedTab(null);
               await fetchFrequentChatUsers();
               setSelectedTab("Chats");
             }}
           >
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center">
               <MessageCircleMore />
               <p>Chats</p>
             </div>
           </Button>
           <Button
             variant="outline"
-            className={`p-5 xl:p-8 rounded-2xl ${selectedTab === "Contacts" ? "bg-primary" : ""}`}
+            className={`rounded-2xl p-5 xl:p-8 ${selectedTab === "Contacts" ? "bg-primary" : ""}`}
             onClick={async () => {
               setSelectedTab(null);
               await fetchContacts();
               setSelectedTab("Contacts");
             }}
           >
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center">
               <UsersRound />
               <p>Contacts</p>
             </div>
@@ -248,14 +248,14 @@ function ChatRoomSearchSection() {
 
           <Button
             variant="outline"
-            className={`p-5 xl:p-8 rounded-2xl ${selectedTab === "Invite" ? "bg-primary" : ""}`}
+            className={`rounded-2xl p-5 xl:p-8 ${selectedTab === "Invite" ? "bg-primary" : ""}`}
             onClick={async () => {
               setSelectedTab(null);
               await fetchInviteUser();
               setSelectedTab("Invite");
             }}
           >
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center">
               <Mail />
               <p>Invite</p>
             </div>
@@ -263,13 +263,13 @@ function ChatRoomSearchSection() {
         </div>
       </div>
       {selectedTab === "Chats" && (
-        <div className="ChatList mb-10 rounded-md border overflow-auto h-full">
+        <div className="ChatList mb-10 h-full overflow-auto rounded-md border">
           <div className="p-4">
-            <h4 className="text-md font-bold leading-none text-center my-3">Your Recent Chat</h4>
+            <h4 className="text-md my-3 text-center font-bold leading-none">Your Recent Chat</h4>
             {frequentChatUsers.map((user) => (
               <React.Fragment key={user.id}>
                 <div
-                  className={`flex justify-between cursor-pointer rounded-lg p-3 ${selectChat?.id === user.id ? "bg-primary-foreground " : ""}`}
+                  className={`flex cursor-pointer justify-between rounded-lg p-3 ${selectChat?.id === user.id ? "bg-primary-foreground" : ""}`}
                   onClick={() => setSelectChat(user)}
                 >
                   <div className="left-side flex">
@@ -277,12 +277,12 @@ function ChatRoomSearchSection() {
                       <AvatarImage src={user.image ?? "https://github.com/shadcn.png"} />
                       <AvatarFallback>{user.username}</AvatarFallback>
                     </Avatar>
-                    <div className="chat flex-col ml-2">
+                    <div className="chat ml-2 flex-col">
                       <div className="name">{user.name}</div>
-                      <div className="message text-gray-400 text-xs">{user.bio}</div>
+                      <div className="message text-xs text-gray-400">{user.bio}</div>
                     </div>
                   </div>
-                  <div className="right-side text-gray-400 text-xs">03:36</div>
+                  <div className="right-side text-xs text-gray-400">03:36</div>
                 </div>
                 <Separator className="my-2" />
               </React.Fragment>
@@ -291,13 +291,13 @@ function ChatRoomSearchSection() {
         </div>
       )}
       {selectedTab === "Contacts" && (
-        <div className="Contacts mb-10 rounded-md border px-4 overflow-auto h-full">
+        <div className="Contacts mb-10 h-full overflow-auto rounded-md border">
           <div className="p-4">
-            <h4 className="text-md font-bold leading-none text-center my-3">All Contacts</h4>
+            <h4 className="text-md my-3 text-center font-bold leading-none">All Contacts</h4>
             {contacts.map((user) => (
               <React.Fragment key={user.id}>
                 <div
-                  className={`flex justify-between cursor-pointer rounded-lg p-3 ${selectChat?.id === user.id ? "bg-primary-foreground " : ""}`}
+                  className={`flex cursor-pointer justify-between rounded-lg p-3 ${selectChat?.id === user.id ? "bg-primary-foreground" : ""}`}
                   onClick={() => setSelectChat(user)}
                 >
                   <div className="left-side flex">
@@ -305,9 +305,9 @@ function ChatRoomSearchSection() {
                       <AvatarImage src={user.image ?? "https://github.com/shadcn.png"} />
                       <AvatarFallback>{user.username}</AvatarFallback>
                     </Avatar>
-                    <div className="chat flex-col ml-2">
+                    <div className="chat ml-2 flex-col">
                       <div className="name">{user.name}</div>
-                      <div className="message text-gray-400 text-xs">{user.bio}</div>
+                      <div className="message text-xs text-gray-400">{user.bio}</div>
                     </div>
                   </div>
                 </div>
@@ -318,13 +318,13 @@ function ChatRoomSearchSection() {
         </div>
       )}
       {selectedTab === "Invite" && (
-        <Tabs defaultValue="invite" className="mx-3 w-[95%] h-full">
+        <Tabs defaultValue="invite" className="mx-3 h-full w-[95%]">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="invite">Invite</TabsTrigger>
             <TabsTrigger value="request">Request</TabsTrigger>
           </TabsList>
           <TabsContent value="request">
-            <div className="h-[30rem] my-10 rounded-md border px-2 overflow-auto">
+            <div className="my-10 h-[30rem] overflow-auto rounded-md border px-2">
               {requestUserData ? (
                 Array.from(requestUserData?.entries()!).map(([req_id, user]) => (
                   <React.Fragment key={req_id}>
@@ -334,9 +334,9 @@ function ChatRoomSearchSection() {
                           <AvatarImage src={user.image ?? "https://github.com/shadcn.png"} />
                           <AvatarFallback>{user.username}</AvatarFallback>
                         </Avatar>
-                        <div className="chat flex-col ml-2">
+                        <div className="chat ml-2 flex-col">
                           <div className="name">{user.name}</div>
-                          <div className="message text-gray-400 text-xs">{user.bio}</div>
+                          <div className="message text-xs text-gray-400">{user.bio}</div>
                         </div>
                       </div>
                       <div className="">
@@ -357,7 +357,7 @@ function ChatRoomSearchSection() {
             </div>
           </TabsContent>
           <TabsContent value="invite">
-            <div className="h-[30rem] my-10 rounded-md border px-4 overflow-auto">
+            <div className="my-10 h-[30rem] overflow-auto rounded-md border px-4">
               {inviteUserData ? (
                 Array.from(inviteUserData?.entries()!).map(([status, user]) => {
                   // @ts-ignore
@@ -370,9 +370,9 @@ function ChatRoomSearchSection() {
                             <AvatarImage src={user.image ?? "https://github.com/shadcn.png"} />
                             <AvatarFallback>{user.username}</AvatarFallback>
                           </Avatar>
-                          <div className="chat flex-col ml-2">
+                          <div className="chat ml-2 flex-col">
                             <div className="name">{user.name}</div>
-                            <div className="message text-gray-400 text-xs">{user.bio}</div>
+                            <div className="message text-xs text-gray-400">{user.bio}</div>
                           </div>
                         </div>
                         <Button
@@ -397,20 +397,20 @@ function ChatRoomSearchSection() {
         </Tabs>
       )}
       {selectedTab === null && loading && (
-        <div className="flex justify-center items-center h-full">
-          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 animate-spin"></div>
+        <div className="flex h-full items-center justify-center">
+          <div className="loader h-24 w-24 animate-spin rounded-full border-8 border-t-8 border-gray-200 ease-linear"></div>
         </div>
       )}
 
-      <div className="profile mb-6 rounded-full flex justify-between items-center bg-secondary mx-6 gap-3">
+      <div className="profile bg-secondary mx-6 mb-6 flex items-center justify-between gap-3 rounded-full">
         <div className="flex flex-row items-center">
           <Avatar className="h-[70px] w-[70px]">
             <AvatarImage src={currentUser?.image ?? "https://github.com/shadcn.png"} />
             <AvatarFallback>{currentUser?.username}</AvatarFallback>
           </Avatar>
-          <div className="chat flex-col ml-5">
+          <div className="chat ml-5 flex-col">
             <div className="name">{currentUser?.name}</div>
-            <div className="message text-gray-400 text-sm">{currentUser?.is_online ? "Online" : "Offline"}</div>
+            <div className="message text-sm text-gray-400">{currentUser?.is_online ? "Online" : "Offline"}</div>
           </div>
         </div>
         <div className="pr-6">

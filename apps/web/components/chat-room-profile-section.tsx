@@ -1,15 +1,18 @@
 "use client";
 
-import { Button, Label, Switch } from "@repo/ui";
-import { AudioLines, PhoneCallIcon, VideoIcon } from "lucide-react";
+import { Label, Switch } from "@repo/ui";
+import { PhoneCallIcon, VideoIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useState } from "react";
+import EditProfileDialoge from "./edit-profile-dialoge";
 
 function ChatRoomProfileSction() {
+  const [isOpen, setIsOpen] = useState(false);
   const currentUser = useSession().data?.user;
   return (
-    <div className="flex flex-col justify-between h-full">
-      <div className="flex flex-col mt-6 justify-center items-center">
+    <div className="flex h-full flex-col justify-between">
+      <div className="mt-6 flex flex-col items-center justify-center">
         <Image
           src={currentUser?.image ?? "https://github.com/shadcn.png"}
           alt="logo"
@@ -17,19 +20,19 @@ function ChatRoomProfileSction() {
           height={208}
           className="rounded-3xl"
         />
-        <h1 className="text-xl font-bold text-white mt-4">{currentUser?.name}</h1>
-        <p className="text-gray-400 text-sm">{currentUser?.is_online ? "Online" : "Offline"}</p>
+        <h1 className="mt-4 text-xl font-bold text-white">{currentUser?.name}</h1>
+        <p className="text-sm text-gray-400">{currentUser?.is_online ? "Online" : "Offline"}</p>
         <div className="flex space-x-7">
-          <button className="my-6 transition duration-500 ease-in-out bg-green-500 hover:bg-white hover:text-green-500 text-white font-bold py-2 px-4 rounded-full inline-flex items-center">
+          <button className="my-6 inline-flex items-center rounded-full bg-green-500 px-4 py-2 font-bold text-white transition duration-500 ease-in-out hover:bg-white hover:text-green-500">
             <VideoIcon className="h-10 w-10" />
           </button>
-          <button className="my-6 transition duration-500 ease-in-out bg-green-500 hover:bg-white hover:text-green-500 text-white font-bold py-2 px-4 rounded-full inline-flex items-center">
+          <button className="my-6 inline-flex items-center rounded-full bg-green-500 px-4 py-2 font-bold text-white transition duration-500 ease-in-out hover:bg-white hover:text-green-500">
             <PhoneCallIcon className="h-10 w-10" />
           </button>
         </div>
-        <div className="flex flex-col w-full justify-between space-y-4">
-          <div className="flex justify-evenly w-full space-x-2">
-            <Label htmlFor="airplane-mode" className=" text-white">
+        <div className="flex w-full flex-col justify-between space-y-4">
+          <div className="flex w-full justify-evenly space-x-2">
+            <Label htmlFor="airplane-mode" className="text-white">
               Notification
             </Label>
             <Switch id="airplane-mode" />
@@ -42,15 +45,7 @@ function ChatRoomProfileSction() {
           <ChatProfileTile title="User Name" subtitle={currentUser?.username!}></ChatProfileTile>
         </div>
       </div>
-      <div className="flex flex-col items-center">
-        <Button variant="secondary" className="rounded-3xl px-10 my-4">
-          Edit Contect
-        </Button>
-        <footer className="flex items-center justify-center text-xl my-6 align-middle font-sans font-bold antialiased">
-          <AudioLines className="mr-2 inline" />
-          Meet <span className="text-sky-400/100"> ChillChat</span>
-        </footer>
-      </div>
+      <EditProfileDialoge isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 }
@@ -64,9 +59,9 @@ interface ChatProfileTileProps {
 
 const ChatProfileTile: React.FC<ChatProfileTileProps> = ({ title, subtitle }) => {
   return (
-    <div className="flex flex-col px-7 w-full justify-evenly ">
+    <div className="flex w-full flex-col justify-evenly px-7">
       <h2 className="text-md font-bold">{title}</h2>
-      <p className="text-gray-500 text-sm">{subtitle}</p>
+      <p className="text-sm text-gray-500">{subtitle}</p>
     </div>
   );
 };

@@ -24,22 +24,14 @@ export function ShareButton() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Share Room link</DialogTitle>
-          <DialogDescription>
-            Share this link with others to invite them to the room.
-          </DialogDescription>
+          <DialogDescription>Share this link with others to invite them to the room.</DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
             <Label htmlFor="link" className="sr-only">
               Link
             </Label>
-            <Input
-              id="link"
-              defaultValue={
-                typeof window !== "undefined" ? window.location.href : ""
-              }
-              readOnly
-            />
+            <Input id="link" defaultValue={typeof window !== "undefined" ? window.location.href : ""} readOnly />
           </div>
           <Button
             type="submit"

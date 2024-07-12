@@ -1,10 +1,4 @@
-import {
-  UserRound,
-  UsersRound,
-  Video,
-  MessageCircleMore,
-  MonitorPlay,
-} from "lucide-react";
+import { UserRound, UsersRound, Video, MessageCircleMore, MonitorPlay } from "lucide-react";
 import { v4 } from "uuid";
 
 const functions = [

@@ -8,10 +8,7 @@ export const useStartUserStream = () => {
   const [, setUserMediaStream] = useRecoilState(userStreamAtom);
   const [, setUserMediaScreenStream] = useRecoilState(userScreenStreamAtom);
 
-  const handleStartAudioVideoStream = async (
-    audioDeviceId?: string,
-    videoDeviceId?: string
-  ) => {
+  const handleStartAudioVideoStream = async (audioDeviceId?: string, videoDeviceId?: string) => {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         deviceId: audioDeviceId ? { exact: audioDeviceId } : undefined,

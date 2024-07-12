@@ -78,14 +78,14 @@ function SignupForm() {
   return sendMail ? (
     <ShineBorder color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} duration={7} borderWidth={4}>
       <div className="flex bg-black">
-        <div className="w-full max-w-md p-8 space-y-8  bg-black rounded-lg shadow-md">
+        <div className="w-full max-w-md space-y-8 rounded-lg bg-black p-8 shadow-md">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold mb-6 text-white">Verify Your Account</h1>
+            <h1 className="mb-6 text-2xl font-extrabold text-white">Verify Your Account</h1>
             <p className="mb-4 text-white">Enter the verification code sent to your email</p>
             <Form {...signupForm}>
               <form
                 onSubmit={signupForm.handleSubmit(() => onSignUpFormSubmit(signupForm.getValues(), username))}
-                className="w-full space-y-6 flex flex-col"
+                className="flex w-full flex-col space-y-6"
               >
                 <FormField
                   name="code"
@@ -95,7 +95,7 @@ function SignupForm() {
                       <FormLabel>One-Time Password</FormLabel>
                       <FormControl>
                         <InputOTP maxLength={6} {...field}>
-                          <InputOTPGroup className="flex mx-auto text-white">
+                          <InputOTPGroup className="mx-auto flex text-white">
                             <InputOTPSlot index={0} />
                             <InputOTPSlot index={1} />
                             <InputOTPSlot index={2} />
@@ -113,7 +113,7 @@ function SignupForm() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                  className="group/btn shadow-input relative flex h-10 w-full items-center justify-center space-x-2 rounded-md px-4 font-medium dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
                 >
                   {isSubmitting ? (
                     <>
@@ -133,15 +133,15 @@ function SignupForm() {
   ) : (
     <ShineBorder color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} duration={7} borderWidth={4}>
       <div className="flex items-start justify-start">
-        <div className="w-full max-w-md p-8 space-y-8 bg-background rounded-lg shadow-md">
+        <div className="bg-background w-full max-w-md space-y-8 rounded-lg p-8 shadow-md">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold tracking-tighter mb-6 text-white">Please SignUp to Use</h1>
+            <h1 className="mb-6 text-2xl font-extrabold tracking-tighter text-white">Please SignUp to Use</h1>
             <p className="mb-4 text-white">Sign up to start your anonymous adventure</p>
           </div>
           <Form {...sendVerificationEmailForm}>
             <form
               onSubmit={sendVerificationEmailForm.handleSubmit(onSendVerificationEmail)}
-              className="space-y-4 flex-col flex "
+              className="flex flex-col space-y-4"
             >
               <FormField
                 name="fullname"
@@ -223,7 +223,7 @@ function SignupForm() {
               <Button
                 type="submit"
                 disabled={isSubmitting || usernameMessage !== "username is unique"}
-                className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                className="group/btn shadow-input relative flex h-10 w-full items-center justify-center space-x-2 rounded-md px-4 font-medium dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
               >
                 {isSubmitting ? (
                   <>
@@ -244,7 +244,7 @@ function SignupForm() {
                 callbackUrl: callbackUrl || "/",
               })
             }
-            className=" relative group/btn  h-10 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            className="group/btn relative h-10 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
           >
             <span>Sign in with Google</span> <BottomGradient />
           </Button>

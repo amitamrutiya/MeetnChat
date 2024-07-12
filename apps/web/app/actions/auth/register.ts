@@ -68,11 +68,7 @@ export async function register(values: z.infer<typeof signUpSchema>) {
       },
     });
 
-    const emailResponse = await sendVerificationEmail(
-      email,
-      username,
-      verifyCode
-    );
+    const emailResponse = await sendVerificationEmail(email, username, verifyCode);
 
     if (!emailResponse.success) {
       return { success: false, message: "Error sending verification email" };

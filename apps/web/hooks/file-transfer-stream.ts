@@ -12,9 +12,7 @@ function useFileTransfer() {
           let buffer = await file.arrayBuffer();
 
           const bufferString = JSON.stringify(buffer);
-          const hash = createHmac("md5", secret)
-            .update(bufferString)
-            .digest("hex");
+          const hash = createHmac("md5", secret).update(bufferString).digest("hex");
           try {
             peerService.myDataChanel.send(
               JSON.stringify({
@@ -36,20 +34,17 @@ function useFileTransfer() {
                 if (
                   peerService &&
                   peerService.myDataChanel &&
-                  peerService?.myDataChanel?.bufferedAmount >
-                    peerService?.myDataChanel?.bufferedAmountLowThreshold
+                  peerService?.myDataChanel?.bufferedAmount > peerService?.myDataChanel?.bufferedAmountLowThreshold
                 ) {
                   peerService.myDataChanel.onbufferedamountlow = () => {
-                    if (peerService && peerService.myDataChanel)
-                      peerService.myDataChanel.onbufferedamountlow = null;
+                    if (peerService && peerService.myDataChanel) peerService.myDataChanel.onbufferedamountlow = null;
                     send();
                   };
                   return;
                 }
                 const chunk = buffer.slice(0, maxChunkSize);
                 buffer = buffer.slice(maxChunkSize, buffer.byteLength);
-                if (peerService && peerService.myDataChanel)
-                  peerService?.myDataChanel.send(chunk);
+                if (peerService && peerService.myDataChanel) peerService?.myDataChanel.send(chunk);
               }
               resolve();
             };

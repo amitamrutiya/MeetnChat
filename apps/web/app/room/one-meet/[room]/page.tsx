@@ -26,7 +26,7 @@ export default function Room() {
   } = useRoom();
 
   return (
-    <div className="flex h-dvh flex-col justify-between  p-5">
+    <div className="flex h-dvh flex-col justify-between p-5">
       <RoomNavbar remoteSocketId={remoteSocketId} remoteUser={remoteUser} />
 
       {remoteSocketId && <MeetDashboard remoteSocketId={remoteSocketId} whiteboardID={whiteboardID} />}
@@ -41,7 +41,7 @@ export default function Room() {
             handleClickUser={handleClickUser}
           />
           <SetupAudioVideo />
-          <div className="flex flex-col items-center justify-center mt-5 space-y-5">
+          <div className="mt-5 flex flex-col items-center justify-center space-y-5">
             <ShareButton />
             <h6 className="font-sans text-slate-400">Tip: Click on user to make call</h6>
           </div>

@@ -3,7 +3,7 @@
 import { SmileIcon } from "lucide-react";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-import { Popover, PopoverContent, PopoverTrigger } from "./shad/ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./shad/ui/dropdown-menu";
 
 interface EmojiPickerProps {
   onChange: (value: string) => void;
@@ -11,11 +11,11 @@ interface EmojiPickerProps {
 
 export const EmojiPicker = ({ onChange }: EmojiPickerProps) => {
   return (
-    <Popover>
-      <PopoverTrigger>
-        <SmileIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition" />
-      </PopoverTrigger>
-      <PopoverContent className="w-full">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SmileIcon className="text-muted-foreground hover:text-foreground h-5 w-5 transition" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-full">
         <Picker
           emojiSize={18}
           theme="light"
@@ -23,7 +23,7 @@ export const EmojiPicker = ({ onChange }: EmojiPickerProps) => {
           maxFrequentRows={1}
           onEmojiSelect={(emoji: any) => onChange(emoji.native)}
         />
-      </PopoverContent>
-    </Popover>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

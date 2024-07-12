@@ -92,8 +92,8 @@ function ChatButton(props: { remoteSocketId: string }) {
                 <SheetTitle>Chat</SheetTitle>
                 <SheetDescription>Start a conversation</SheetDescription>
               </SheetHeader>
-              <div ref={chatBoxContainerRef} className="w-full h-full rounded-md border overflow-y-auto p-2">
-                <div className="flex-grow max-w-[752px]">
+              <div ref={chatBoxContainerRef} className="h-full w-full overflow-y-auto rounded-md border p-2">
+                <div className="max-w-[752px] flex-grow">
                   <div className="grid grid-cols-1 gap-2">
                     <div className="col-span-1">
                       <ul className="list-none">

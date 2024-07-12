@@ -1,22 +1,11 @@
 import React, { useState } from "react";
-import {
-  LucideScreenShare,
-  LucideScreenShareOff,
-  CircleIcon,
-  PresentationIcon,
-} from "lucide-react";
+import { LucideScreenShare, LucideScreenShareOff, CircleIcon, PresentationIcon } from "lucide-react";
 
 import EndMeetButton from "./end-meet-button";
 import SettingButton from "./setting-button";
 import ChatButton from "./chat-button";
 import AudioVideoButton from "./audio-video-button";
-import {
-  Button,
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@repo/ui";
+import { Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@repo/ui";
 import { useStartUserStream } from "../hooks/use-start-stream";
 import { useStopUserStream } from "../hooks/use-stop-stream";
 import { useRecoilValue } from "recoil";
@@ -30,12 +19,9 @@ const MeetControllerBar = (props: { remoteSocketId: string }) => {
   const { handleStopScreenShareStream } = useStopUserStream();
 
   return (
-    <div className="flex flex-row ">
-      <div className="sm:w-auto rounded-lg bg-slate-600 px-3 mx-auto py-2">
-        <div
-          className="flex flex-row h-full w-full items-center justify-center gap-4"
-          id="tools-container"
-        >
+    <div className="flex flex-row">
+      <div className="mx-auto rounded-lg bg-slate-600 px-3 py-2 sm:w-auto">
+        <div className="flex h-full w-full flex-row items-center justify-center gap-4" id="tools-container">
           {/* Audio Video Button */}
           <AudioVideoButton />
 
@@ -46,25 +32,13 @@ const MeetControllerBar = (props: { remoteSocketId: string }) => {
                 <Button
                   size={"icon"}
                   className={userScreenStream ? "bg-primary" : "bg-foreground"}
-                  onClick={
-                    userScreenStream
-                      ? handleStopScreenShareStream
-                      : handleStartScreenShareStream
-                  }
+                  onClick={userScreenStream ? handleStopScreenShareStream : handleStartScreenShareStream}
                 >
-                  {userScreenStream ? (
-                    <LucideScreenShare />
-                  ) : (
-                    <LucideScreenShareOff />
-                  )}
+                  {userScreenStream ? <LucideScreenShare /> : <LucideScreenShareOff />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>
-                  {userScreenStream
-                    ? "Stop screen share"
-                    : "Start screen share"}
-                </p>
+                <p>{userScreenStream ? "Stop screen share" : "Start screen share"}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

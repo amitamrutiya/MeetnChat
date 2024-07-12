@@ -9,25 +9,16 @@ import {
   DropdownMenuRadioItem,
 } from "@repo/ui";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  audioDevicesAtom,
-  selectedAudioDeviceAtom,
-  selectedVideoDeviceAtom,
-  videoDevicesAtom,
-} from "@repo/store";
+import { audioDevicesAtom, selectedAudioDeviceAtom, selectedVideoDeviceAtom, videoDevicesAtom } from "@repo/store";
 
 function AudioVideoDeviceDropDown() {
   const audioDevices = useRecoilValue(audioDevicesAtom);
   const videoDevices = useRecoilValue(videoDevicesAtom);
-  const [selectedAudioDevice, setSelectedAudioDevice] = useRecoilState(
-    selectedAudioDeviceAtom
-  );
-  const [selectedVideoDevice, setSelectedVideoDevice] = useRecoilState(
-    selectedVideoDeviceAtom
-  );
+  const [selectedAudioDevice, setSelectedAudioDevice] = useRecoilState(selectedAudioDeviceAtom);
+  const [selectedVideoDevice, setSelectedVideoDevice] = useRecoilState(selectedVideoDeviceAtom);
 
   return (
-    <div className="flex justify-center items-center my-5">
+    <div className="my-5 flex items-center justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="bg-foreground">Select Audio Devices</Button>
@@ -35,15 +26,9 @@ function AudioVideoDeviceDropDown() {
         <DropdownMenuContent>
           <DropdownMenuLabel>Select Audio Devices</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup
-            value={selectedAudioDevice}
-            onValueChange={setSelectedAudioDevice}
-          >
+          <DropdownMenuRadioGroup value={selectedAudioDevice} onValueChange={setSelectedAudioDevice}>
             {audioDevices.map((device) => (
-              <DropdownMenuRadioItem
-                key={device.deviceId}
-                value={device.deviceId}
-              >
+              <DropdownMenuRadioItem key={device.deviceId} value={device.deviceId}>
                 {device.label}
               </DropdownMenuRadioItem>
             ))}
@@ -58,15 +43,9 @@ function AudioVideoDeviceDropDown() {
         <DropdownMenuContent>
           <DropdownMenuLabel>Select Video Devices</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup
-            value={selectedVideoDevice}
-            onValueChange={setSelectedVideoDevice}
-          >
+          <DropdownMenuRadioGroup value={selectedVideoDevice} onValueChange={setSelectedVideoDevice}>
             {videoDevices.map((device) => (
-              <DropdownMenuRadioItem
-                key={device.deviceId}
-                value={device.deviceId}
-              >
+              <DropdownMenuRadioItem key={device.deviceId} value={device.deviceId}>
                 {device.label}
               </DropdownMenuRadioItem>
             ))}

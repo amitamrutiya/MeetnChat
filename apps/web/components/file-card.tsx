@@ -31,23 +31,20 @@ function FileCard(props: FileCardProps) {
   }, [file]);
 
   const convertedTime = useMemo(
-    () =>
-      file.timestamp
-        ? moment(new Date(file.timestamp), "MM").fromNow()
-        : undefined,
+    () => (file.timestamp ? moment(new Date(file.timestamp), "MM").fromNow() : undefined),
     [file.timestamp]
   );
 
   return (
     <div>
-      <div className="relative mt-3 w-full flex cursor-pointer items-center justify-between rounded-md bg-slate-800 py-2 px-5 font-sans text-white shadow-md hover:animate-pulse">
+      <div className="relative mt-3 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 px-5 py-2 font-sans text-white shadow-md hover:animate-pulse">
         <div className="z-10 flex items-center">
           <FileIcon className="mr-3" />
           <div>
             <p className="text-base">
               {file.name} | {`${file.checksum?.substring(0, 5)}...`}
             </p>
-            <p className="text-slate-50 text-xs">
+            <p className="text-xs text-slate-50">
               {file.recievedSize && formatBytes(file.recievedSize)}
               {" / "}
               {formatBytes(file.size)}
@@ -58,17 +55,13 @@ function FileCard(props: FileCardProps) {
           {file.blob && <DownloadCloudIcon />}
         </div>
         <div
-          className={`absolute ml-[-20px] h-full rounded-md transition-all ${
-            progress >= 100 && file.checksumMatched
-              ? "bg-green-600"
-              : "bg-sky-500"
+          className={`h- absolute ml-[-20px] h-full rounded-md transition-all ${
+            progress >= 100 && file.checksumMatched ? "bg-green-600" : "bg-sky-500"
           }`}
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <small className="float-right pr-[16px] text-slate-400 mb-2">
-        {convertedTime}
-      </small>
+      <small className="float-right mb-2 pr-[16px] text-slate-400">{convertedTime}</small>
     </div>
   );
 }

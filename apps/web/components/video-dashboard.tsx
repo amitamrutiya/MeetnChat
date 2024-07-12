@@ -27,10 +27,10 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
 
   console.log("remoteUser", remoteUser);
   return (
-    <div className="flex flex-col mx-[20%]">
+    <div className="mx-[20%] flex flex-col">
       <div className="mb-10 h-[74vh] overflow-auto">
-        <div className="h-full w-full rounded-md bg-transparent flex justify-center items-center ">
-          <div className=" bg-foreground h-[55%] w-[50%] flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
+        <div className="flex h-full w-full items-center justify-center rounded-md bg-transparent">
+          <div className="bg-foreground flex h-[55%] w-[50%] items-center justify-center rounded-xl border-8 border-blue-500 p-4 shadow-lg">
             {userStream ? (
               <>
                 (
@@ -46,7 +46,7 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
                       objectFit: "cover",
                     }}
                   />
-                  <span className="absolute top-[80%] left-0 right-0 hidden group-hover:block">{"You"}</span>
+                  <span className="absolute left-0 right-0 top-[80%] hidden group-hover:block">{"You"}</span>
                 </div>
                 )
               </>
@@ -58,7 +58,7 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
             )}
           </div>
           <div className="my-3 px-3" />
-          <div className="bg-foreground h-[55%] w-[50%] flex justify-center items-center border-8 border-blue-500 rounded-xl shadow-lg p-4">
+          <div className="bg-foreground flex h-[55%] w-[50%] items-center justify-center rounded-xl border-8 border-blue-500 p-4 shadow-lg">
             {remoteStreams.length > 0 ? (
               <div>
                 {remoteStreams.map((stream) => (
@@ -90,8 +90,8 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
         </div>
       </div>
       <div className="flex flex-row">
-        <div className="sm:w-auto rounded-lg bg-slate-600 px-3 mx-auto py-2">
-          <div className="flex flex-row h-full w-full items-center justify-center gap-4">
+        <div className="mx-auto rounded-lg bg-slate-600 px-3 py-2 sm:w-auto">
+          <div className="flex h-full w-full flex-row items-center justify-center gap-4">
             <AudioVideoButton />
             <ChatButton remoteSocketId={remoteSocketId} />
             <SettingButton />

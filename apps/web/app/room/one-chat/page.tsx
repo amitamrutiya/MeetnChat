@@ -4,14 +4,14 @@ import ChatRoomSection from "components/chat-room-section";
 
 export default function Room() {
   return (
-    <div className="flex flex-col md:flex-row gap-4 p-4 h-screen">
-      <section className="flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 md:w-1/3 md:block hidden">
+    <div className="flex h-screen flex-col gap-4 p-4 md:flex-row">
+      <section className="hidden flex-grow rounded-3xl bg-[#1f1f1f] md:block md:w-1/3 xl:w-1/4">
         <ChatRoomSearchSection />
       </section>
-      <main className="px-6 flex-grow bg-[#181818] rounded-3xl xl:w-1/2 md:w-2/3">
+      <main className="flex-grow rounded-3xl bg-[#181818] px-6 md:w-2/3 xl:w-1/2">
         <ChatRoomSection />
       </main>
-      <section className="p-6 flex-grow bg-[#1f1f1f] rounded-3xl xl:w-1/4 xl:block hidden">
+      <section className="hidden flex-grow rounded-3xl bg-[#1f1f1f] p-6 xl:block xl:w-1/4">
         <ChatRoomProfileSction />
       </section>
     </div>

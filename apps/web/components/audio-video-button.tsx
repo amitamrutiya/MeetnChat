@@ -1,20 +1,10 @@
 import React, { useEffect } from "react";
 import { MicIcon, MicOffIcon, VideoIcon, VideoOffIcon } from "lucide-react";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  Button,
-} from "@repo/ui";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Button } from "@repo/ui";
 import { useStartUserStream } from "../hooks/use-start-stream";
 import { useStopUserStream } from "../hooks/use-stop-stream";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  isAudioStreamEnabledAtom,
-  userStreamAtom,
-  isVideoStreamEnabledAtom,
-} from "@repo/store";
+import { isAudioStreamEnabledAtom, userStreamAtom, isVideoStreamEnabledAtom } from "@repo/store";
 
 function AudioVideoButton() {
   const [audio, setAudio] = useRecoilState(isAudioStreamEnabledAtom);

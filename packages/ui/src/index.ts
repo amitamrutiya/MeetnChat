@@ -25,5 +25,4 @@ export * from "./shad/ui/shine-border";
 export * from "./shad/ui/input-otp";
 export * from "./shad/ui/hover-card";
 export * from "./shad/ui/globe";
-export * from "./shad/ui/popover";
 export * from "./emoji-picker";
