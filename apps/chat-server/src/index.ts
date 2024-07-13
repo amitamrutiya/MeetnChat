@@ -67,10 +67,6 @@ wss.on("connection", (ws) => {
     for (const [user_id, client] of userIds.entries()) {
       if (client === ws) {
         console.log("User disconnected:", user_id);
-        await db.user.update({
-          where: { id: user_id },
-          data: { is_online: false },
-        });
         id = user_id;
         userIds.delete(user_id);
         break;
@@ -86,10 +82,6 @@ async function handleAuthData(ws: WebSocket, payload: any) {
   try {
     console.log(payload.name + " connected");
     const user_id = payload.user_id;
-    await db.user.update({
-      where: { id: user_id },
-      data: { is_online: true },
-    });
     userIds.set(user_id, ws);
     selectedBroadcast(JSON.stringify({ type: "GET_ONLINE_USER", payload: { user_id } }), ws);
   } catch (error) {
@@ -104,19 +96,10 @@ async function handleNewChat(ws: WebSocket, payload: Chat) {
   broadcast(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload }));
 }
 
-async function handleExistingChats(ws: WebSocket, payload: any) {
+async function handleExistingChats(ws: WebSocket, payload: { receiver_id: string }) {
   try {
     console.log("Existing chats:", payload);
-    const { sender_id, receiver_id } = payload;
-    const chats = await db.chat.findMany({
-      where: {
-        OR: [
-          { sender_id, receiver_id },
-          { sender_id: receiver_id, receiver_id: sender_id },
-        ],
-      },
-    });
-    ws.send(JSON.stringify({ type: "LOAD_EXISTING_CHATS", payload: chats }));
+    ws.send(JSON.stringify({ type: "LOAD_EXISTING_CHATS", payload }));
   } catch (error) {
     console.error("Error loading existing chats:", error);
     ws.send(JSON.stringify({ type: "error", message: "Failed to load existing chats" }));

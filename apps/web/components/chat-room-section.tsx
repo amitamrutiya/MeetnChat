@@ -5,7 +5,7 @@ import { MicIcon, PaperclipIcon, SendHorizonalIcon, SmileIcon } from "lucide-rea
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { useWebSocket } from "./web-socket-context";
-import { Avatar, AvatarFallback, AvatarImage, Textarea, EmojiPicker } from "@repo/ui";
+import { Avatar, AvatarFallback, AvatarImage, Textarea, EmojiPicker, Input } from "@repo/ui";
 import { Chat } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { saveChat } from "app/actions/chat/save-chat";
@@ -46,7 +46,7 @@ function ChatRoomSection() {
               <Avatar>
                 <AvatarImage src={selectedChat?.image ?? "https://github.com/shadcn.png"} />
                 <AvatarFallback>{selectedChat?.username}</AvatarFallback>
-              </Avatar>{" "}
+              </Avatar>
             </div>
             <div>
               <p className="text-lg text-gray-50 font-sans">{selectedChat?.name}</p>
@@ -71,10 +71,18 @@ function ChatRoomSection() {
                   isSelf ? "bg-primary text-white mr-3" : "bg-secondary text-gray-100"
                 }`}
               >
-                <p className="text-sm ">{chat.message}</p>
-                <p className="text-xs text-right mt-2 text-gray-50" suppressHydrationWarning>
-                  {new Date(chat.updatedAt).toLocaleTimeString()}
-                </p>
+                <div className="flex gap-3 justify-center items-center">
+                  <Avatar>
+                    <AvatarImage
+                      src={isSelf ? currentUser?.image! : selectedChat?.image! ?? "https://github.com/shadcn.png"}
+                    />
+                    <AvatarFallback>{isSelf ? currentUser?.image : selectedChat?.image}</AvatarFallback>
+                  </Avatar>
+                  <p className="text-sm ">{chat.message}</p>
+                  <p className="text-xs text-right mt-2 text-gray-50" suppressHydrationWarning>
+                    {new Date(chat.updatedAt).toLocaleTimeString()}
+                  </p>
+                </div>
               </div>
             </div>
           );
@@ -82,13 +90,14 @@ function ChatRoomSection() {
         <div ref={chatEndRef} />
       </div>
       <div className="flex items-center w-full m-6 h-16 space-x-3 bg-secondary shadow-sm rounded-full p-3">
-        <form onSubmit={handleSubmit} className="flex flex-grow outline-none py-2 ">
-          <Textarea
+        <form onSubmit={handleSubmit} className="flex flex-grow outline-none ">
+          <Input
             autoComplete="off"
             className="min-w-80"
             placeholder="Type a message"
             value={message}
             onChange={handleChange}
+            maxLength={300}
           />
           <button type="submit">
             <SendHorizonalIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
@@ -99,8 +108,6 @@ function ChatRoomSection() {
             setMessage(message + value);
           }}
         />
-        <PaperclipIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
-        <MicIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
       </div>
     </div>
   );

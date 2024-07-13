@@ -1,4 +1,4 @@
-class WebRTCSerice {
+ class WebRTCSerice {
   public _peer: RTCPeerConnection
 
   constructor() {

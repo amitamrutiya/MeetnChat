@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Chat } from "@prisma/client";
+import { updateOnlineStatus } from "app/actions/user/update-online-status";
+import { getExistingChats } from "app/actions/chat/get-chats";
 
 interface WebSocketContextProps {
   ws: WebSocket | null;
@@ -20,7 +22,8 @@ export const WebSocketProvider: React.FC<React.PropsWithChildren> = ({ children 
       const webSocket = new WebSocket("ws://localhost:7000");
       setWs(webSocket);
 
-      webSocket.onopen = () => {
+      webSocket.onopen = async () => {
+        await updateOnlineStatus({ userId: session.user.id, online: true });
         const authData = JSON.stringify({
           type: "AUTH_DATA",
           payload: {
@@ -32,21 +35,32 @@ export const WebSocketProvider: React.FC<React.PropsWithChildren> = ({ children 
         console.log("Connection established");
       };
 
-      webSocket.onmessage = (event) => {
+      webSocket.onmessage = async (event) => {
         const message = JSON.parse(event.data);
         console.log("Received message", message);
         switch (message.type) {
-          case "LOAD_EXISTING_CHATS":
-            setOldChatMessage(message.payload);
+          case "LOAD_EXISTING_CHATS": {
+            const response = await getExistingChats({
+              sender_id: session.user.id,
+              receiver_id: message.payload.receiver_id,
+            });
+            if (response.success) {
+              setOldChatMessage(response.data!);
+            } else {
+              console.error("Failed to load existing chats");
+            }
             break;
-          case "LOAD_NEW_CHAT":
+          }
+          case "LOAD_NEW_CHAT": {
             console.log("got data", message.payload);
             setOldChatMessage((oldChatMessage) => [...oldChatMessage, message.payload]);
             break;
+          }
         }
       };
 
-      webSocket.onclose = () => {
+      webSocket.onclose = async () => {
+        await updateOnlineStatus({ userId: session.user.id, online: false });
         console.log("Connection closed");
       };
 

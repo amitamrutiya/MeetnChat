@@ -263,7 +263,7 @@ function ChatRoomSearchSection() {
         </div>
       </div>
       {selectedTab === "Chats" && (
-        <div className="ChatList mb-10 rounded-md border px-4 overflow-auto h-full">
+        <div className="ChatList mb-10 rounded-md border overflow-auto h-full">
           <div className="p-4">
             <h4 className="text-md font-bold leading-none text-center my-3">Your Recent Chat</h4>
             {frequentChatUsers.map((user) => (
