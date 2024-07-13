@@ -1,6 +1,7 @@
 import WebSocket, { WebSocketServer } from "ws";
 import http from "http";
 import db from "@repo/db/client";
+import { Chat } from "@prisma/client";
 
 const server = http.createServer((request, response) => {
   console.log(new Date() + " Received request for " + request.url);
@@ -30,9 +31,6 @@ wss.on("connection", (ws) => {
         case "AUTH_DATA":
           await handleAuthData(ws, payload);
           break;
-        case "SEND_MESSAGE":
-          handleSendMessage(ws, payload);
-          break;
         case "NEW_CHAT":
           handleNewChat(ws, payload);
           break;
@@ -55,7 +53,7 @@ wss.on("connection", (ws) => {
           handleUpdateGroupChat(ws, payload);
           break;
         default:
-          ws.send(JSON.stringify({ type: "error", message: "Unknown message type" }));
+          ws.send(JSON.stringify({ type: "error", message: `Unknown message type ${type}` }));
       }
     } catch (error) {
       console.error("Error parsing message:", error);
@@ -66,18 +64,19 @@ wss.on("connection", (ws) => {
   ws.on("close", async () => {
     console.log("Client disconnected");
     let id = "";
-    for (const [userId, client] of userIds.entries()) {
+    for (const [user_id, client] of userIds.entries()) {
       if (client === ws) {
+        console.log("User disconnected:", user_id);
         await db.user.update({
-          where: { id: userId },
+          where: { id: user_id },
           data: { is_online: false },
         });
-        id = userId;
-        userIds.delete(userId);
+        id = user_id;
+        userIds.delete(user_id);
         break;
       }
     }
-    broadcast(JSON.stringify({ type: "GET_OFFLINE_USER", payload: { id } }));
+    selectedBroadcast(JSON.stringify({ type: "GET_OFFLINE_USER", payload: { id } }));
   });
 
   ws.send(JSON.stringify({ type: "info", message: "Hello! Message From Server!!" }));
@@ -86,28 +85,23 @@ wss.on("connection", (ws) => {
 async function handleAuthData(ws: WebSocket, payload: any) {
   try {
     console.log(payload.name + " connected");
-    const userId = payload.userId;
-    const user = await db.user.update({
-      where: { id: userId },
+    const user_id = payload.user_id;
+    await db.user.update({
+      where: { id: user_id },
       data: { is_online: true },
     });
-    userIds.set(userId, ws);
-    console.log("User:", user);
-    broadcast(JSON.stringify({ type: "GET_ONLINE_USER", payload: { userId } }), ws);
+    userIds.set(user_id, ws);
+    selectedBroadcast(JSON.stringify({ type: "GET_ONLINE_USER", payload: { user_id } }), ws);
   } catch (error) {
     console.error("Error during authentication:", error);
     ws.send(JSON.stringify({ type: "error", message: "Authentication failed" }));
   }
 }
 
-function handleSendMessage(ws: WebSocket, payload: any) {
-  console.log("Chat message:", payload);
-  broadcast(JSON.stringify({ type: "SEND_MESSAGE", payload }), ws);
-}
-
-function handleNewChat(ws: WebSocket, payload: any) {
+async function handleNewChat(ws: WebSocket, payload: Chat) {
   console.log("New chat:", payload);
-  broadcast(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload.toString() }), ws);
+  // ws.send(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload }));
+  broadcast(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload }));
 }
 
 async function handleExistingChats(ws: WebSocket, payload: any) {
@@ -129,37 +123,65 @@ async function handleExistingChats(ws: WebSocket, payload: any) {
   }
 }
 
-function handleDeleteChat(ws: WebSocket, payload: any) {
-  console.log("Delete chat:", payload);
-  broadcast(JSON.stringify({ type: "CHAT_MESSAGE_DELETED", payload: payload.id.toString() }), ws);
+async function handleDeleteChat(ws: WebSocket, payload: any) {
+  // const { chat_id } = payload;
+  // await db.chat.delete({
+  //   where: { id: chat_id },
+  // });
+  selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_DELETED", payload: payload.toString() }), ws);
 }
 
-function handleUpdateChat(ws: WebSocket, payload: any) {
+async function handleUpdateChat(ws: WebSocket, payload: any) {
   console.log("Update chat:", payload);
-  broadcast(JSON.stringify({ type: "CHAT_MESSAGE_UPDATED", payload: payload.toString() }), ws);
+  const { chat_id, message } = payload;
+  const chatExists = await db.chat.findUnique({
+    where: { id: chat_id },
+  });
+
+  if (!chatExists) {
+    console.log(`Chat with ID ${chat_id} not found.`);
+    // Handle the "not found" case, e.g., by sending a response to the client
+    return; // Exit the function or throw an error
+  }
+
+  const updatedChat = await db.chat.update({
+    where: { id: chat_id },
+    data: { message: message },
+  });
+  console.log("Updated chat:", updatedChat);
+
+  selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_UPDATED", payload: payload.toString() }), ws);
 }
 
 function handleGroupChat(ws: WebSocket, payload: any) {
   console.log("Group chat:", payload);
-  broadcast(JSON.stringify({ type: "LOAD_GROUP_CHAT", payload: payload.toString() }), ws);
+  selectedBroadcast(JSON.stringify({ type: "LOAD_GROUP_CHAT", payload: payload.toString() }), ws);
 }
 
 function handleDeleteGroupChat(ws: WebSocket, payload: any) {
   console.log("Delete group chat:", payload);
-  broadcast(JSON.stringify({ type: "GROUP_CHAT_DELETED", payload: payload.toString() }), ws);
+  selectedBroadcast(JSON.stringify({ type: "GROUP_CHAT_DELETED", payload: payload.toString() }), ws);
 }
 
 function handleUpdateGroupChat(ws: WebSocket, payload: any) {
   console.log("Update group chat:", payload);
-  broadcast(JSON.stringify({ type: "GROUP_CHAT_UPDATED", payload: payload.toString() }), ws);
+  selectedBroadcast(JSON.stringify({ type: "GROUP_CHAT_UPDATED", payload: payload.toString() }), ws);
 }
 
-function broadcast(data: string, ws?: WebSocket) {
+function selectedBroadcast(data: string, ws?: WebSocket) {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       if (!ws || client !== ws) {
         client.send(data);
       }
+    }
+  });
+}
+
+function broadcast(data: string) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
     }
   });
 }
