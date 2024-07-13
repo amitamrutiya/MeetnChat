@@ -30,12 +30,7 @@ import { useAuth } from "../hooks/use-auth";
 import { useDebounceCallback } from "usehooks-ts";
 
 function SignupForm() {
-  const {
-    onSignUpFormSubmit,
-    onSendVerificationEmail,
-    isSubmitting,
-    sendMail,
-  } = useAuth();
+  const { onSignUpFormSubmit, onSendVerificationEmail, isSubmitting, sendMail } = useAuth();
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -71,9 +66,7 @@ function SignupForm() {
           setUsernameMessage(response.message);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
-          setUsernameMessage(
-            axiosError.response?.data.message ?? "Error checking username"
-          );
+          setUsernameMessage(axiosError.response?.data.message ?? "Error checking username");
         } finally {
           setIsCheckingUsername(false);
         }
@@ -83,25 +76,15 @@ function SignupForm() {
   }, [username]);
 
   return sendMail ? (
-    <ShineBorder
-      color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-      duration={7}
-      borderWidth={4}
-    >
+    <ShineBorder color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} duration={7} borderWidth={4}>
       <div className="flex bg-black">
         <div className="w-full max-w-md p-8 space-y-8  bg-black rounded-lg shadow-md">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold mb-6 text-white">
-              Verify Your Account
-            </h1>
-            <p className="mb-4 text-white">
-              Enter the verification code sent to your email
-            </p>
+            <h1 className="text-2xl font-extrabold mb-6 text-white">Verify Your Account</h1>
+            <p className="mb-4 text-white">Enter the verification code sent to your email</p>
             <Form {...signupForm}>
               <form
-                onSubmit={signupForm.handleSubmit(() =>
-                  onSignUpFormSubmit(signupForm.getValues(), username)
-                )}
+                onSubmit={signupForm.handleSubmit(() => onSignUpFormSubmit(signupForm.getValues(), username))}
                 className="w-full space-y-6 flex flex-col"
               >
                 <FormField
@@ -112,7 +95,7 @@ function SignupForm() {
                       <FormLabel>One-Time Password</FormLabel>
                       <FormControl>
                         <InputOTP maxLength={6} {...field}>
-                          <InputOTPGroup className="flex mx-auto">
+                          <InputOTPGroup className="flex mx-auto text-white">
                             <InputOTPSlot index={0} />
                             <InputOTPSlot index={1} />
                             <InputOTPSlot index={2} />
@@ -122,9 +105,7 @@ function SignupForm() {
                           </InputOTPGroup>
                         </InputOTP>
                       </FormControl>
-                      <FormDescription>
-                        Please enter the one-time password sent to your email.
-                      </FormDescription>
+                      <FormDescription>Please enter the one-time password sent to your email.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -136,8 +117,7 @@ function SignupForm() {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                      wait
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                     </>
                   ) : (
                     <span>Submit</span>
@@ -151,26 +131,16 @@ function SignupForm() {
       </div>
     </ShineBorder>
   ) : (
-    <ShineBorder
-      color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-      duration={7}
-      borderWidth={4}
-    >
+    <ShineBorder color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} duration={7} borderWidth={4}>
       <div className="flex items-start justify-start">
         <div className="w-full max-w-md p-8 space-y-8 bg-background rounded-lg shadow-md">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold tracking-tighter mb-6 text-white">
-              Please SignUp to Use
-            </h1>
-            <p className="mb-4 text-white">
-              Sign up to start your anonymous adventure
-            </p>
+            <h1 className="text-2xl font-extrabold tracking-tighter mb-6 text-white">Please SignUp to Use</h1>
+            <p className="mb-4 text-white">Sign up to start your anonymous adventure</p>
           </div>
           <Form {...sendVerificationEmailForm}>
             <form
-              onSubmit={sendVerificationEmailForm.handleSubmit(
-                onSendVerificationEmail
-              )}
+              onSubmit={sendVerificationEmailForm.handleSubmit(onSendVerificationEmail)}
               className="space-y-4 flex-col flex "
             >
               <FormField
@@ -207,14 +177,10 @@ function SignupForm() {
                       </FormControl>
                     </LabelInputContainer>
                     <div className="flex gap-3">
-                      {isCheckingUsername && (
-                        <Loader2 className="h-4 w-4 animate-spin text-red-500" />
-                      )}
+                      {isCheckingUsername && <Loader2 className="h-4 w-4 animate-spin text-red-500" />}
                       <p
                         className={`flex text-xs ${
-                          usernameMessage === "username is unique"
-                            ? "text-green-500"
-                            : "text-red-500"
+                          usernameMessage === "username is unique" ? "text-green-500" : "text-red-500"
                         }`}
                       >
                         {username} {usernameMessage}
@@ -247,11 +213,7 @@ function SignupForm() {
                     <LabelInputContainer>
                       <FormLabel className="flex">Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Password"
-                          {...field}
-                        />
+                        <Input type="password" placeholder="Password" {...field} />
                       </FormControl>
                     </LabelInputContainer>
                     <FormMessage />
@@ -260,15 +222,12 @@ function SignupForm() {
               />
               <Button
                 type="submit"
-                disabled={
-                  isSubmitting || usernameMessage !== "username is unique"
-                }
+                disabled={isSubmitting || usernameMessage !== "username is unique"}
                 className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full rounded-md h-10 font-medium shadow-input dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                    wait
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                   </>
                 ) : (
                   <span>Sign Up</span>
