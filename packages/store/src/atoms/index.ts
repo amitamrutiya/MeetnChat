@@ -4,3 +4,4 @@ export * from "./file-transfer";
 export * from "./media-stream";
 export * from "./screen-stream";
 export * from "./socket-context";
+export * from "./select-chat";

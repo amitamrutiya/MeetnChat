@@ -28,7 +28,7 @@ export const {
     async signIn({ account, user }) {
       if (account?.provider !== "credentials") return true;
 
-      const existingUser: User | null = await getUserById(user.id!);
+      const existingUser: User | null = await getUserById({ user_id: user.id! });
       if (!existingUser || !existingUser.emailVerified) {
         return false;
       }
@@ -37,7 +37,7 @@ export const {
     async session({ session, token }) {
       if (!token.sub) return session;
 
-      const existingUser = await getUserById(token.sub);
+      const existingUser = await getUserById({ user_id: token.sub });
       if (existingUser && existingUser.email) {
         session.user.id = existingUser.id;
         session.user.name = existingUser.name;
