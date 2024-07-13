@@ -18,7 +18,8 @@ model User {
   image            String?
   bio              String    @default("Hey there! I am available on ChatApp")
   phone_number     String?   @unique
-  friends          String[]
+  pending_friends  String[]  @default([])
+  friends          String[]  @default([])
   is_online        Boolean   @default(false)
   is_connected     Boolean   @default(false)
   emailVerified    DateTime?
@@ -59,4 +60,15 @@ model Chat {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("chats")
+}
+
+model FriendRequest {
+  id          String   @id @default(cuid()) @map("_id")
+  sender_id   String
+  receiver_id String
+  status      String   @default("pending")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("friend_requests")
 }
