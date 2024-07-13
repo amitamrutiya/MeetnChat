@@ -17,11 +17,11 @@ export async function getUserByIdentifier(identifier: string): Promise<User | nu
   }
 }
 
-export async function getUserById(id: string): Promise<User | null> {
+export async function getUserById({ user_id }: { user_id: string }): Promise<User | null> {
   try {
     const User = await db.user.findUnique({
       where: {
-        id,
+        id: user_id,
       },
     });
     return User;

@@ -2,9 +2,22 @@
 
 import db from "@repo/db/client";
 
-export async function getUsers() {
+type getUsersType = {
+  page: number;
+  pageSize: number;
+};
+
+export async function getUsers({ page, pageSize }: getUsersType) {
   try {
-    const users = await db.user.findMany();
+    // Calculate the offset
+    const offset = (page - 1) * pageSize;
+
+    // Fetch paginated list of users
+    const users = await db.user.findMany({
+      skip: offset,
+      take: pageSize,
+    });
+
     return users;
   } catch (error) {
     console.log(error);
