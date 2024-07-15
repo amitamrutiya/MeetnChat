@@ -14,7 +14,6 @@ import {
   toast,
 } from "@repo/ui";
 import { updateUser } from "app/actions/user/update-user";
-import { AudioLines } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 type EditProfileDialogeProps = {
@@ -67,17 +66,12 @@ const EditProfileDialoge = ({ isOpen, setIsOpen }: EditProfileDialogeProps) => {
     setIsOpen(false);
   };
 
-  // const [isOpen, setIsOpen] = useState(false);
   const currentUser = useSession().data?.user;
 
   return (
     <div className="flex flex-col items-center">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          <Button variant="secondary" className="my-4 rounded-3xl px-10">
-            Edit Contact
-          </Button>
-        </DialogTrigger>
+        <DialogTrigger asChild></DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <form onSubmit={(e) => handleSubmit(e, currentUser)}>
             <DialogHeader>
@@ -122,11 +116,6 @@ const EditProfileDialoge = ({ isOpen, setIsOpen }: EditProfileDialogeProps) => {
           </form>
         </DialogContent>
       </Dialog>
-
-      <footer className="my-6 flex items-center justify-center align-middle font-sans text-xl font-bold antialiased">
-        <AudioLines className="mr-2 inline" />
-        Meet <span className="text-sky-400/100"> ChillChat</span>
-      </footer>
     </div>
   );
 };
