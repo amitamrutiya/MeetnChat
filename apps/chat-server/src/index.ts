@@ -52,6 +52,15 @@ wss.on("connection", (ws) => {
         case "UPDATE_GROUP_CHAT":
           handleUpdateGroupChat(ws, payload);
           break;
+        case "NEW_FRIEND_REQUEST":
+          broadcast(JSON.stringify({ type: "NEW_FRIEND_REQUESTED", payload: payload }));
+          break;
+        case "ACCEPT_FRIEND_REQUEST":
+          broadcast(JSON.stringify({ type: "ACCEPTED_FRIEND_REQUEST", payload: payload }));
+          break;
+        case "REJECT_FRIEND_REQUEST":
+          broadcast(JSON.stringify({ type: "REJECTED_FRIEND_REQUEST", payload: payload }));
+          break;
         default:
           ws.send(JSON.stringify({ type: "error", message: `Unknown message type ${type}` }));
       }
@@ -92,7 +101,6 @@ async function handleAuthData(ws: WebSocket, payload: any) {
 
 async function handleNewChat(ws: WebSocket, payload: Chat) {
   console.log("New chat:", payload);
-  // ws.send(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload }));
   broadcast(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload }));
 }
 
@@ -107,10 +115,6 @@ async function handleExistingChats(ws: WebSocket, payload: { receiver_id: string
 }
 
 async function handleDeleteChat(ws: WebSocket, payload: any) {
-  // const { chat_id } = payload;
-  // await db.chat.delete({
-  //   where: { id: chat_id },
-  // });
   selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_DELETED", payload: payload.toString() }), ws);
 }
 
@@ -123,8 +127,7 @@ async function handleUpdateChat(ws: WebSocket, payload: any) {
 
   if (!chatExists) {
     console.log(`Chat with ID ${chat_id} not found.`);
-    // Handle the "not found" case, e.g., by sending a response to the client
-    return; // Exit the function or throw an error
+    return;
   }
 
   const updatedChat = await db.chat.update({
