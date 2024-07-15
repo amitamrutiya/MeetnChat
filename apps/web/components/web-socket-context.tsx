@@ -52,7 +52,6 @@ export const WebSocketProvider: React.FC<React.PropsWithChildren> = ({ children 
             break;
           }
           case "LOAD_NEW_CHAT": {
-            console.log("got data", message.payload);
             setOldChatMessage((oldChatMessage) => [...oldChatMessage, message.payload]);
             break;
           }
