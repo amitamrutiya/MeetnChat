@@ -40,17 +40,17 @@ export async function register(values: z.infer<typeof signUpSchema>) {
   const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   if (existingUserByEmail && existingUserByEmail.emailVerified) {
-    // existingUserByEmail.password = hashedPassword;
-    // existingUserByEmail.verifyCode = verifyCode;
-    // existingUserByEmail.verifyCodeExpiry = expiryDate;
-    // existingUserByEmail.updatedAt = new Date();
-    // await db.user.create({
-    //   data: existingUserByEmail,
-    // });
     return { success: false, message: "User already exists with this email" };
+  } else if (existingUserByEmail && existingUserByEmail.emailVerified === null) {
+    return {
+      success: true,
+      message:
+        "Your email has not been verified yet. Please verify your email to enjoy our app. A verification code has been sent to your email.",
+    };
   } else {
     const firstName = fullname.split(" ")[0];
     const lastName = fullname.split(" ")[1] ?? "";
+
     await db.user.create({
       data: {
         email,
@@ -59,7 +59,7 @@ export async function register(values: z.infer<typeof signUpSchema>) {
         username: username,
         image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}+${lastName}`,
         is_online: true,
-        emailVerified: new Date(),
+        emailVerified: null,
         verifyCode: verifyCode,
         verifyCodeExpiry: expiryDate,
         friends: [],
