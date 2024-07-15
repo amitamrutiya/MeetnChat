@@ -1,15 +1,19 @@
 "use client";
 
-import { Label, Switch } from "@repo/ui";
+import { Button, Label, Switch } from "@repo/ui";
 import { PhoneCallIcon, VideoIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import EditProfileDialoge from "./edit-profile-dialoge";
+import { AudioLines } from "lucide-react";
+import ChangePasswordDialoge from "./change-password-dialoge";
 
 function ChatRoomProfileSction() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [changePasswordDialoge, setChangePasswordDialoge] = useState<boolean>(false);
   const currentUser = useSession().data?.user;
+
   return (
     <div className="flex h-full flex-col justify-between">
       <div className="mt-6 flex flex-col items-center justify-center">
@@ -45,7 +49,28 @@ function ChatRoomProfileSction() {
           <ChatProfileTile title="User Name" subtitle={currentUser?.username!}></ChatProfileTile>
         </div>
       </div>
-      <EditProfileDialoge isOpen={isOpen} setIsOpen={setIsOpen} />
+      <footer className="my-6 flex flex-col items-center justify-center gap-2 align-middle font-sans text-xl font-bold antialiased">
+        <Button
+          variant="secondary"
+          className="rounded-3xl border-2 border-white px-10"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          Edit Contact
+        </Button>
+        <EditProfileDialoge isOpen={isOpen} setIsOpen={setIsOpen} />
+        <ChangePasswordDialoge isOpen={changePasswordDialoge} setIsOpen={setChangePasswordDialoge} />
+        <Button
+          variant="outline"
+          className="rounded-3xl px-10"
+          onClick={() => setChangePasswordDialoge((prev) => !prev)}
+        >
+          Change Password
+        </Button>
+        <div className="mt-4 flex">
+          <AudioLines className="mr-2 inline" />
+          Meet <span className="text-sky-400/100"> ChillChat</span>
+        </div>
+      </footer>
     </div>
   );
 }
