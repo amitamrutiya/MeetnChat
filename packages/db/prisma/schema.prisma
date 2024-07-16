@@ -73,15 +73,16 @@ model FriendRequest {
   @@map("friend_requests")
 }
 
-model GroupModel {
-  id         String   @id @default(cuid()) @map("_id")
-  creator_id String
-  name       String
-  image      String?
-  members    String[]
-  limit      Int      @default(10)
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+model Group {
+  id          String   @id @default(cuid()) @map("_id")
+  creator_id  String
+  name        String
+  image       String?
+  members     String[]
+  description String?
+  limit       Int      @default(10)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("groups")
 }
@@ -91,14 +92,6 @@ model GroupChat {
   group_id  String
   sender_id String
   message   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-}
-
-model GroupMember {
-  id        String   @id @default(cuid()) @map("_id")
-  group_id  String
-  user_id   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
