@@ -5,9 +5,9 @@ import { PhoneCallIcon, VideoIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
-import EditProfileDialoge from "./edit-profile-dialoge";
+import EditProfileDialoge from "../../../../components/edit-profile-dialoge";
 import { AudioLines } from "lucide-react";
-import ChangePasswordDialoge from "./change-password-dialoge";
+import ChangePasswordDialoge from "../../../../components/change-password-dialoge";
 
 function ChatRoomProfileSction() {
   const [isOpen, setIsOpen] = useState<boolean>(false);

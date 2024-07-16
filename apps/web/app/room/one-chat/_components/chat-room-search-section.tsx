@@ -5,13 +5,13 @@ import { SettingsIcon, SearchIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getUserById } from "app/actions/user/get-user";
-import { useWebSocket } from "./web-socket-context";
-import EditProfileDialoge from "./edit-profile-dialoge";
+import EditProfileDialoge from "components/edit-profile-dialoge";
 import ChatSearchInviteTab from "./chat-search-invite-tab";
 import ChatSearchContactsTab from "./chat-search-contacts-tab";
 import ChatSearchMainTab from "./chat-search-main-tab";
 import ChatSearchNavButton from "./chat-search-nav-button";
 import { chat } from "hooks/use-chat";
+import { useWebSocket } from "components/web-socket-context";
 
 function ChatRoomSearchSection() {
   const currentUser = useSession().data?.user;

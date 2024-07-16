@@ -4,7 +4,7 @@ import { selectChatAtom } from "@repo/store";
 import { SendHorizonalIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { useWebSocket } from "./web-socket-context";
+import { useWebSocket } from "../../../../components/web-socket-context";
 import { Avatar, AvatarFallback, AvatarImage, EmojiPicker, Input } from "@repo/ui";
 import { Chat } from "@prisma/client";
 import { useSession } from "next-auth/react";

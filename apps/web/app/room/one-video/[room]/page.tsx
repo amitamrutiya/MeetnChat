@@ -1,7 +1,6 @@
 "use client";
 
 import EndCallNotificationDialogue from "components/end-call-notification-dialogue";
-import endCallNotificationDialogue from "components/end-call-notification-dialogue";
 import IncomingCallDialog from "components/incoming-call-dialogue";
 import RoomNavbar from "components/room-navbar";
 import SetupAudioVideo from "components/setup-audio-video";

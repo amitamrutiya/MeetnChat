@@ -3,7 +3,7 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import AudioVideoButton from "./audio-video-button";
-import ChatButton from "./chat-button";
+import ChatButton from ".././_components/chat-button";
 import SettingButton from "./setting-button";
 import EndMeetButton from "./end-meet-button";
 import { useSession } from "next-auth/react";

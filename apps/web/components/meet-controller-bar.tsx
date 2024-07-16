@@ -3,7 +3,7 @@ import { LucideScreenShare, LucideScreenShareOff, CircleIcon, PresentationIcon }
 
 import EndMeetButton from "./end-meet-button";
 import SettingButton from "./setting-button";
-import ChatButton from "./chat-button";
+import ChatButton from ".././_components/chat-button";
 import AudioVideoButton from "./audio-video-button";
 import { Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@repo/ui";
 import { useStartUserStream } from "../hooks/use-start-stream";
