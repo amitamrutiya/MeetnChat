@@ -27,6 +27,16 @@ function ChatRoomSearchSection() {
     setInviteUserData,
   } = chat();
 
+  useEffect(() => {}, [
+    fetchFrequentChatUsers,
+    selectedTab,
+    setLoading,
+    loading,
+    setRequestUserData,
+    setContacts,
+    setInviteUserData,
+  ]);
+
   useEffect(() => {
     if (!ws) return;
     ws.onmessage = async (event) => {

@@ -1,12 +1,12 @@
 "use client";
 
 import peerService from "../app/helpers/peer";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { userScreenStreamAtom, userStreamAtom } from "@repo/store";
 
 export const useStartUserStream = () => {
-  const [, setUserMediaStream] = useRecoilState(userStreamAtom);
-  const [, setUserMediaScreenStream] = useRecoilState(userScreenStreamAtom);
+  const setUserMediaStream = useSetRecoilState(userStreamAtom);
+  const setUserMediaScreenStream = useSetRecoilState(userScreenStreamAtom);
 
   const handleStartAudioVideoStream = async (audioDeviceId?: string, videoDeviceId?: string) => {
     const stream = await navigator.mediaDevices.getUserMedia({

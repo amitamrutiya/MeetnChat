@@ -7,19 +7,27 @@ import { acceptFriendRequest } from "app/actions/chat/accept-friend-request";
 import { rejectFriendRequest } from "app/actions/chat/reject-friend-request";
 import { getUserById } from "app/actions/user/get-user";
 import { useSession } from "next-auth/react";
-import { User } from "@prisma/client";
-import { useState } from "react";
 import { useWebSocket } from "components/web-socket-context";
+import { useRecoilState } from "recoil";
+import {
+  selectedTabState,
+  contactsState,
+  frequentChatUsersState,
+  loadingState,
+  requestUserDataState,
+  inviteUserDataState,
+  pageNumberState,
+} from "@repo/store";
 
 export function chat() {
   const currentUser = useSession().data?.user;
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<User[]>([]);
-  const [frequentChatUsers, setFrequentChatUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [requestUserData, setRequestUserData] = useState<Map<string, User>>();
-  const [inviteUserData, setInviteUserData] = useState<Map<string, User>>();
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [selectedTab, setSelectedTab] = useRecoilState(selectedTabState);
+  const [contacts, setContacts] = useRecoilState(contactsState);
+  const [frequentChatUsers, setFrequentChatUsers] = useRecoilState(frequentChatUsersState);
+  const [loading, setLoading] = useRecoilState(loadingState);
+  const [requestUserData, setRequestUserData] = useRecoilState(requestUserDataState);
+  const [inviteUserData, setInviteUserData] = useRecoilState(inviteUserDataState);
+  const [pageNumber, setPageNumber] = useRecoilState(pageNumberState);
   const { ws } = useWebSocket();
 
   async function handleInvite({ receiver_id }: { receiver_id: string }): Promise<void> {
@@ -102,7 +110,6 @@ export function chat() {
       const invitefilteredResponseArray = Array.from(updatedInviteUserData).filter(([, user]) => {
         return user.id !== currentUser?.id;
       });
-
       const invitefilteredResponseMap = new Map(invitefilteredResponseArray);
 
       setInviteUserData(invitefilteredResponseMap);
@@ -186,7 +193,6 @@ export function chat() {
     try {
       setLoading(true);
       const response = await getFrequentChatUsers({ user_id: currentUser?.id! });
-      console.log("response", response);
       setFrequentChatUsers(response);
       setSelectedTab("Chats");
     } catch (error) {
