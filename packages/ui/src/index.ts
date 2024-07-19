@@ -26,3 +26,7 @@ export * from "./shad/ui/input-otp";
 export * from "./shad/ui/hover-card";
 export * from "./shad/ui/globe";
 export * from "./emoji-picker";
+export * from "./shad/ui/animated-tooltip";
+export * from "./shad/ui/command";
+export * from "./shad/ui/popover";
+export * from "./shad/ui/credenza";
