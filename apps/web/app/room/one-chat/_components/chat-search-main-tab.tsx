@@ -2,12 +2,12 @@
 
 import { selectChatAtom } from "@repo/store";
 import { Avatar, AvatarImage, AvatarFallback, Separator } from "@repo/ui";
-import { chat } from "hooks/use-chat";
+import { useChat } from "hooks/use-chat";
 import React from "react";
 import { useRecoilState } from "recoil";
 
 const ChatSearchMainTab = () => {
-  const { frequentChatUsers } = chat();
+  const { frequentChatUsers } = useChat();
   const [selectChat, setSelectChat] = useRecoilState(selectChatAtom);
 
   return (
@@ -17,7 +17,7 @@ const ChatSearchMainTab = () => {
         {frequentChatUsers.map((user) => (
           <React.Fragment key={user.id}>
             <div
-              className={`flex cursor-pointer justify-between rounded-lg p-3 ${selectChat?.id === user.id ? "bg-primary-foreground" : ""}`}
+              className={`flex cursor-pointer justify-between rounded-xl p-3 ${selectChat?.id === user.id ? "bg-primary-foreground" : ""}`}
               onClick={() => setSelectChat(user)}
             >
               <div className="left-side flex">

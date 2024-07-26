@@ -83,31 +83,31 @@ const EditProfileDialoge = ({ isOpen, setIsOpen }: EditProfileDialogeProps) => {
                 <Label htmlFor="name" className="text-right text-white">
                   Name
                 </Label>
-                <Input id="name" name="name" defaultValue={currentUser?.name ?? ""} />
+                <Input id="name" name="name" defaultValue={currentUser?.name ?? ""} type="text" />
               </div>
               <div className="flex items-center gap-4">
                 <Label htmlFor="username" className="text-right text-white">
                   Username
                 </Label>
-                <Input id="username" name="username" defaultValue={currentUser?.username ?? ""} />
+                <Input id="username" name="username" defaultValue={currentUser?.username ?? ""} type="text" />
               </div>
               <div className="flex items-center gap-4">
                 <Label htmlFor="bio" className="text-right text-white">
                   Bio
                 </Label>
-                <Input id="bio" name="bio" defaultValue={currentUser?.bio} />
+                <Input id="bio" name="bio" defaultValue={currentUser?.bio} type="text" />
               </div>
               <div className="flex items-center gap-4">
                 <Label htmlFor="phone" className="text-right text-white">
                   Mobile
                 </Label>
-                <Input id="phone" name="phone" defaultValue={currentUser?.phone_number ?? ""} />
+                <Input id="phone" name="phone" defaultValue={currentUser?.phone_number ?? ""} type="number" />
               </div>
               <div className="flex items-center gap-4">
                 <Label htmlFor="profile" className="text-right text-white">
                   Profile
                 </Label>
-                <Input id="profile" name="profile" defaultValue={currentUser?.image ?? ""} />
+                <Input id="profile" name="profile" defaultValue={currentUser?.image ?? ""} type="url" />
               </div>
             </div>
             <DialogFooter>

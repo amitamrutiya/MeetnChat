@@ -21,7 +21,7 @@ const ChatSearchInviteTab = () => {
     inviteUserData,
     updateUserStatusToPending,
     handleInvite,
-  } = chat();
+  } = useChat();
 
   return (
     <Tabs defaultValue="invite" className="mx-3 h-full w-[95%]">

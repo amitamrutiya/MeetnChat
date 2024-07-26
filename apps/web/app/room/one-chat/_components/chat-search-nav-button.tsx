@@ -1,9 +1,9 @@
 import { Button } from "@repo/ui";
-import { chat } from "hooks/use-chat";
+import { useChat } from "hooks/use-chat";
 import { Mail, MessageCircleMore, UsersRound } from "lucide-react";
 
 const ChatSearchNavButton = () => {
-  const { setSelectedTab, fetchFrequentChatUsers, selectedTab, fetchContacts, fetchInviteUser } = chat();
+  const { setSelectedTab, fetchFrequentChatUsers, selectedTab, fetchContacts, fetchInviteUser } = useChat();
   return (
     <div className="Menu mb-4 flex justify-evenly">
       <Button
