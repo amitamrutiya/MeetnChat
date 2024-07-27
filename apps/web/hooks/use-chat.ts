@@ -8,7 +8,7 @@ import { rejectFriendRequest } from "app/actions/chat/reject-friend-request";
 import { getUserById } from "app/actions/user/get-user";
 import { useSession } from "next-auth/react";
 import { useWebSocket } from "components/web-socket-context";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   selectedTabState,
   contactsState,
@@ -17,9 +17,12 @@ import {
   requestUserDataState,
   inviteUserDataState,
   pageNumberState,
+  oldChatState,
 } from "@repo/store";
+import { updateChat } from "app/actions/chat/update-chat";
+import { deleteChat } from "app/actions/chat/delete-chat";
 
-export function chat() {
+export function useChat() {
   const currentUser = useSession().data?.user;
   const [selectedTab, setSelectedTab] = useRecoilState(selectedTabState);
   const [contacts, setContacts] = useRecoilState(contactsState);
@@ -28,6 +31,8 @@ export function chat() {
   const [requestUserData, setRequestUserData] = useRecoilState(requestUserDataState);
   const [inviteUserData, setInviteUserData] = useRecoilState(inviteUserDataState);
   const [pageNumber, setPageNumber] = useRecoilState(pageNumberState);
+  const setOldChats = useSetRecoilState(oldChatState);
+
   const { ws } = useWebSocket();
 
   async function handleInvite({ receiver_id }: { receiver_id: string }): Promise<void> {
@@ -171,6 +176,37 @@ export function chat() {
     });
   }
 
+  async function handleEditChat(chat_id: string, message: string) {
+    const response = await updateChat({ chat_id, message });
+    if (!response.success) return;
+
+    if (response.success) {
+      const chat = response.data!;
+      setOldChats((oldChats) => oldChats.map((oldChat) => (oldChat.id === chat.id ? chat : oldChat)));
+      ws?.send(
+        JSON.stringify({
+          type: "UPDATE_CHAT",
+          payload: chat,
+        })
+      );
+    }
+  }
+
+  async function handleDeleteChat(chat_id: string) {
+    const response = await deleteChat({ chat_id });
+    if (!response.success) return;
+
+    if (response.success) {
+      setOldChats((oldChats) => oldChats.filter((oldChat) => oldChat.id !== chat_id));
+      ws?.send(
+        JSON.stringify({
+          type: "DELETE_CHAT",
+          payload: { chat_id },
+        })
+      );
+    }
+  }
+
   async function fetchContacts() {
     if (contacts.length > 0) return;
     try {
@@ -226,5 +262,7 @@ export function chat() {
     onRejectFriendRequest,
     fetchContacts,
     fetchFrequentChatUsers,
+    handleEditChat,
+    handleDeleteChat,
   };
 }

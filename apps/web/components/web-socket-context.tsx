@@ -2,12 +2,11 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { useSession } from "next-auth/react";
 import { Chat } from "@prisma/client";
 import { updateOnlineStatus } from "app/actions/user/update-online-status";
-import { getExistingChats } from "app/actions/chat/get-chats";
+import { useRecoilState } from "recoil";
+import { oldChatState } from "@repo/store";
 
 interface WebSocketContextProps {
   ws: WebSocket | null;
-  loadChats: (user_id: string) => void;
-  oldChatMessage: Chat[];
   sendMessage: (chat: Chat) => void;
 }
 
@@ -16,7 +15,8 @@ export const WebSocketContext = createContext<WebSocketContextProps | null>(null
 export const WebSocketProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const { data: session } = useSession();
-  const [oldChatMessage, setOldChatMessage] = useState<Chat[]>([]);
+  const [oldChats, setOldChats] = useRecoilState(oldChatState);
+
   useEffect(() => {
     if (session?.user) {
       const webSocket = new WebSocket("ws://localhost:7000");
@@ -39,20 +39,8 @@ export const WebSocketProvider: React.FC<React.PropsWithChildren> = ({ children 
         const message = JSON.parse(event.data);
         console.log("Received message", message);
         switch (message.type) {
-          case "LOAD_EXISTING_CHATS": {
-            const response = await getExistingChats({
-              sender_id: session.user.id,
-              receiver_id: message.payload.receiver_id,
-            });
-            if (response.success) {
-              setOldChatMessage(response.data!);
-            } else {
-              console.error("Failed to load existing chats");
-            }
-            break;
-          }
           case "LOAD_NEW_CHAT": {
-            setOldChatMessage((oldChatMessage) => [...oldChatMessage, message.payload]);
+            setOldChats((oldChatMessage) => [...oldChatMessage, message.payload]);
             break;
           }
         }
@@ -82,21 +70,9 @@ export const WebSocketProvider: React.FC<React.PropsWithChildren> = ({ children 
     [ws]
   );
 
-  const loadChats = useCallback(
-    (receiver_id: string) => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(
-          JSON.stringify({ type: "EXISTING_CHATS", payload: { sender_id: session?.user.id, receiver_id: receiver_id } })
-        );
-      }
-    },
-    [ws]
-  );
 
   return (
-    <WebSocketContext.Provider value={{ ws, loadChats, oldChatMessage, sendMessage }}>
-      {children}
-    </WebSocketContext.Provider>
+    <WebSocketContext.Provider value={{ ws, sendMessage }}>{children}</WebSocketContext.Provider>
   );
 };
 
