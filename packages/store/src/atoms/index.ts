@@ -4,5 +4,6 @@ export * from "./file-transfer";
 export * from "./media-stream";
 export * from "./screen-stream";
 export * from "./socket-context";
-export * from "./select-chat";
+export * from "./group-chat";
 export * from "./one-to-one-chat";
+export * from "./group-chat";

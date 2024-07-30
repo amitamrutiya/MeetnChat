@@ -89,3 +89,20 @@
 .animate-fadeIn {
   animation: fadeIn 1s;
 }
+
+.thick-hr {
+  height: 1px;
+  background-color: grey;
+  border: none;
+  border-radius: 50%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

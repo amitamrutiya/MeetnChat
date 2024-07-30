@@ -1,5 +1,10 @@
-import { User } from "@prisma/client";
+import { User, Chat } from "@prisma/client";
 import { atom } from "recoil";
+
+export const selectChatAtom = atom<User | null>({
+  key: "selectChatAtom",
+  default: null,
+});
 
 export const selectedTabState = atom<string | null>({
   key: "selectedTabState", // unique ID (with respect to other atoms/selectors)
@@ -34,4 +39,9 @@ export const inviteUserDataState = atom<Map<string, User> | undefined>({
 export const pageNumberState = atom<number>({
   key: "pageNumberState",
   default: 1,
+});
+
+export const oldChatState = atom<Chat[]>({
+  key: "oldChatState",
+  default: [],
 });
