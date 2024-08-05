@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import { cn } from "../../lib/utils";
 import {
   Dialog,
@@ -13,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../shad/ui/dialog";
+import { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -30,6 +29,7 @@ interface BaseProps {
 
 interface RootCredenzaProps extends BaseProps {
   open?: boolean;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -41,9 +41,9 @@ interface CredenzaProps extends BaseProps {
 const desktop = "(min-width: 768px)";
 
 function useMediaQuery(query: string) {
-  const [value, setValue] = React.useState(false);
+  const [value, setValue] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function onChange(event: MediaQueryListEvent) {
       setValue(event.matches);
     }

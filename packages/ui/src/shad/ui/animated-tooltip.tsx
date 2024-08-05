@@ -1,4 +1,5 @@
 "use client";
+// eslint-disable-next-line no-redeclare
 import Image from "next/image";
 import { useState } from "react";
 import { motion, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";

@@ -6,6 +6,7 @@ import data from "@emoji-mart/data";
 import { Popover, PopoverContent, PopoverTrigger } from "./shad/ui/popover";
 
 interface EmojiPickerProps {
+  // eslint-disable-next-line no-unused-vars
   onChange: (value: string) => void;
 }
 
