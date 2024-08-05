@@ -1,6 +1,5 @@
 import WebSocket, { WebSocketServer } from "ws";
 import http from "http";
-import db from "@repo/db/client";
 import { Chat } from "@prisma/client";
 
 const server = http.createServer((request, response) => {
@@ -34,9 +33,6 @@ wss.on("connection", (ws) => {
         case "NEW_CHAT":
           handleNewChat(ws, payload);
           break;
-        case "EXISTING_CHATS":
-          await handleExistingChats(ws, payload);
-          break;
         case "DELETE_CHAT":
           handleDeleteChat(ws, payload);
           break;
@@ -61,6 +57,37 @@ wss.on("connection", (ws) => {
         case "REJECT_FRIEND_REQUEST":
           broadcast(JSON.stringify({ type: "REJECTED_FRIEND_REQUEST", payload: payload }));
           break;
+        case "ADD_MEMBERS":
+          selectedBroadcast(JSON.stringify({ type: "MEMBERS_ADDED", payload: payload }), ws);
+          break;
+        case "REMOVE_MEMBER":
+          selectedBroadcast(JSON.stringify({ type: "MEMBER_REMOVED", payload: payload }), ws);
+          break;
+        case "NEW_GROUP":
+          selectedBroadcast(JSON.stringify({ type: "NEW_GROUP_CREATED", payload: payload }), ws);
+          break;
+        case "EDIT_GROUP":
+          selectedBroadcast(JSON.stringify({ type: "GROUP_EDITED", payload: payload }), ws);
+          break;
+        case "DELETE_GROUP":
+          selectedBroadcast(JSON.stringify({ type: "GROUP_DELETED", payload: payload }), ws);
+          break;
+        case "LEAVE_GROUP":
+          selectedBroadcast(JSON.stringify({ type: "LEFT_GROUP", payload: payload }), ws);
+          break;
+        case "SEND_GROUP_MESSAGE":
+          selectedBroadcast(JSON.stringify({ type: "GROUP_MESSAGE_SENT", payload: payload }), ws);
+          break;
+        case "EDIT_GROUP_MESSAGE":
+          broadcast(JSON.stringify({ type: "GROUP_MESSAGE_EDITED", payload: payload }));
+          break;
+        case "DELETE_GROUP_MESSAGE":
+          selectedBroadcast(JSON.stringify({ type: "GROUP_MESSAGE_DELETED", payload: payload }), ws);
+          break;
+        case "CLEAR_ALL_MESSAGES":
+          selectedBroadcast(JSON.stringify({ type: "ALL_MESSAGES_CLEARED", payload: payload }), ws);
+          break;
+
         default:
           ws.send(JSON.stringify({ type: "error", message: `Unknown message type ${type}` }));
       }
@@ -104,39 +131,14 @@ async function handleNewChat(ws: WebSocket, payload: Chat) {
   broadcast(JSON.stringify({ type: "LOAD_NEW_CHAT", payload: payload }));
 }
 
-async function handleExistingChats(ws: WebSocket, payload: { receiver_id: string }) {
-  try {
-    console.log("Existing chats:", payload);
-    ws.send(JSON.stringify({ type: "LOAD_EXISTING_CHATS", payload }));
-  } catch (error) {
-    console.error("Error loading existing chats:", error);
-    ws.send(JSON.stringify({ type: "error", message: "Failed to load existing chats" }));
-  }
+async function handleDeleteChat(ws: WebSocket, payload: string) {
+  console.log("Delete chat:", payload);
+  selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_DELETED", payload }), ws);
 }
 
-async function handleDeleteChat(ws: WebSocket, payload: any) {
-  selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_DELETED", payload: payload.toString() }), ws);
-}
-
-async function handleUpdateChat(ws: WebSocket, payload: any) {
+async function handleUpdateChat(ws: WebSocket, payload: string) {
   console.log("Update chat:", payload);
-  const { chat_id, message } = payload;
-  const chatExists = await db.chat.findUnique({
-    where: { id: chat_id },
-  });
-
-  if (!chatExists) {
-    console.log(`Chat with ID ${chat_id} not found.`);
-    return;
-  }
-
-  const updatedChat = await db.chat.update({
-    where: { id: chat_id },
-    data: { message: message },
-  });
-  console.log("Updated chat:", updatedChat);
-
-  selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_UPDATED", payload: payload.toString() }), ws);
+  selectedBroadcast(JSON.stringify({ type: "CHAT_MESSAGE_UPDATED", payload }), ws);
 }
 
 function handleGroupChat(ws: WebSocket, payload: any) {
