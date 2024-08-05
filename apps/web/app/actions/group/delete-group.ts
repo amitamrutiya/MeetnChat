@@ -17,6 +17,12 @@ export const deleteGroup = async ({ group_id }: deleteGroupPropsType) => {
     },
   });
 
+  await db.groupChat.deleteMany({
+    where: {
+      group_id,
+    },
+  });
+
   if (!group) {
     return { success: false, message: "Group not deleted" };
   }
