@@ -3,7 +3,7 @@ import moment from "moment";
 import { Message } from "@repo/common";
 import { Avatar, AvatarImage, AvatarFallback } from "@repo/ui";
 
-function MessageDiv(props: Message) {
+function VideoChatDiv(props: Message) {
   const { from, message, isSelf, displayPicture, timestamp } = props;
 
   const convertedTime = React.useMemo(
@@ -46,4 +46,4 @@ function MessageDiv(props: Message) {
   );
 }
 
-export default MessageDiv;
+export default VideoChatDiv;

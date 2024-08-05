@@ -2,7 +2,7 @@
 
 import { selectChatAtom } from "@repo/store";
 import { Avatar, AvatarImage, AvatarFallback, Separator } from "@repo/ui";
-import { chat } from "hooks/use-chat";
+import { useChat } from "hooks/use-chat";
 import React from "react";
 import { useRecoilState } from "recoil";
 

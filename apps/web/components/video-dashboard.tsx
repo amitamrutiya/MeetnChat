@@ -3,7 +3,6 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import AudioVideoButton from "./audio-video-button";
-import ChatButton from ".././_components/chat-button";
 import SettingButton from "./setting-button";
 import EndMeetButton from "./end-meet-button";
 import { useSession } from "next-auth/react";
@@ -11,6 +10,7 @@ import { User } from "@prisma/client";
 import { Avatar, AvatarImage, AvatarFallback } from "@repo/ui";
 import { useRecoilValue } from "recoil";
 import { remoteStreamsAtom, userStreamAtom } from "@repo/store";
+import VideoChatButton from "./video-chat-button";
 
 interface DashboardProps {
   remoteSocketId: string;
@@ -93,7 +93,7 @@ const Dashboard: React.FC<DashboardProps> = (props: DashboardProps) => {
         <div className="mx-auto rounded-lg bg-slate-600 px-3 py-2 sm:w-auto">
           <div className="flex h-full w-full flex-row items-center justify-center gap-4">
             <AudioVideoButton />
-            <ChatButton remoteSocketId={remoteSocketId} />
+            <VideoChatButton remoteSocketId={remoteSocketId} />
             <SettingButton />
             <EndMeetButton />
           </div>

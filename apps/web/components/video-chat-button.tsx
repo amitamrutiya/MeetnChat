@@ -1,8 +1,5 @@
 import { MessageCircleMoreIcon, SendHorizonalIcon } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, useContext } from "react";
-import MessageDiv from "../../../../components/chat-div";
-import FileTransfer from "../../../../components/file-transfer";
-import FileCard from "../../../../components/file-card";
 import { Message } from "@repo/common";
 import {
   Button,
@@ -21,8 +18,11 @@ import {
 } from "@repo/ui";
 import { useRecoilValue } from "recoil";
 import { availableFilesAtom, SocketContext } from "@repo/store";
+import VideoChatDiv from "./video-chat-div";
+import FileCard from './file-card';
+import FileTransfer from "./file-transfer";
 
-function ChatButton(props: { remoteSocketId: string }) {
+function VideoChatButton(props: { remoteSocketId: string }) {
   const { remoteSocketId } = props;
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -101,7 +101,7 @@ function ChatButton(props: { remoteSocketId: string }) {
                           if ("message" in item) {
                             return (
                               <li key={item.from}>
-                                <MessageDiv {...item} />
+                                <VideoChatDiv {...item} />
                               </li>
                             );
                           } else {
@@ -146,4 +146,4 @@ function ChatButton(props: { remoteSocketId: string }) {
   );
 }
 
-export default ChatButton;
+export default VideoChatButton;

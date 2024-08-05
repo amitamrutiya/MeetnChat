@@ -3,13 +3,13 @@ import { LucideScreenShare, LucideScreenShareOff, CircleIcon, PresentationIcon }
 
 import EndMeetButton from "./end-meet-button";
 import SettingButton from "./setting-button";
-import ChatButton from ".././_components/chat-button";
 import AudioVideoButton from "./audio-video-button";
 import { Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@repo/ui";
 import { useStartUserStream } from "../hooks/use-start-stream";
 import { useStopUserStream } from "../hooks/use-stop-stream";
 import { useRecoilValue } from "recoil";
 import { userScreenStreamAtom } from "@repo/store";
+import VideoChatButton from "./video-chat-button";
 
 const MeetControllerBar = (props: { remoteSocketId: string }) => {
   const { remoteSocketId } = props;
@@ -44,7 +44,7 @@ const MeetControllerBar = (props: { remoteSocketId: string }) => {
           </TooltipProvider>
 
           {/* Chat Button */}
-          <ChatButton remoteSocketId={remoteSocketId} />
+          <VideoChatButton remoteSocketId={remoteSocketId} />
 
           {/* recording button */}
           <TooltipProvider>
