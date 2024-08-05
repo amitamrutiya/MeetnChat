@@ -9,7 +9,7 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@repo/ui";
-import { chat } from "hooks/use-chat";
+import { useChat } from "hooks/use-chat";
 import { CheckIcon, XIcon } from "lucide-react";
 import React from "react";
 
