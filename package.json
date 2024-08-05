@@ -2,6 +2,7 @@
   "name": "my-turborepo",
   "private": true,
   "scripts": {
+    "ci": "turbo run build e2e:test lint",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",

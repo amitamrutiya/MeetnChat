@@ -1,0 +1,18 @@
+{
+  "name": "@repo/tests",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "start-server-and-test": "^2.0.5",
+    "web": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.3",
+    "@types/node": "^22.1.0"
+  },
+  "scripts": {
+    "dev:test": "playwright test",
+    "e2e:test": "start-server-and-test \"(cd ../../apps/web && npm run start)\" http://localhost:3000 \"playwright test --project=chromium && playwright test --project=webkit\""
+  }
+}
