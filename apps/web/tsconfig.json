@@ -10,6 +10,15 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "next.config.js", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "next.config.js",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/room/group-chat/_components/fancy-multi-select.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
