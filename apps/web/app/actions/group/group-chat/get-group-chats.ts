@@ -13,7 +13,10 @@ export default async function getGroupChats({ group_id }: GetGroupChatsPropsType
 
   const groupChats = await db.groupChat.findMany({
     where: {
-      id: group_id,
+      group_id,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 

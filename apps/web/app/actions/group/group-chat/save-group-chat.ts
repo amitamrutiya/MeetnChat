@@ -6,9 +6,17 @@ type SaveGroupChatPropsType = {
   group_id: string;
   sender_id: string;
   message: string;
+  sender_name: string;
+  sender_image: string;
 };
 
-export const saveGroupChat = async ({ group_id, sender_id, message }: SaveGroupChatPropsType) => {
+export const saveGroupChat = async ({
+  group_id,
+  sender_id,
+  message,
+  sender_name,
+  sender_image,
+}: SaveGroupChatPropsType) => {
   if (!group_id || !sender_id || !message) {
     return { success: false, message: "Invalid data" };
   }
@@ -18,6 +26,8 @@ export const saveGroupChat = async ({ group_id, sender_id, message }: SaveGroupC
       group_id,
       sender_id,
       message,
+      sender_image,
+      sender_name,
     },
   });
 

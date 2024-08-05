@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import db from "@repo/db/client";
 
@@ -18,6 +18,7 @@ export const updateGroupChat = async ({ chat_id, message }: UpdateGroupChatProps
     },
     data: {
       message,
+      updatedAt: new Date(),
     },
   });
 
@@ -26,4 +27,4 @@ export const updateGroupChat = async ({ chat_id, message }: UpdateGroupChatProps
   }
 
   return { success: true, data: groupChat, message: "Group chat updated" };
-}
+};
