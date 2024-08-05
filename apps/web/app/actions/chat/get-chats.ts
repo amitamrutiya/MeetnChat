@@ -16,6 +16,9 @@ export async function getExistingChats({ sender_id, receiver_id }: getChatsType)
           { sender_id: receiver_id, receiver_id: sender_id },
         ],
       },
+      orderBy: {
+        createdAt: "asc",
+      },
     });
     return { success: true, data: chats };
   } catch (error) {

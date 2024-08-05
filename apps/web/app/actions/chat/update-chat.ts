@@ -3,21 +3,22 @@
 import db from "@repo/db/client";
 
 type updateChatProps = {
-  chatId: string;
+  chat_id: string;
   message: string;
 };
 
-export async function updateChat({ chatId, message }: updateChatProps) {
+export async function updateChat({ chat_id, message }: updateChatProps) {
   try {
-    await db.chat.update({
+    const chat = await db.chat.update({
       where: {
-        id: chatId,
+        id: chat_id,
       },
       data: {
         message,
+        updatedAt: new Date(),
       },
     });
-    return { success: true, message: "Chat updated successfully" };
+    return { success: true, data: chat, message: "Chat updated successfully" };
   } catch (error) {
     console.error("Error updating chat", error);
     return { success: false, message: "Error updating chat" };

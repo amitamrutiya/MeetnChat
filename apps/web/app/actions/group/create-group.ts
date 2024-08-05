@@ -8,10 +8,10 @@ type createGroupPropsType = {
   description: string;
   image: string;
   limit: number;
+  members: string[];
 };
 
-export const createGroup = async ({ creator_id, name, description, image, limit }: createGroupPropsType) => {
-
+export const createGroup = async ({ creator_id, name, description, image, limit, members }: createGroupPropsType) => {
   if (!creator_id || !name || !description || !image || !limit) {
     return { success: false, message: "Invalid data" };
   }
@@ -24,7 +24,7 @@ export const createGroup = async ({ creator_id, name, description, image, limit 
       image,
       limit,
       createdAt: new Date(),
-      members: [creator_id],
+      members: [creator_id, ...members],
       updatedAt: new Date(),
     },
   });

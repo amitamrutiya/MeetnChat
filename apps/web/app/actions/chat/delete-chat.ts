@@ -2,14 +2,14 @@
 import db from "@repo/db/client";
 
 type deleteChatType = {
-  chatId: string;
+  chat_id: string;
 };
 
-export async function deleteChat({ chatId }: deleteChatType) {
+export async function deleteChat({ chat_id }: deleteChatType) {
   try {
     await db.chat.delete({
       where: {
-        id: chatId,
+        id: chat_id,
       },
     });
     return { success: true, message: "Chat deleted successfully" };
