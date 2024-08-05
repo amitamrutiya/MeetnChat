@@ -1,9 +1,6 @@
 name: Playwright Tests
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,9 +10,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: "yarn"
-      - run: yarn install --frozen-lockfile
+      - run: yarn install
       - run: npx playwright install chromium
-      - run: yarn run ci
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      - name: Create .env file
+        run: |
+          echo "AUTH_SECRET=secrec777" >> apps/web/.env
+          echo "NEXTAUTH_URL=https://meetn-chat.vercel.app" >> apps/web/.env
+      - name: Print .env file
+        run: cat apps/web/.env
+      - name: Run Playwright tests
+        run: yarn run ci

@@ -68,6 +68,7 @@ export const {
   pages: {
     signIn: "/",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 interface RateLimiter {
