@@ -16,6 +16,7 @@ jobs:
         run: |
           echo "AUTH_SECRET=secrec777" >> apps/web/.env
           echo "NEXTAUTH_URL=https://meetn-chat.vercel.app" >> apps/web/.env
+          echo "DATABASE_URL=DATABASE_URL" >> apps/web/.env
       - name: Print .env file
         run: cat apps/web/.env
       - name: Run Playwright tests

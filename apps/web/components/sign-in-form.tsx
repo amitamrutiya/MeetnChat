@@ -24,7 +24,7 @@ function SignInForm() {
     <ShineBorder color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} duration={7} borderWidth={4}>
       <div className="bg-background w-full max-w-md space-y-6 rounded-lg p-8 shadow-md">
         <div className="text-center">
-          <h1 className="mb-6 text-2xl font-extrabold text-white">Please Login to Use</h1>
+          <p className="mb-6 text-2xl font-extrabold text-white">Please Login to Use</p>
           <p className="mb-4 text-white">Sign in to start your anonymous adventure</p>
         </div>
         <Form {...signinForm}>
